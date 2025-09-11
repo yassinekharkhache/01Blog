@@ -5,31 +5,37 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "posts")
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // owner_id
+    @Column(nullable = false)
+    private Long ownerId;
 
     // status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
+    // title
     @Column(nullable = false)
-    private String name;
+    private String title;
 
+    // content
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String content;
+
+    
+    // created_at
     @Column(nullable = false)
-    private int age;
+    private String createdAt;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Enumerated(EnumType.STRING)
+    // updated_at
     @Column(nullable = false)
-    private Role role;
-
-    @Column(nullable = false)
-    private String password;
+    private String updatedAt;
 }
+

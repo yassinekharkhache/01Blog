@@ -4,8 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 @Data
 @Entity
-@Table(name = "remports")
+@Table(name = "reports")
 public class Report {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+
     @Column(nullable = false)
     private boolean Done;
 

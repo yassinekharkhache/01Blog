@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "remports")
-public class Reports {
+public class Report {
     @Column(nullable = false)
     private boolean Done;
 

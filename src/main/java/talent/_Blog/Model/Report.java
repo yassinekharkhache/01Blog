@@ -1,4 +1,4 @@
-package talent._Blog.model;
+package talent._Blog.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;

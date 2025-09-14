@@ -1,4 +1,4 @@
-package talent._Blog.model;
+package talent._Blog.Model;
 
 public enum Role {
     Admin,

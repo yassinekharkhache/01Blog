@@ -1,10 +1,11 @@
-package talent._Blog.model;
+package talent._Blog.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -16,9 +17,9 @@ public class User {
     private Long id;
 
     // status
+    @NotNull(message = "Status is mandatory")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @NotBlank(message = "Status is mandatory")
     private Status status;
 
     @Column(nullable = false)
@@ -26,8 +27,7 @@ public class User {
     private String name;
 
     @Column(nullable = false)
-    @NotBlank(message = "Age is mandatory")
-    @Min(value = 0, message = "Age must be positive")
+    @Min(value = 13, message = "Age must be positive")
     private int age;
 
 
@@ -36,12 +36,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @NotNull(message = "Role is mandatory")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @NotBlank(message = "Role is mandatory")
     private Role role;
 
     @Column(nullable = false)
     @NotBlank(message = "Password is mandatory")
     private String password;
 }
+
+
+

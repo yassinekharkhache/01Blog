@@ -4,12 +4,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import talent._Blog.Model.User;
 import talent._Blog.Repository.UserRepository;
-import talent._Blog.model.User;
-import talent._Blog.model.dto.UserDto;
 import talent._Blog.Service.UserService;
+import talent._Blog.dto.UserDto;
+// import org.springframework.http.*;
 @RestController
 public class Auth {
     private final UserRepository repo;
@@ -21,20 +24,27 @@ public class Auth {
     }
 
     @PostMapping("/register")
-    public String registerUser(@Valid @RequestBody UserDto data) {
-        // go to servise
-        userService.saveUser(data);
-        return "User " + data.name() + " registered successfully!";
-
+    public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto data) {
+        try{
+            userService.saveUser(data);
+        }catch(Exception e){
+            return ResponseEntity.status(400).body("Registration failed: " + e.getMessage());
+        }
+        return ResponseEntity
+                .status(201)
+                .body("User " + data.name() + " registered successfully!");
     }
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody User data) {
-        // User user = repo.findByEmail(data.getEmail());
-        // if (user != null && user.getPassword().equals(data.getPassword())) {
-        //     return "User " + user.getName() + " logged in successfully!";
-        // } else {
-            return "Invalid email or password.";
-        // }
+    public String loginUser(@Valid @RequestBody UserDto data) {
+        User user = repo.findByEmail(data.email());
+        if (user == null || !user.getPassword().equals(data.password())) {
+            return "Invalid email or password or User";
+        }
+
+        
+
+        return "User " + user.getName() + " logged in successfully!";
+        
     }
 }

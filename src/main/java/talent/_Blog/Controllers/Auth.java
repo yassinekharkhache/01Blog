@@ -4,24 +4,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import talent._Blog.Model.User;
-import talent._Blog.Repository.UserRepository;
 import talent._Blog.Service.UserService;
 import talent._Blog.dto.UserDto;
 // import org.springframework.http.*;
 @RestController
 public class Auth {
-    private final UserRepository repo;
-    private final UserService userService;
 
-    public Auth(UserRepository repo, UserService userService) {
-        this.repo = repo;
-        this.userService = userService;
-    }
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto data) {
@@ -37,13 +33,11 @@ public class Auth {
 
     @PostMapping("/login")
     public String loginUser(@Valid @RequestBody UserDto data) {
-        User user = repo.findByEmail(data.email());
-        if (user == null || !user.getPassword().equals(data.password())) {
+        User user = userService.getUserByEmail(data.email());
+        if (user == null || !user.getPassword().equals(userService.hashCode(data.password()))) {
             return "Invalid email or password or User";
         }
-
         
-
         return "User " + user.getName() + " logged in successfully!";
         
     }

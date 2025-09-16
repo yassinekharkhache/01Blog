@@ -8,7 +8,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		var app = new SpringApplication(Application.class);
+		app.setBanner((environment, sourceClass, out) -> {
+				out.println("\n\n  /$$$$$$    /$$   /$$       /$$                    \n" + //
+							    " /$$$_  $$ /$$$$  | $$      | $$                    \n" + //
+							    "| $$$$\\ $$|_  $$  | $$$$$$$ | $$  /$$$$$$   /$$$$$$ \n" + //
+							    "| $$ $$ $$  | $$  | $$__  $$| $$ /$$__  $$ /$$__  $$\n" + //
+							    "| $$\\ $$$$  | $$  | $$  \\ $$| $$| $$  \\ $$| $$  \\ $$\n" + //
+							    "| $$ \\ $$$  | $$  | $$  | $$| $$| $$  | $$| $$  | $$\n" + //
+							    "|  $$$$$$/ /$$$$$$| $$$$$$$/| $$|  $$$$$$/|  $$$$$$$\n" + //
+							    " \\______/ |______/|_______/ |__/ \\______/  \\____  $$\n" + //
+							    "                                           /$$  \\ $$\n" + //
+							    "                                          |  $$$$$$/\n" + //
+							    "                                           \\______/ \n\n");
+			});
+		app.run(args);
 	}
 
 }

@@ -38,7 +38,7 @@ public class Auth {
             return "Invalid email or password or User";
         }
         
-        return "User " + user.getName() + " logged in successfully!";
+        return "User " + user.getUsername() + " logged in successfully!";
         
     }
 }

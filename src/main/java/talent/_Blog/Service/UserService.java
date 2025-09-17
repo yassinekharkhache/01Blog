@@ -1,9 +1,15 @@
 package talent._Blog.Service;
 
 
-import org.springframework.beans.factory.annotation.*;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+// import org.springframework.security.core.userdetails.User;
+
 
 import talent._Blog.Exception.EmailAlreadyExistsException;
 import talent._Blog.Model.Role;
@@ -13,14 +19,40 @@ import talent._Blog.Repository.UserRepository;
 import talent._Blog.dto.UserDto;
 import jakarta.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+// import org.springframework.security.core.userdetails.UserDetailsService;
+
 
 @Service
 public class UserService {
     @Autowired
     private final UserRepository userRepository;
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
+    // @Override
+    // public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
+    //     Users user = userRepository.findByName(name);
+    //     if (user == null) {
+    //         throw new UsernameNotFoundException("User not found");
+    //     }
+    //     return User.withDefaultPasswordEncoder()
+    //             .username(user.getEmail())
+    //             .password(user.getPassword())
+    //             .roles(user.getRole().name())
+    //             .build();
+        
+    // }
+
+    @Bean
+    public AuthenticationProvider authProvider() {
+        return new DaoAuthenticationProvider();
+    }
+
+    // public UserDetail
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -37,7 +69,7 @@ public class UserService {
 
 
         User user = new User();
-        user.setName(data.name());
+        user.setUserName(data.name());
         user.setEmail(data.email());
         user.setPassword(hashCode(data.password()));
         user.setAge(data.age());

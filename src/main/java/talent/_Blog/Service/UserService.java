@@ -9,8 +9,7 @@ import talent._Blog.Model.Role;
 import talent._Blog.Model.Status;
 import talent._Blog.Model.User;
 import talent._Blog.Repository.UserRepository;
-import talent._Blog.dto.UserDto;
-
+import talent._Blog.dto.RegisterDto;
 
 @Service    
 public class UserService {
@@ -34,7 +33,7 @@ public class UserService {
     public String hashCode(String s){
         return encoder.encode(s);
     }
-    public void saveUser(@Valid UserDto data) {
+    public void saveUser(@Valid RegisterDto data) {
         if (userRepository.existsByEmail(data.email())) {
             throw new EmailAlreadyExistsException("Email '" + data.email() + "' is already registered.");
         }

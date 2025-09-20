@@ -1,10 +1,15 @@
 package talent._Blog.Model;
 import java.util.List;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-
-@Data
+import lombok.NoArgsConstructor;
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Table(name = "posts")
 public class Post {
 
@@ -35,17 +40,18 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
-    // images paths seperated by ","
-    @Column(nullable = false,columnDefinition = "TEXT")
-    private String paths_to_images;
+    
+    // images paths separated by ","
+    @Column(name = "paths_to_images", nullable = false, columnDefinition = "TEXT")
+    private String pathsToImages;
 
     
     // created_at
-    @Column(nullable = false)
-    private String createdAt;
+    @Column(name = "created_at", nullable = false)
+    private java.time.LocalDateTime createdAt;
 
     // updated_at
-    @Column(nullable = false)
-    private String updatedAt;
+    @Column(name = "updated_at", nullable = false)
+    private java.time.LocalDateTime updatedAt;
 }
 

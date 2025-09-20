@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record UserDto(
+public record RegisterDto(
 
     @Min(value = 13, message = "Age must be at least 13")
     @Max(value = 120, message = "Age must be less than or equal to 120")

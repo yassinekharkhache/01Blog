@@ -16,6 +16,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 // import 
 @Data
 @Entity
@@ -23,10 +24,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role == null) {
+            return List.of();
+        }
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
@@ -34,6 +38,7 @@ public class User implements UserDetails{
     public String getUsername() {
         return this.userName;
     }
+
 
     @Override
     public String getPassword() {
@@ -60,19 +65,18 @@ public class User implements UserDetails{
         return this.status == Status.Active;
     }
 
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Post> posts;
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Post> posts;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Like> likes;
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Like> likes;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Report> reports;
+    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // private List<Report> reports;
 
     // status
     @NotNull(message = "Status is mandatory")
@@ -85,9 +89,8 @@ public class User implements UserDetails{
     private String userName;
 
     @Column(nullable = false)
-    @Min(value = 13, message = "Age must be positive")
+    @Min(value = 13, message = "Age must be at least 13")
     private int age;
-
 
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
@@ -103,6 +106,3 @@ public class User implements UserDetails{
     @NotBlank(message = "Password is mandatory")
     private String password;
 }
-
-
-

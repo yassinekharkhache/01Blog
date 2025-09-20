@@ -4,6 +4,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +14,7 @@ import talent._Blog.Model.User;
 import talent._Blog.Service.JwtService;
 import talent._Blog.Service.UserService;
 import talent._Blog.dto.LoginDto;
-import talent._Blog.dto.UserDto;
+import talent._Blog.dto.RegisterDto;
 // import org.springframework.http.*;
 @RestController
 public class Auth {
@@ -21,7 +23,7 @@ public class Auth {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody UserDto data) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody RegisterDto data) {
         try{
             userService.saveUser(data);
         }catch(Exception e){
@@ -40,7 +42,6 @@ public class Auth {
     @PostMapping("/login")
     public String loginUser(@Valid @RequestBody LoginDto data) {
         User user = userService.getUserByName(data.username());
-        System.out.println(user);
         if (user == null || !user.getPassword().equals(data.password())) {
             return "Invalid email or password or User";
         }
@@ -50,6 +51,11 @@ public class Auth {
 
         return token;
         
+    }
+
+    @PostMapping("/noise")
+    public String noise(@AuthenticationPrincipal UserDetails userDetails) {
+        return userDetails.getPassword()+",  "+userDetails.getUsername()+",  "+userDetails.getAuthorities();
     }
 
 

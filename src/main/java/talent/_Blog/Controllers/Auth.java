@@ -1,14 +1,11 @@
 package talent._Blog.Controllers;
 
 import org.springframework.web.bind.annotation.RestController;
-
 import jakarta.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 import talent._Blog.Model.User;
 import talent._Blog.Service.UserService;
 import talent._Blog.dto.UserDto;

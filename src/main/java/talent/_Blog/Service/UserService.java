@@ -2,8 +2,8 @@ package talent._Blog.Service;
 
 
 
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+// import org.springframework.security.core.userdetails.UserDetails;
+// import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -47,10 +47,7 @@ public class UserService {
         
     // }
 
-    @Bean
-    public AuthenticationProvider authProvider() {
-        return new DaoAuthenticationProvider();
-    }
+    
 
     // public UserDetail
 
@@ -75,7 +72,6 @@ public class UserService {
         user.setAge(data.age());
         user.setRole(Role.user);
         user.setStatus(Status.Active);
-        System.out.println(user);
         userRepository.save(user);
     }
 

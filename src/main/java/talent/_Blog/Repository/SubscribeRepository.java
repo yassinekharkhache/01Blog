@@ -3,8 +3,8 @@ package talent._Blog.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import talent._Blog.Model.Subscribe;
+import talent._Blog.Model.Subscription;
 
-public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
+public interface SubscribeRepository extends JpaRepository<Subscription, Long> {
 
 }

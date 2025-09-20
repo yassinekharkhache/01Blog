@@ -18,30 +18,35 @@ public class SecurityConfig {
     SecurityConfig(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable());
-        http.authorizeHttpRequests(
-            request -> request.requestMatchers("register", "login").permitAll().anyRequest().authenticated());
         http.httpBasic(Customizer.withDefaults());
-        http.sessionManagement(Session -> Session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http.authorizeHttpRequests(
+                request -> request.requestMatchers("/register", "/login").permitAll()
+                        .anyRequest().authenticated()
+                        );
+
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-    
+
     // @Bean
     // CorsConfigurationSource corsConfigurationSource() {
-    //     CorsConfiguration configuration = new CorsConfiguration();
+    // CorsConfiguration configuration = new CorsConfiguration();
 
-    //     configuration.setAllowedOrigins(List.of("http://localhost:8081"));
-    //     configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
-    //     configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    // configuration.setAllowedOrigins(List.of("http://localhost:8081"));
+    // configuration.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+    // configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
-    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    // UrlBasedCorsConfigurationSource source = new
+    // UrlBasedCorsConfigurationSource();
 
-    //     source.registerCorsConfiguration("/**", configuration);
+    // source.registerCorsConfiguration("/**", configuration);
 
-    //     return source;
+    // return source;
     // }
 
 }

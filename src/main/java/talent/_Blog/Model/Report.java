@@ -2,26 +2,26 @@ package talent._Blog.Model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-@Data
+
 @Entity
+@Data
 @Table(name = "reports")
 public class Report {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
-    @Column(nullable = false)
-    private boolean Done;
+    private String reason;
 
-    @Column(nullable = false)
-    private Long PostId;
+    private boolean seen;
 
-    @Column(nullable = false)
-    private Long ReporterId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private String Reason;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @Column(nullable = false)
     private String CreatedAt;

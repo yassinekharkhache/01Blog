@@ -65,6 +65,15 @@ public class User implements UserDetails{
     @GeneratedValue
     private Long id;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Report> reports;
+
     // status
     @NotNull(message = "Status is mandatory")
     @Enumerated(EnumType.STRING)

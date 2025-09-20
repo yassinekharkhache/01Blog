@@ -1,5 +1,5 @@
 package talent._Blog.Model;
-
+import java.util.List;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -12,9 +12,15 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // owner_id
-    @Column(nullable = false)
-    private Long ownerId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Like> likes;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Report> reports;
 
     // status
     @Enumerated(EnumType.STRING)
@@ -28,6 +34,10 @@ public class Post {
     // content
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    // images paths seperated by ","
+    @Column(nullable = false,columnDefinition = "TEXT")
+    private String paths_to_images;
 
     
     // created_at

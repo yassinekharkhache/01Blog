@@ -1,0 +1,29 @@
+<nav>
+  <mat-nav-list>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/explore">
+      <mat-icon matListItemIcon>explore</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Explore</span>
+    </a>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/followed">
+      <mat-icon matListItemIcon>group</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Followed</span>
+    </a>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/profile">
+      <mat-icon matListItemIcon>person</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Profile</span>
+    </a>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/new-post">
+      <mat-icon matListItemIcon>add_circle</mat-icon>
+      <span matListItemTitle *ngIf="expanded">New Post</span>
+    </a>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/saved">
+      <mat-icon matListItemIcon>bookmark</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Saved Posts</span>
+    </a>
+  </mat-nav-list>
+</nav>

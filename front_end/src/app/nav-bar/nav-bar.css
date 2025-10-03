@@ -1,0 +1,99 @@
+mat-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: white;
+}
+
+img.profile-pic {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #aa03aa;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+@media (max-width: 600px) {
+  mat-toolbar {
+    height: 56px;
+    padding: 0 0.5rem;
+  }
+  .title {
+    font-size: 1rem;
+  }
+}
+
+.title {
+  margin-left: 16px;
+  font-size: 20px;
+  font-weight: 500;
+}
+mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.burger-button {
+  margin: 0px;
+  padding: 0px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+button {
+  margin: 10px;
+  padding: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  outline: none;
+}
+
+/* ////////////////// */
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+/* Notification badge */
+button[aria-label="Notifications"] {
+  position: relative;
+}
+
+button{
+  scale: 1.2;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  background: red;
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

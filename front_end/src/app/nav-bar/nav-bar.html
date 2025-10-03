@@ -1,0 +1,60 @@
+<!-- <mat-toolbar>
+  <button mat-icon-button aria-label="Toggle sidebar" (click)="menuToggle.emit()">
+    <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
+  </button>
+
+  <span class="title">01 Blog</span>
+</mat-toolbar>
+ -->
+<!-- <mat-toolbar>
+  <button mat-icon-button aria-label="Toggle sidebar" (click)="menuToggle.emit()">
+    <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
+  </button>
+
+  <span class="title">01 Blog</span>
+
+  <span class="toolbar-spacer"></span>
+
+  <button mat-icon-button aria-label="Notifications">
+    <mat-icon>notifications</mat-icon>
+    <span class="notification-badge">3</span>
+  </button>
+
+  <button mat-icon-button aria-label="Profile">
+    <mat-icon>account_circle</mat-icon>
+  </button>
+</mat-toolbar> -->
+
+<mat-toolbar class="nav-toolbar">
+  <button
+    class="burger-button"
+    mat-icon-button
+    aria-label="Toggle sidebar"
+    (click)="menuToggle.emit()"
+  >
+    <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
+  </button>
+
+  <span class="title">01 Blog</span>
+
+  <span class="toolbar-spacer"></span>
+
+  <button mat-icon-button aria-label="Profile" class="profile-btn">
+    <mat-icon *ngIf="!UserService.userSignal()?.pic">account_circle</mat-icon>
+
+    <img
+    *ngIf="UserService.userSignal()?.pic"
+      width="35"
+      height="33"
+      [src]="'http://localhost:8081' + UserService.userSignal()?.pic"
+      alt="Profile Picture"
+      class="profile-pic"
+    />
+  </button>
+
+  <!-- Notification button -->
+  <!-- matBadge="4" -->
+  <button mat-icon-button aria-label="Notifications" class="notification-btn">
+    <mat-icon matBadge="1">notifications</mat-icon>
+  </button>
+</mat-toolbar>

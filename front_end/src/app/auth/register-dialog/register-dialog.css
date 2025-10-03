@@ -1,0 +1,49 @@
+h2{
+    text-align: center;
+    font-size: 30px;
+    margin-top: 30px;
+}
+
+form{
+    padding:30px;
+}
+
+mat-form-field{
+    width: 100%;
+}
+
+button{
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+    margin: 10px;  
+}
+
+.actions{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+p {
+    width: 100%;
+    display: inline;
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+    margin: auto;
+}
+
+span{
+    color: #aa03aa;
+    cursor: pointer;
+}
+
+.center{
+  display: block;
+  width: 100%;
+  text-align: center;
+}

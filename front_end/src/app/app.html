@@ -1,0 +1,16 @@
+<!-- <app-nav-bar></app-nav-bar>
+<div class="layout">
+  <app-side-bar></app-side-bar>
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div> -->
+<app-nav-bar [expanded]="isExpanded" (menuToggle)="toggleSidebar()"></app-nav-bar>
+
+<div class="layout" [class.expanded]="isExpanded">
+  <app-side-bar [expanded]="isExpanded" class="side-bar"></app-side-bar>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

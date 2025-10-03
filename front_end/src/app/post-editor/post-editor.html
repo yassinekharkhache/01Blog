@@ -1,0 +1,8 @@
+<quill-editor
+  [(ngModel)]="content"
+  [modules]="editorModules"
+  (onEditorCreated)="onEditorCreated($event)"
+  theme="snow">
+</quill-editor>
+
+<button (click)="submitPost()">Submit Post</button>

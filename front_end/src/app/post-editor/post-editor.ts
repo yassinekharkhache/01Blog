@@ -1,88 +1,88 @@
 import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { QuillModule } from 'ngx-quill';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import Quill from 'quill';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @Component({
   selector: 'app-blog-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, QuillModule],
+  imports: [CommonModule, FormsModule, EditorModule],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }, // ✅ local TinyMCE
+  ],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
 })
 export class BlogEditorComponent {
   content: string = '';
   http = inject(HttpClient);
-  quill: Quill | null = null;
+  title: string = 'test title';
+  imagePreview: File | string | null = null;
 
-  editorModules = {
-    toolbar: {
-      container: [
-        ['bold', 'italic', 'underline'],
-        [{ header: [1, 2, 3, false] }],
-        ['image', 'video', 'code-block'],
-      ],
-      handlers: {
-        image: () => this.customMediaHandler('image'),
-        video: () => this.customMediaHandler('video'),
-      },
+  editorConfig: any = {
+    height: 500,
+    menubar: false,
+    plugins: ['image', 'link', 'media', 'paste', 'code', 'lists', 'heading'],
+    toolbar:
+      'undo redo | bold italic underline | image media | code' +
+      ' | bullist numlist outdent indent' +
+      ' | alignleft aligncenter alignright alignjustify',
+    images_upload_handler: (blobInfo: any) => this.uploadMedia(blobInfo.blob(), 'image'),
+    file_picker_types: 'image media',
+    file_picker_callback: (callback: any, value: any, meta: any) => {
+      const type = meta.filetype === 'image' ? 'image' : 'video';
+      this.customMediaHandler(type, callback);
     },
   };
 
-  onEditorCreated(quillInstance: Quill) {
-    this.quill = quillInstance;
+  async uploadMedia(file: File, type: 'image' | 'video'): Promise<string> {
+    const formData = new FormData();
+    formData.append(type, file);
+
+    const response = await this.http
+      .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
+      .toPromise();
+
+    return response?.url || '';
   }
 
-  customMediaHandler(type: 'image' | 'video') {
-    const fileInput = document.createElement('input');
-    fileInput.setAttribute('type', 'file');
-    fileInput.setAttribute('accept', type === 'image' ? 'image/*' : 'video/*');
-    fileInput.click();
+  customMediaHandler(type: 'image' | 'video', callback: (url: string) => void) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = type === 'image' ? 'image/*' : 'video/*';
+    input.click();
 
-    fileInput.onchange = async () => {
-      const file = fileInput.files?.[0];
+    input.onchange = async () => {
+      const file = input.files?.[0];
       if (!file) return;
 
-      const formData = new FormData();
-      formData.append(type, file);
+      // show preview
+      const reader = new FileReader();
+      reader.onloadend = () => callback(reader.result as string);
+      reader.readAsDataURL(file);
 
-      try {
-        // Send to the correct backend endpoint
-        console.log(">>>>>>>>>> debug 53");
-        const response = await this.http
-          .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
-          .toPromise();
-
-        const url = response?.url; // <-- this URL is decided by backend
-        if (url && this.quill) {
-          const range = this.quill.getSelection(true);
-
-          if (type === 'image') {
-            this.quill.insertEmbed(range?.index || 0, 'image', url, 'user');
-          } else if (type === 'video') {
-            this.quill.insertEmbed(range?.index || 0, 'video', url, 'user');
-          }
-
-          // Move cursor after embed
-          this.quill.setSelection((range?.index || 0) + 1);
-        }
-      } catch (err) {
-        console.error(`${type} upload failed`, err);
-      }
+      const url = await this.uploadMedia(file, type);
+      if (url) callback(url);
     };
   }
 
   submitPost() {
-    const post = {
-      title: 'Test Post',
-      content: this.content,
-    };
+    const formData = new FormData();
+    formData.append('title', this.title);
+    formData.append('content', this.content);
+    if (this.imagePreview) {
+      formData.append('image', this.imagePreview);
+    }
+    this.http
+      .post('http://localhost:8081/api/post/add', formData)
+      .subscribe(() => alert('Post submitted!'));
+  }
 
-    this.http.post('http://localhost:8081/api/post/add', post).subscribe({
-      next: () => alert('Post submitted!'),
-      error: (err) => console.log('>>>>>>>>>>>>>>', err),
-    });
+  onImageSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.imagePreview = file; // ✅ keep the File object
+    }
   }
 }

@@ -1,18 +1,23 @@
 package talent._Blog.Model;
 
+import java.sql.Blob;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
+@ToString(exclude = {"user", "likes", "reports"})
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -28,21 +33,23 @@ public class Post {
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Like> likes;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Report> reports;
 
-    // status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
 
-    // title
     @Column(nullable = false)
     private String title;
 
-    // content
+    @Lob
+    private byte[] postPreviewImage; 
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 

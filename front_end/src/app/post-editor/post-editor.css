@@ -1,35 +1,10 @@
-/* blog-editor.component.css */
 
 :host {
   display: flex;
   flex-direction: column;
-  height:90%;   /* take all available height */
+  height:90%;
   width: 100%;
   box-sizing: border-box;
-}
-
-/* Quill editor should take all vertical space */
-quill-editor {
-  flex: 1;              /* fill available space */
-  width: 100%;
-  /* border: 1px solid #e0e0e0; */
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  margin: 0;           /* remove unwanted spacing */
-}
-
-/* toolbar */
-.ql-toolbar {
-  border: 1px solid #ddd;
-  background: #fafafa;
-  flex-shrink: 0;
-}
-
-.ql-container {
-  flex: 1;
-  border: 1px solid #ddd;
-  min-height: 0;
 }
 
 /* Submit button centered horizontally at the bottom */

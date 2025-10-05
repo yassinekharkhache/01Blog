@@ -12,7 +12,7 @@ export class AuthService {
       withCredentials: true,
     }).pipe(
       tap(() => {
-        // this.fetchUser().subscribe(); // << todo
+        // this.userService.fetchUser(); // << todo
       })
     );
   }
@@ -23,7 +23,4 @@ export class AuthService {
       { withCredentials: true }
     );
   }
-
-  
-
 }

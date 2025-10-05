@@ -1,5 +1,7 @@
 package talent._Blog.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,15 @@ public class PostService {
     @Autowired
     private final PostRepository postRepo;
 
+    public List<Post> getAllPosts() {
+        return postRepo.findAll();
+    }
+
+    
+    public List<Post> getFollowingPosts(String username) {
+        return postRepo.findPostsByFollowingUsername(username);
+    }
+
 
     public PostService(PostRepository postRepo) {
         this.postRepo = postRepo;
@@ -27,7 +38,7 @@ public class PostService {
         Post Post = new Post();
         Post.setTitle(data.title());
         Post.setContent(data.content());
-        // Post.setPathsToImages(data.pathsToImages()); << todo:post
+        Post.setPostPreviewImage(data.image());
         Post.setCreatedAt(java.time.LocalDateTime.now());
         Post.setUpdatedAt(java.time.LocalDateTime.now());
         Post.setStatus(Status.Active);

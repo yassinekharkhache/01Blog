@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
+@ToString(exclude = {"posts", "likes", "reports", "subscriptions", "subscribers"})
 @Entity
 @Builder
 @NoArgsConstructor
@@ -69,14 +71,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Subscription> subscriptions; // users this user follows
-
-    @OneToMany(mappedBy = "subscribedTo", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Subscription> subscribers; // users who follow this user
-
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Post> posts;
@@ -94,20 +89,28 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status;
-
+    
     @Column(nullable = false, unique = true)
     @NotBlank(message = "Name is mandatory")
     private String userName;
-
+    
     @Column(nullable = false)
     @Min(value = 13, message = "Age must be at least 13")
     @NotNull(message = "age is mandatory")
     private Integer age;
-
+    
     @Email(message = "Email should be valid")
     @NotBlank(message = "Email is mandatory")
     @Column(nullable = false, unique = true)
     private String email;
+    
+    @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Subscription> subscriptions; // users this user follows
+
+    @OneToMany(mappedBy = "subscribedTo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Subscription> subscribers; // users who follow this user
 
     @JsonIgnore
     public List<User> getFollowers() {
@@ -135,5 +138,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @NotBlank(message = "Password is mandatory")
+    @JsonIgnore
     private String password;
 }

@@ -1,0 +1,64 @@
+<div class="profile-page-container">
+  <div class="profile-header-card">
+    <div class="avatar-section">
+      <img
+           [src]="'http://localhost:8081' + UserService.userSignal()?.pic"
+           alt="User Avatar"
+           class="profile-avatar">
+      <ng-template #defaultAvatar>
+        <div class="profile-avatar default-avatar">
+          <span>{{ UserService.userSignal()?.username?.charAt(0) }}</span>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="profile-summary">
+      <h1 class="username-display">{{ UserService.userSignal()?.username }}</h1>
+      <p class="role-display">{{ UserService.userSignal()?.role }}</p>
+      
+      <div class="stats-bar">
+        <div class="stat-item">
+          <strong>{{ UserService.userSignal()?.followers }}</strong>
+          <span>Followers</span>
+        </div>
+        <div class="stat-separator">|</div>
+        <div class="stat-item">
+          <strong>{{ UserService.userSignal()?.following }}</strong>
+          <span>Following</span>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div class="profile-content">
+    <div class="details-card">
+      <h2>About Me</h2>
+      <div class="detail-group">
+        <div class="detail-item">
+          <span class="detail-label">Email:</span>
+          <span class="detail-value">{{ UserService.userSignal()?.email }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Age:</span>
+          <span class="detail-value">{{ UserService.userSignal()?.age }}</span>
+        </div>
+      </div>
+    </div>
+  
+    <div class="user-posts-section">
+      <h2 class="section-title">User Posts</h2>
+      
+    </div>
+  </div>
+</div>
+
+<div class="user-posts-section">
+  <hr class="purple-line"> <ng-container *ngIf="userPosts && userPosts.length > 0; else noPosts">
+    <app-post-card *ngFor="let post of userPosts" [post]="post"></app-post-card>
+  </ng-container>
+
+  <ng-template #noPosts>
+    <p class="no-posts-message">This user hasn't created any posts yet.</p>
+  </ng-template>
+</div>

@@ -49,7 +49,7 @@ public class UserService {
         user.setAge(data.age());
         user.setRole(Role.USER);
         user.setStatus(Status.Active);
-        user.setPic("/profiles/default.png");
+        user.setPic("/default.png");
                          
         userRepository.save(user);
     }

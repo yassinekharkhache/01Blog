@@ -1,6 +1,8 @@
 package talent._Blog.config;
 
 import talent._Blog.Service.JwtService;
+
+import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,7 +25,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         @NonNull jakarta.servlet.http.HttpServletResponse response,
         @NonNull jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        System.out.println("auth >>>>>>>>>>>>>>>>>>>>>>> "+authHeader);
+        System.out.println(request.getRequestURI());
+        System.out.println("auth >>>>>>>>>>>>>>>>>>>>>>> " + authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -32,7 +35,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         
 
         final String userName = jwtService.extractUsername(jwt);
-        
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
             if (jwtService.isTokenValid(jwt, userDetails)) {

@@ -60,7 +60,6 @@ public class Auth {
         if (token == null || token.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
         }
-
         try {
             JwtService jwtService = new JwtService();
             String username = jwtService.extractUsername(token);
@@ -69,17 +68,19 @@ public class Auth {
             if (user == null) {
                 return ResponseEntity.status(404).body(Map.of("error", "User not found"));
             }
-
+            
             Map<String, Object> userData = Map.of(
                 "username", user.getUsername(),
                 "email", user.getEmail(),
                 "age", user.getAge(),
                 "role", user.getRole(),
-                "pic", user.getPic()
+                "pic", user.getPic(),
+                "followers", user.getFollowers().size(),
+                "following", user.getFollowing().size()
                 );
 
             return ResponseEntity.ok(userData);
-
+            
         } catch (Exception e) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid or expired token"));
         }

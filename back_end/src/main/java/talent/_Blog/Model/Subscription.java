@@ -1,6 +1,5 @@
 package talent._Blog.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,5 +21,4 @@ public class Subscription {
     @ManyToOne
     @JoinColumn(name = "subscribed_to_id", nullable = false)
     private User subscribedTo;
-
 }

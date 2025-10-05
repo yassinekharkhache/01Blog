@@ -4,8 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-// import {}
 
 @Component({
   selector: 'app-nav-bar',

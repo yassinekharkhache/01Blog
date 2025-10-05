@@ -1,8 +1,7 @@
-<quill-editor
-  [(ngModel)]="content"
-  [modules]="editorModules"
-  (onEditorCreated)="onEditorCreated($event)"
-  theme="snow">
-</quill-editor>
+<editor [(ngModel)]="content" [init]="editorConfig"></editor>
+<!-- //take an image for the preview -->
+<input type="file" (change)="onImageSelected($event)" />
+
+<input [(ngModel)]="title" placeholder="Post Title" />
 
 <button (click)="submitPost()">Submit Post</button>

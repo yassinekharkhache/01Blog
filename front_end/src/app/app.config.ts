@@ -4,9 +4,11 @@ import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common
 import { authInterceptor } from './auth-interceptor';
 import { routes } from './app.routes';
 import { firstValueFrom } from 'rxjs';
+import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'assets/tinymce/tinymce.min.js' },
     provideHttpClient(
       withInterceptors([authInterceptor])
     ),

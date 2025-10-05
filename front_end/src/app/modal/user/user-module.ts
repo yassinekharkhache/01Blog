@@ -4,5 +4,7 @@ export interface User {
   age: number;
   email: string;
   username: string;
+  followers: number;
+  following: number;
 }
 

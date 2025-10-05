@@ -8,5 +8,12 @@ export const routes: Routes = [
         loadComponent(){
             return import('./post-editor/post-editor').then(m => m.BlogEditorComponent);
         }
+    },
+    {
+        path:'profile',
+        pathMatch: 'full',
+        loadComponent(){
+            return import('./profile/profile').then(m => m.Profile);
+        }
     }
 ];

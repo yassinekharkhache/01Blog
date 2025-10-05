@@ -1,19 +1,26 @@
 import { Routes } from '@angular/router';
-// import {BlogEditorComponent} from './post-editor'
+
 
 export const routes: Routes = [
     {
-        path:'new-post',
+        path: 'new-post',
         pathMatch: 'full',
-        loadComponent(){
+        loadComponent() {
             return import('./post-editor/post-editor').then(m => m.BlogEditorComponent);
         }
     },
     {
-        path:'profile',
+        path: 'profile',
         pathMatch: 'full',
-        loadComponent(){
+        loadComponent() {
             return import('./profile/profile').then(m => m.Profile);
+        }
+    },
+    {
+        path: 'post/:id',
+        pathMatch: 'full',
+        loadComponent() {
+            return import('./post-dtails/post-details').then(m => m.PostDetails);
         }
     }
 ];

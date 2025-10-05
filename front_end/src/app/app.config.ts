@@ -8,13 +8,12 @@ import { TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideRouter(routes),
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'assets/tinymce/tinymce.min.js' },
     provideHttpClient(
       withInterceptors([authInterceptor])
     ),
-    provideHttpClient(),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
   ]
 };

@@ -9,7 +9,7 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
   standalone: true,
   imports: [CommonModule, FormsModule, EditorModule],
   providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }, // ✅ local TinyMCE
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
@@ -34,6 +34,24 @@ export class BlogEditorComponent {
       const type = meta.filetype === 'image' ? 'image' : 'video';
       this.customMediaHandler(type, callback);
     },
+    setup: (editor: any) => {
+    editor.on('ObjectResized', (e: any) => {
+      if (e.target.nodeName === 'IMG') {
+        const img = e.target;
+        const maxWidth = 700;
+        const maxHeight = 600;
+
+        const width = img.width;
+        const height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          alert(`Image too large. Max size is ${maxWidth}x${maxHeight}px.`);
+          img.width = maxWidth;
+          img.height = (maxWidth / width) * height;
+        }
+      }
+    });
+  },
   };
 
   async uploadMedia(file: File, type: 'image' | 'video'): Promise<string> {

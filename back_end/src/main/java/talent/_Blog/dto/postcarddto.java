@@ -1,7 +1,6 @@
 package talent._Blog.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import talent._Blog.Model.Post;
 
 public record postcarddto(
         @NotBlank(message = "id required")

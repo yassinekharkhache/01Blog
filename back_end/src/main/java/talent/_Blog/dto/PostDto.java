@@ -1,7 +1,5 @@
 package talent._Blog.dto;
 
-import java.sql.Blob;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

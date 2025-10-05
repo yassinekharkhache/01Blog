@@ -22,7 +22,8 @@ public class PostService {
 
     
     public List<Post> getFollowingPosts(String username) {
-        return postRepo.findPostsByFollowingUsername(username);
+        // return postRepo.findPostsByFollowingUsername(username);
+        return null;
     }
 
 

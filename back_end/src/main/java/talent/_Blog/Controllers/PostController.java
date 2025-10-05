@@ -6,23 +6,17 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import talent._Blog.Model.Post;
-import talent._Blog.Model.Status;
 import talent._Blog.Model.User;
-import talent._Blog.Repository.PostRepository;
 import talent._Blog.Service.PostService;
 import talent._Blog.dto.PostDto;
 import talent._Blog.dto.postcarddto;
 import talent._Blog.mapper.Postcard;
+import talent._Blog.mapper.postpage;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -45,7 +39,7 @@ public class PostController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<?> get(@PathVariable Long id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+        return ResponseEntity.ok(postpage.toPage(postService.getPostById(id)));
     }
 
     @GetMapping("/following")

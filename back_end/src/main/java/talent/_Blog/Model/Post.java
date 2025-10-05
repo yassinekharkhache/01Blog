@@ -1,13 +1,9 @@
 package talent._Blog.Model;
 
-import java.sql.Blob;
 import java.util.List;
-
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,12 +48,6 @@ public class Post {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
-
-    // // images paths separated by ","
-    // @ElementCollection
-    // @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
-    // @Column(name = "image_path")
-    // private List<String> pathsToImages;
 
     @CreationTimestamp
     private java.time.LocalDateTime createdAt;

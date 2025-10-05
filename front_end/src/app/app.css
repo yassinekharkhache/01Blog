@@ -14,7 +14,7 @@ h2[mat-dialog-title] {
 
 
 .side-bar {
-  background-color: #aa03aa;
+  background-color: #fa63ed;
   width: 60px;
   transition: width 250ms ease, transform 250ms ease;
   overflow: hidden;

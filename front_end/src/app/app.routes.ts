@@ -20,7 +20,14 @@ export const routes: Routes = [
         path: 'post/:id',
         pathMatch: 'full',
         loadComponent() {
-            return import('./post-dtails/post-details').then(m => m.PostDetails);
+            return import('./post-details/post-details').then(m => m.PostDetails);
+        }
+    },
+    {
+        path: '',
+        pathMatch: 'full',
+        loadComponent() {
+            return import('./explore/explore').then(m => m.Explore);
         }
     }
 ];

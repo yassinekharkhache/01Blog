@@ -32,6 +32,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(
                 request -> request.requestMatchers("/register", "/login", "/default.png").permitAll()
+                        .requestMatchers("/images/**", "/videos/**", "/profiles/**").permitAll()
                         .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

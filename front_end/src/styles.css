@@ -2,3 +2,45 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.post-body img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- MUST BE IN styles.scss / styles.css (Global) --- */
+
+/* Style for the mat-menu overlay panel */
+.custom-menu .mat-menu-panel {
+  min-width: 180px; /* Example: Set a minimum width */
+}
+
+/* Style for the menu items */
+.custom-menu button.mat-menu-item {
+  line-height: 40px; 
+  height: 40px;
+}
+
+/* Style specifically for the Logout item for visual separation */
+.custom-menu .logout-item {
+  border-top: 1px solid #eee; /* Adds a divider */
+}
+
+/* Style the icon within the logout item */
+.custom-menu .logout-item mat-icon {
+  color: red !important; /* Ensures the red color is applied */
+}

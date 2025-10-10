@@ -7,6 +7,8 @@ public record postpagedto(
                 String content,
                 String authorUsername,
                 String authorProfileImageUrl,
+                Integer likecount,
+                boolean isliked,
                 String createdAt,
                 String updatedAt) {
 }

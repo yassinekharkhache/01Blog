@@ -19,4 +19,12 @@ export class App {
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
   }
+  onScroll(event: any): void {
+  const element = event.target;
+  alert("ss")
+  if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+  }
 }
+
+}
+

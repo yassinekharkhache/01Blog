@@ -5,6 +5,7 @@ import jakarta.validation.Valid;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -56,15 +57,9 @@ public class Auth {
     }
 
     @GetMapping("/userdata")
-    public ResponseEntity<?> getUserData(@CookieValue(value = "authToken", required = true) String token) {
-        if (token == null || token.isEmpty()) {
-            return ResponseEntity.status(401).body(Map.of("error", "Not authenticated"));
-        }
-        try {
-            JwtService jwtService = new JwtService();
-            String username = jwtService.extractUsername(token);
+    public ResponseEntity<?> getUserData(String token,@AuthenticationPrincipal User user) {
 
-            User user = userService.getUserByName(username);
+        try {
             if (user == null) {
                 return ResponseEntity.status(404).body(Map.of("error", "User not found"));
             }

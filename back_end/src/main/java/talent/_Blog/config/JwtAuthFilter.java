@@ -31,16 +31,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         final String jwt = authHeader.substring(7);
-        
+        System.out.println("jwt >>>>>>>>>>>>>>>>>>>>>>> " + jwt);
+        try{
 
-        final String userName = jwtService.extractUsername(jwt);
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
+            final String userName = jwtService.extractUsername(jwt);
+            System.out.println(userName);
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
+        }catch (Exception e){
+            System.out.println("jwt in not valid : "+e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

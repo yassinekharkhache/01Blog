@@ -15,12 +15,11 @@ public record postcarddto(
         String authorUsername,
         @NotBlank(message = "author profile image URL required")
         String authorProfileImageUrl,
-        @NotBlank(message = "like count required")
-        Long likeCount,
-
-        String createdAt,
+        @NotBlank(message = "is like required")
+        boolean isLiked,
+        @NotBlank(message = "likecount")
+        Integer likecount,
+        String createdAt,    
         String updatedAt
-
 ) {
-
 }

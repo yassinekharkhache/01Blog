@@ -48,9 +48,8 @@ public class uploadmedia {
 
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            System.out.println("adder >>>>>>>>>>>>>>");
 
-            String publicUrl = "/images/" + uniqueFileName;
+            String publicUrl = "http://localhost:8081/images/" + uniqueFileName;
             return ResponseEntity.ok().body("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {
@@ -58,6 +57,36 @@ public class uploadmedia {
             System.out.println("add >>>>>>>>>>>>>>");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Could not store the file. Error: " + e.getMessage());
+        }
+    }
+
+    //delete images 
+    /*
+    const response = await this.http
+      .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
+      .toPromise();
+     */
+    @DeleteMapping("/{type}/{filename}")
+    public ResponseEntity<?> deleteFile(
+            @PathVariable("type") String type,
+            @PathVariable("filename") String filename,
+            @AuthenticationPrincipal User user) {
+        System.out.println("delete >>>>>>>>>>>>>>");
+        System.out.println(user.getUsername());
+        System.out.println(filename);
+        if (!filename.startsWith(user.getUsername())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not allowed to delete this file");
+        }
+        System.out.println("--");
+
+        try {
+            Path filePath = Paths.get(type.equals("image") ? IMAGE_UPLOAD_DIR : VIDEO_UPLOAD_DIR).resolve(filename);
+            Files.deleteIfExists(filePath);
+            return ResponseEntity.ok().body("File deleted successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not delete the file. Error: " + e.getMessage());
         }
     }
 
@@ -94,7 +123,7 @@ public class uploadmedia {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Return public URL
-            String publicUrl = "/videos/" + uniqueFileName;
+            String publicUrl = "http://localhost:8081/videos/" + uniqueFileName;
             return ResponseEntity.ok("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {

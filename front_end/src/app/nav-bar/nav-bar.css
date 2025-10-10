@@ -1,27 +1,18 @@
 mat-toolbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  display: flex;
-  align-items: center;
   gap: 0.5rem;
-  padding: 0 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   background: white;
 }
 
 img.profile-pic {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
+  margin: 0;
   object-fit: cover;
   border: 2px solid #aa03aa;
-  margin-right: 8px;
   cursor: pointer;
-}
-
-.toolbar-spacer {
-  flex: 1 1 auto;
 }
 
 .title {
@@ -46,16 +37,12 @@ img.profile-pic {
 }
 mat-toolbar {
   position: sticky;
-  top: 0;
-  z-index: 1000;
+  z-index: 10;
 }
 .burger-button {
   margin: 0px;
   padding: 0px;
-  border: none;
-  background: none;
   cursor: pointer;
-  outline: none;
 }
 
 button {
@@ -67,33 +54,109 @@ button {
   outline: none;
 }
 
-/* ////////////////// */
 
-.toolbar-spacer {
-  flex: 1 1 auto;
+mat-toolbar button.mat-icon-button {
+  margin: 0; 
+  padding: 0;
+  scale: 1;
+  cursor: pointer;
 }
 
-/* Notification badge */
-button[aria-label="Notifications"] {
-  position: relative;
+/* --- Media Queries --- */
+
+@media (max-width: 600px) {
+  mat-toolbar {
+    height: 56px; /* Standard mobile height */
+    padding: 0 0.5rem;
+  }
+  .title {
+    font-size: 1rem;
+    margin-left: 8px; /* Reduce margin on mobile */
+  }
 }
 
-button{
-  scale: 1.2;
+
+.menu-item {
+  padding: 20px 10px;
+  margin: 0px;
+  font-size: 16px;
+  border: none;
+  background: none;
+  text-align: center;
+  gap:0;
+  width: 100%;
+  cursor: pointer;
 }
 
-.notification-badge {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+.menu-item.logout {
+  color: red;
+}
+.menu-item:hover {
+  background-color: #f0f0f0;
+}
 
-  background: red;
-  color: white;
-  border-radius: 50%;
-  font-size: 0.7rem;
-  width: 14px;
-  height: 14px;
+.profile-menu-wrapper{
   display: flex;
   align-items: center;
-  justify-content: center;
+  margin: 30px;
+}
+
+.notification-btn{
+  /* color: darksalmon; */
+  margin: 30px;
+}
+
+.toolbar-spacer {
+  flex: 1;
+}
+
+.notification-btn {
+  position: relative;
+  margin-right: 16px;
+}
+
+.profile-menu-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+
+
+
+.profile-pic:hover {
+  transform: scale(1.1);
+}
+
+mat-icon {
+  font-size: 30px;
+  color: #555;
+}
+
+.dropdown-menu {
+  position: absolute;
+  display: flex;
+  padding: 8px 0;
+  top: 50px;
+  right: 20px;
+  width: 200px;
+  background: white;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease-in-out;
+  z-index: 1000;
+}
+
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }

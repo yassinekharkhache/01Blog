@@ -1,3 +1,5 @@
+
+
 .post-container {
   max-width: 700px;
   margin: 40px auto;
@@ -65,4 +67,16 @@
 
 .post-body p {
   margin-bottom: 20px;
+}
+
+.post-container button {
+  border: none;
+  display: flex;
+  /* padding: 20px; */
+  align-items: center;
+  background: none;
+}
+
+.love{
+  color: red;
 }

@@ -1,15 +1,16 @@
 <nav>
-  <mat-nav-list>
-
-    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/explore">
-      <mat-icon matListItemIcon>explore</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Explore</span>
-    </a>
+  <mat-nav-list class="side-bar-list">
 
     <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/followed">
       <mat-icon matListItemIcon>group</mat-icon>
       <span matListItemTitle *ngIf="expanded">Followed</span>
     </a>
+
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/">
+      <mat-icon matListItemIcon>explore</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Explore</span>
+    </a>
+
 
     <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/profile">
       <mat-icon matListItemIcon>person</mat-icon>
@@ -24,6 +25,12 @@
     <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/saved">
       <mat-icon matListItemIcon>bookmark</mat-icon>
       <span matListItemTitle *ngIf="expanded">Saved Posts</span>
+    </a>
+
+
+    <a *ngIf="userService.user()?.role === 'ADMIN'" (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/admins">
+      <mat-icon >admin_panel_settings</mat-icon>
+      <span matListItemTitle *ngIf="expanded">Admin Panel</span>
     </a>
   </mat-nav-list>
 </nav>

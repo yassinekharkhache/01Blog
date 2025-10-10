@@ -1,54 +1,95 @@
 import { Component, Input, OnInit } from '@angular/core';
+// date pip
+import { DatePipe, NgIf } from '@angular/common';
+import { UserService } from '../services/user.service';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { HttpClient } from '@angular/common/http';
 
+import { LikeService } from '../services/likes.service';
 // Interface matching your postcarddto structure
 export interface PostCardDto {
   id: number;
   title: string;
   content: string;
-  postPreviewImage: string; // Assuming byte[] is converted to a base64 string or URL
+  postPreviewImage: string;
   authorUsername: string;
   authorProfileImageUrl: string;
-  likeCount: number;
+  isLiked: boolean;
+  likecount: number;
   createdAt: string;
   updatedAt: string;
 }
 
 @Component({
+  imports: [DatePipe, MatMenu, MatMenuTrigger, MatIcon, NgIf],
   selector: 'app-post-card',
   templateUrl: './post-card.html',
-  styleUrls: ['./post-card.css']
+  styleUrls: ['./post-card.css'],
 })
 export class PostCard implements OnInit {
-  // Input property to receive the post data
   @Input() post!: PostCardDto;
+  public is_mine: boolean = true;
+  constructor(
+    public likeService: LikeService,
+    public userService: UserService,
+    private http: HttpClient
+  ) {}
 
-  constructor() { }
+  editPost(): void {
+    console.log(`Editing post ID: ${this.post.id}`);
+  }
+
+  deletePost(): void {
+    this.http.delete(`http://localhost:8081/api/post/delete/${this.post.id}`).subscribe({
+      next: (response) => console.log('Post deleted successfully:', response),
+      error: (error) => console.error('Error deleting post:', error),
+    });
+    console.log(`Deleting post ID: ${this.post.id}`);
+  }
 
   ngOnInit(): void {
-    // Basic validation to ensure data is present
+    this.userService.fetchUser();
     if (!this.post) {
-      console.error('Post data is required for the PostCardComponent.');
+      console.error('Post data is required for PostCard.');
     }
   }
 
-  // Helper function to handle the byte[] image data (assuming it's Base64)
-  getPostImageUrl(): string {
-    // If your backend returns a Base64 string directly:
-    // return `data:image/jpeg;base64,${this.post.postPreviewImage}`;
-    
-    // For this component, we will assume postPreviewImage is a URL or a Base64 string already formatted for an <img> src.
-    return this.post.postPreviewImage;
-  }
-  
-  // Example for handling a button click (like)
+  // onLikeClick(): void {
+  //   if (this.post.isLiked) {
+  //     this.likeService.removeLike(this.post.id).subscribe({
+  //       next: () => {
+  //         this.post.isLiked = false;
+  //         this.post.likecount = Math.max(0, this.post.likecount - 1);
+  //       },
+  //       error: (err) => console.error('Error removing like:', err)
+  //     });
+  //   } else {
+  //     // Add like
+  //     this.likeService.addLike(this.post.id).subscribe({
+  //       next: () => {
+  //         this.post.isLiked = true;
+  //         this.post.likecount += 1;
+  //       },
+  //       error: (err) => console.error('Error adding like:', err)
+  //     });
+  //   }
+  // }
+
   onLikeClick(): void {
-    // Implement logic to send a request to like/unlike the post
-    console.log(`Liked post ID: ${this.post.id}`);
+    this.likeService.toggleLike(this.post.id, this.post.isLiked, this.post.likecount).subscribe({
+      next: (res) => {
+        this.post.isLiked = res.isLiked;
+        this.post.likecount = res.likecount;
+      },
+      error: (err) => console.error('Error toggling like:', err),
+    });
   }
 
-  // Example for navigation
+  getPostImageUrl(): string {
+    return `data:image/jpeg;base64,${this.post.postPreviewImage}`;
+  }
   viewPostDetails(): void {
-    // Implement logic to navigate to the full post view
     console.log(`Viewing post ID: ${this.post.id}`);
   }
 }

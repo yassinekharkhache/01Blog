@@ -1,31 +1,5 @@
-<!-- <mat-toolbar>
-  <button mat-icon-button aria-label="Toggle sidebar" (click)="menuToggle.emit()">
-    <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
-  </button>
-
-  <span class="title">01 Blog</span>
-</mat-toolbar>
- -->
-<!-- <mat-toolbar>
-  <button mat-icon-button aria-label="Toggle sidebar" (click)="menuToggle.emit()">
-    <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
-  </button>
-
-  <span class="title">01 Blog</span>
-
-  <span class="toolbar-spacer"></span>
-
-  <button mat-icon-button aria-label="Notifications">
-    <mat-icon>notifications</mat-icon>
-    <span class="notification-badge">3</span>
-  </button>
-
-  <button mat-icon-button aria-label="Profile">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-</mat-toolbar> -->
-
 <mat-toolbar class="nav-toolbar">
+  <!-- Sidebar toggle -->
   <button
     class="burger-button"
     mat-icon-button
@@ -35,26 +9,40 @@
     <mat-icon>{{ expanded ? 'menu_open' : 'menu' }}</mat-icon>
   </button>
 
+  <!-- Title -->
   <span class="title">01 Blog</span>
-
   <span class="toolbar-spacer"></span>
 
-  <button mat-icon-button aria-label="Profile" class="profile-btn">
-    <mat-icon *ngIf="!UserService.userSignal()?.pic">account_circle</mat-icon>
-
-    <img
-    *ngIf="UserService.userSignal()?.pic"
-      width="35"
-      height="33"
-      [src]="'http://localhost:8081' + UserService.userSignal()?.pic"
-      alt="Profile Picture"
-      class="profile-pic"
-    />
+  <div class="profile-menu-wrapper" (click)="toggleMenu($event)">
+    
+    <!-- Profile Menu -->
+    <ng-container *ngIf="userService.user(); else guest">
+      <!-- Profile picture -->
+      <img
+      *ngIf="userService.user()?.pic; else defaultIcon"
+      [src]="'http://localhost:8081' + userService.user()?.pic"
+        alt="Profile"
+        class="profile-pic"
+      />
+      <ng-template #defaultIcon>
+        <mat-icon>account_circle</mat-icon>
+      </ng-template>
+      
+      <!-- Dropdown menu -->
+      <div class="dropdown-menu" [class.show]="menuOpen">
+        <button class="menu-item" (click)="editProfile()">Edit Profile</button>
+        <button class="menu-item logout" (click)="logout()">Log Out</button>
+      </div>
+    </ng-container>
+    <ng-template #guest>
+      <button mat-button (click)="editProfile()">Login</button>
+    </ng-template>
+  </div>
+  
+  
+  <!-- Notifications -->
+  <button class="notification-btn" mat-icon-button aria-label="Notifications">
+    <mat-icon matBadge="1" matBadgeColor="warn">notifications</mat-icon>
   </button>
 
-  <!-- Notification button -->
-  <!-- matBadge="4" -->
-  <button mat-icon-button aria-label="Notifications" class="notification-btn">
-    <mat-icon matBadge="1">notifications</mat-icon>
-  </button>
 </mat-toolbar>

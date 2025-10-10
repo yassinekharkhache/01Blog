@@ -2,15 +2,15 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 
 @Component({
   selector: 'app-blog-editor',
   standalone: true,
   imports: [CommonModule, FormsModule, EditorModule],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-  ],
+  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
 })
@@ -19,6 +19,7 @@ export class BlogEditorComponent {
   http = inject(HttpClient);
   title: string = 'test title';
   imagePreview: File | string | null = null;
+  router = inject(Router);
 
   editorConfig: any = {
     height: 500,
@@ -28,41 +29,61 @@ export class BlogEditorComponent {
       'undo redo | bold italic underline | image media | code' +
       ' | bullist numlist outdent indent' +
       ' | alignleft aligncenter alignright alignjustify',
-    images_upload_handler: (blobInfo: any) => this.uploadMedia(blobInfo.blob(), 'image'),
+    images_upload_handler: (blobInfo: any) => this.uploadMedia(blobInfo.name, 'image'),
     file_picker_types: 'image media',
     file_picker_callback: (callback: any, value: any, meta: any) => {
       const type = meta.filetype === 'image' ? 'image' : 'video';
       this.customMediaHandler(type, callback);
     },
     setup: (editor: any) => {
-    editor.on('ObjectResized', (e: any) => {
-      if (e.target.nodeName === 'IMG') {
-        const img = e.target;
-        const maxWidth = 700;
-        const maxHeight = 600;
+      let previousMedia: string[] = [];
 
-        const width = img.width;
-        const height = img.height;
+      const getMediaUrls = () => {
+        const content = editor.getContent() || '';
+        const imgMatches = Array.from(content.matchAll(/<img[^>]+src="([^"]+)"/g)) as RegExpMatchArray[];
+        const sourceMatches = Array.from(
+          content.matchAll(/<source[^>]+src="([^"]+)"/g)
+        ) as RegExpMatchArray[];
 
-        if (width > maxWidth || height > maxHeight) {
-          alert(`Image too large. Max size is ${maxWidth}x${maxHeight}px.`);
-          img.width = maxWidth;
-          img.height = (maxWidth / width) * height;
-        }
-      }
-    });
-  },
+        const imgUrls = imgMatches.map((m) => m[1]);
+        const videoUrls = sourceMatches.map((m) => m[1]);
+
+        return [...imgUrls, ...videoUrls];
+      };
+
+      editor.on('Change', () => {
+        const currentMedia = getMediaUrls();
+        const deleted = previousMedia.filter((url) => !currentMedia.includes(url));
+
+        deleted.forEach((url) => {
+          const type = url.match(/\.(mp4|webm|ogg)$/i) ? 'video' : 'image';
+          const fileName = url.split('/').pop()!;
+          this.deleteMedia(type, fileName);
+        });
+
+        previousMedia = currentMedia;
+      });
+    },
   };
 
   async uploadMedia(file: File, type: 'image' | 'video'): Promise<string> {
+    console.log(file);
     const formData = new FormData();
     formData.append(type, file);
 
     const response = await this.http
       .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
       .toPromise();
-
+    console.log(response?.url);
     return response?.url || '';
+  }
+
+  deleteMedia(type: 'image' | 'video', fileName: string) {
+    const url = `http://localhost:8081/api/upload/${type}/${fileName}`;
+    return this.http.delete(url).subscribe({
+      next: () => console.log(`${type} deleted successfully`),
+      error: (err) => console.error(`Failed to delete ${type}: ${err.message}`),
+    });
   }
 
   customMediaHandler(type: 'image' | 'video', callback: (url: string) => void) {
@@ -75,32 +96,33 @@ export class BlogEditorComponent {
       const file = input.files?.[0];
       if (!file) return;
 
-      // show preview
-      const reader = new FileReader();
-      reader.onloadend = () => callback(reader.result as string);
-      reader.readAsDataURL(file);
-
+      // upload and get real URL
       const url = await this.uploadMedia(file, type);
-      if (url) callback(url);
+      if (url) callback(url); // insert only server URL, not base64
     };
   }
 
-  submitPost() {
+  submitPost(title: string) {
     const formData = new FormData();
-    formData.append('title', this.title);
+    formData.append('title', title);
     formData.append('content', this.content);
     if (this.imagePreview) {
       formData.append('image', this.imagePreview);
     }
     this.http
-      .post('http://localhost:8081/api/post/add', formData)
-      .subscribe(() => alert('Post submitted!'));
+      .post<{ id: number }>('http://localhost:8081/api/post/add', formData)
+      .subscribe((res) => {
+        console.log(res);
+        if (res?.id) {
+          this.router.navigate(['/post', res.id]);
+        }
+      });
   }
 
   onImageSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
-      this.imagePreview = file; // ✅ keep the File object
+      this.imagePreview = file;
     }
   }
 }

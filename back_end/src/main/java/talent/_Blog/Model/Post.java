@@ -44,6 +44,7 @@ public class Post {
     private String title;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     private byte[] postPreviewImage; 
 
     @Column(nullable = false, columnDefinition = "TEXT")

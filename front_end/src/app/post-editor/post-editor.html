@@ -1,7 +1,6 @@
+<input #titleInput class="post-title" placeholder="Post Title" />
 <editor [(ngModel)]="content" [init]="editorConfig"></editor>
-<!-- //take an image for the preview -->
-<input type="file" (change)="onImageSelected($event)" />
+<input class="image-upload" type="file" (change)="onImageSelected($event)" />
 
-<input [(ngModel)]="title" placeholder="Post Title" />
 
-<button (click)="submitPost()">Submit Post</button>
+<button (click)="submitPost(titleInput.value)">Submit Post</button>

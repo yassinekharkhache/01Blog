@@ -1,0 +1,62 @@
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between form fields and sections */
+  padding: 8px 0;
+  min-width: 300px;
+}
+
+/*
+ * Profile Picture Preview Styling (CRITICAL)
+ * Makes the image circular and fixed size
+ */
+.preview {
+  display: flex;
+  justify-content: center;
+}
+
+.preview img {
+  /* Enforce fixed dimensions */
+  width: 80px;
+  height: 80px;
+  /* Create the perfect circle */
+
+  /* Ensure the image covers the circle without distortion */
+  object-fit:cover;
+
+  /* Optional: Add a subtle border or shadow for depth */
+  /* border: 3px solid #ccc; */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  /* Smooth transition for hover effects if you add any */
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-file-upload {
+  display: block;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #3f51b5; /* Material Blue */
+  text-align: center;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.hidden{
+    display: none;
+}
+
+mat-dialog-actions *{
+    display: flex;
+    align-items: center;
+    margin: auto;
+    width: 48%;
+}
+
+/* Mobile Responsiveness for Dialog Content */
+@media (max-width: 600px) {
+  .profile-edit-form {
+    gap: 12px;
+  }
+}

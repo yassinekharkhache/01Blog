@@ -1,9 +1,11 @@
-import { Component, Input, Output, EventEmitter, HostListener, computed, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, computed, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadge } from '@angular/material/badge';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user/user.service';
+import { ProfileEditComponent } from '../dialogs/profile-edit/profile-edit';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-nav-bar',
@@ -16,17 +18,13 @@ export class NavBarComponent {
   @Input() expanded = false;
   user: any;
   @Output() menuToggle = new EventEmitter<void>();
+  private dialog = inject(MatDialog);
   menuOpen = false;
 
-  // computed property to get user age reactively
   userAge = computed(() => this.userService.user()?.age);
 
   constructor(public userService: UserService) {
-    // Fetch user info
     this.userService.fetchUser();
-
-    // Reactively log user age whenever it changes
-    console.log('User age:', this.userAge());
   }
 
   @HostListener('document:click')
@@ -54,6 +52,6 @@ export class NavBarComponent {
   }
 
   editProfile() {
-    console.log('Edit profile clicked');
+    this.dialog.open(ProfileEditComponent);
   }
 }

@@ -1,0 +1,13 @@
+<mat-toolbar color="primary">
+  <span>Admin Panel</span>
+</mat-toolbar>
+
+<div class="panel-container">
+  <app-report-search (search)="onSearch($event)"></app-report-search>
+
+  <div *ngIf="loading" class="spinner">
+    <mat-spinner></mat-spinner>
+</div>
+<app-reports-table  *ngIf="!loading"></app-reports-table>
+
+</div>

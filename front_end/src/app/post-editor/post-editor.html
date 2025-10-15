@@ -1,6 +1,26 @@
-<input #titleInput class="post-title" placeholder="Post Title" />
-<editor [(ngModel)]="content" [init]="editorConfig"></editor>
-<input class="image-upload" type="file" (change)="onImageSelected($event)" />
+<div class="editor-container">
+  <h1>Create / Edit Post</h1>
 
+  <!-- Title Input -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="title" name="title" required />
+  </mat-form-field>
 
-<button (click)="submitPost(titleInput.value)">Submit Post</button>
+  <!-- Image Preview & Upload -->
+  <div class="image-preview" *ngIf="imagePreview">
+    <img [src]="imagePreviewUrl" alt="Preview" />
+  </div>
+  <div class="image-upload">
+      <input id="preview-pic-upload" class="input" type="file" (change)="onImageSelected($event)" accept="image/*" />
+      <label for="preview-pic-upload" class="custom-file-upload"> + upload pic </label>
+  </div>
+
+  <!-- TinyMCE Editor -->
+  <editor [(ngModel)]="content" [init]="editorConfig"></editor>
+
+  <!-- Submit Button -->
+  <div class="actions">
+    <button mat-raised-button color="primary" (click)="submitPost(title)">Submit</button>
+  </div>
+</div>

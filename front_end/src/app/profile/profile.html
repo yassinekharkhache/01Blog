@@ -2,28 +2,28 @@
   <div class="profile-header-card">
     <div class="avatar-section">
       <img
-           [src]="'http://localhost:8081' + userService.user()?.pic"
+           [src]="'http://localhost:8081' + profileService.user()?.pic"
            alt="User Avatar"
            class="profile-avatar">
       <ng-template #defaultAvatar>
         <div class="profile-avatar default-avatar">
-          <span>{{ userService.user()?.username }}</span>
+          <span>{{ profileService.user()?.username }}</span>
         </div>
       </ng-template>
     </div>
 
     <div class="profile-summary">
-      <h1 class="username-display">{{ userService.user()?.username }}</h1>
-      <p class="role-display">{{ userService.user()?.role }}</p>
+      <h1 class="username-display">{{ profileService.user()?.username }}</h1>
+      <p class="role-display">{{ profileService.user()?.role }}</p>
 
       <div class="stats-bar">
         <div class="stat-item">
-          <strong>{{ userService.user()?.followers }}</strong>
+          <strong>{{ profileService.user()?.followers }}</strong>
           <span>Followers</span>
         </div>
         <div class="stat-separator">|</div>
         <div class="stat-item">
-          <strong>{{ userService.user()?.following }}</strong>
+          <strong>{{ profileService.user()?.following }}</strong>
           <span>Following</span>
         </div>
       </div>
@@ -37,20 +37,20 @@
       <div class="detail-group">
         <div class="detail-item">
           <span class="detail-label">Email:</span>
-          <span class="detail-value">{{ userService.user()?.email }}</span>
+          <span class="detail-value">{{ profileService.user()?.email }}</span>
         </div>
         <div class="detail-item">
           <span class="detail-label">Age:</span>
-          <span class="detail-value">{{ userService.user()?.age }}</span>
+          <span class="detail-value">{{ profileService.user()?.age }}</span>
         </div>
       </div>
     </div>
   
-    <div class="user-posts-section">
+    <div class="user-posts-sectio">
       <h2 class="section-title">User Posts</h2>
       
       <div class="user-posts-section">
-      <hr class="purple-line"> <ng-container *ngIf="userPosts && userPosts.length > 0; else noPosts">
+      <ng-container *ngIf="userPosts && userPosts.length > 0; else noPosts">
         <app-post-card *ngFor="let post of userPosts" [post]="post"></app-post-card>
       </ng-container>
     

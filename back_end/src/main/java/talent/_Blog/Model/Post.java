@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Entity
 @Data
-@ToString(exclude = {"user", "likes", "reports"})
+@ToString(exclude = { "user", "likes", "reports" })
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -43,9 +43,13 @@ public class Post {
     @Column(nullable = false)
     private String title;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> comment;
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    private byte[] postPreviewImage; 
+    private byte[] postPreviewImage;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -56,4 +60,7 @@ public class Post {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private java.time.LocalDateTime updatedAt;
+
+    @Column(name = "visible",nullable = false)
+    private boolean visible;
 }

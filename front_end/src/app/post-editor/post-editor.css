@@ -1,5 +1,4 @@
-
-:host {
+/* :host {
   display: flex;
   flex-direction: column;
   height:90%;
@@ -7,7 +6,6 @@
   box-sizing: border-box;
 }
 
-/* Submit button centered horizontally at the bottom */
 button {
   align-self: center;
   margin-top: 1rem;
@@ -52,4 +50,85 @@ button:active {
   border-radius: 6px;
   margin-bottom: 1rem;
   box-sizing: border-box;
+} */
+
+.editor-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.image-preview {
+  margin-bottom: 1rem;
+}
+
+.image-preview img {
+  max-width: 100px;
+  max-height: 100px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.actions {
+  align-items: center;
+  display: block;
+  margin-top: 1rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.actions button {
+  width: 30%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.full-width input {
+  border-radius: 8px;
+  border: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.image-upload {
+  width: 100%;
+  text-align: center;
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.input {
+  display: none;
+}
+
+.custom-file-upload {
+  cursor: pointer;
+  color: #d20eec;
+  font-size: 22px;
+  font-weight: 600;
+  border: 2px dashed #d20eec;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    background-color: rgba(210, 14, 236, 0.1);
+  }
+  
+
 }

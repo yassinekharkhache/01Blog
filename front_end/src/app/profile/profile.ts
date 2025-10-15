@@ -1,44 +1,50 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCard, PostCardDto } from '../post-card/post-card';
-import { PostService } from '../services/post.service';
-import { UserService } from '../services/user.service';
+import { PostService } from '../services/post/post.service';
+import { ActivatedRoute } from '@angular/router';
+import { ProfileService } from '../services/profile/profile.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, PostCard],
+  imports: [CommonModule,PostCard],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
 export class Profile implements OnInit {
-  @Input() user: any;
+  user: any = null;
   userPosts: PostCardDto[] = [];
   loading = false;
   lastId: number | null = null;
   allLoaded = false;
+  username: string | null = '';
 
   constructor(
-    public userService: UserService,
-    private postService: PostService
+    public profileService: ProfileService,
+    private postService: PostService,
+    private route: ActivatedRoute
   ) {}
-
   ngOnInit(): void {
-    this.userService.fetchUser(); // should be in ngOnInit, not constructor
-    this.loadPosts();
+    this.username = this.route.snapshot.paramMap.get('username');
+    if (this.username) {
+      this.profileService.fetchUser(this.username);
+    }else{
+      this.username = "yassine";
+    }
+    this.loadPosts()
   }
 
   loadPosts(): void {
     if (this.loading || this.allLoaded) return;
     this.loading = true;
-
-    this.postService.getMyPosts(this.lastId).subscribe({
+    this.postService.getUserPosts(this.lastId, this.username as string).subscribe({
       next: (newPosts) => {
         if (!newPosts.length) {
           this.allLoaded = true;
         } else {
-          this.userPosts = [...this.userPosts, ...newPosts]; // immutable update
-          this.lastId = newPosts.at(-1)?.id ?? null; // cleaner syntax
+          this.userPosts = [...this.userPosts, ...newPosts];
+          this.lastId = newPosts.at(-1)?.id ?? null;
         }
       },
       error: (err) => console.error('Error loading posts:', err),

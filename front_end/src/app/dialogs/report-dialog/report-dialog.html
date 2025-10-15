@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Report Post</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="p-3">
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Reason</mat-label>
+    <textarea
+      matInput
+      rows="3"
+      placeholder="Why are you reporting this post?"
+      formControlName="reason"
+    ></textarea>
+    <mat-error *ngIf="form.get('reason')?.invalid && form.get('reason')?.touched">
+      Please enter at least 12 characters.
+    </mat-error>
+  </mat-form-field>
+
+  <div class="actions">
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="loading || form.invalid"
+    >
+      {{ loading ? 'Submitting...' : 'Submit Report' }}
+    </button>
+    <button mat-button type="button" (click)="cancel()">Cancel</button>
+  </div>
+</form>

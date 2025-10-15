@@ -8,10 +8,12 @@
 
 <app-nav-bar [expanded]="isExpanded" (menuToggle)="toggleSidebar()"></app-nav-bar>
 <div class="layout" [class.expanded]="isExpanded">
-  <app-side-bar [expanded]="isExpanded" class="side-bar"></app-side-bar>
+  <!-- <div class="class"> -->
 
-  <main class="content">
-    <router-outlet></router-outlet>
-  </main>
+    <main class="content">
+      <router-outlet class="random" ></router-outlet>
+    </main>
+    <app-side-bar [expanded]="isExpanded" class="side-bar"></app-side-bar>
+  <!-- </div> -->
 
 </div>

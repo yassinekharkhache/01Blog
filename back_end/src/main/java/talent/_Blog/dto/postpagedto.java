@@ -9,6 +9,9 @@ public record postpagedto(
                 String authorProfileImageUrl,
                 Integer likecount,
                 boolean isliked,
+                boolean isfollow,
+                Long authorId,
                 String createdAt,
-                String updatedAt) {
+                String updatedAt
+                ) {
 }

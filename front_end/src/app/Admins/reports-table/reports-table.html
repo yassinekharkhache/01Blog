@@ -1,0 +1,79 @@
+
+
+<div *ngIf="loading && reports.length === 0" class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div class="cards-container" (scroll)="onScroll($event)">
+  <div
+    class="report-card mat-elevation-z6"
+    *ngFor="let r of reports; trackBy: trackById"
+  >
+    <div class="card-header">
+      <div class="post-info">
+        <h3>Post title: {{ r.PostTitle }}</h3>
+        <small class="post-id">Post ID: {{ r.PostId }}</small>
+      </div>
+      <span class="date">{{ r.CreatedAt | date : 'medium' }}</span>
+    </div>
+
+    <p class="reason">
+      <strong>Reason:</strong>
+      <span class="reason-text">{{ r.Reason }}</span>
+    </p>
+
+    <div class="users">
+      <div
+        class="user reporter"
+        [routerLink]="['/profile', r.ReporterUsername]"
+      >
+        <img
+          [src]="'http://localhost:8081' + r.ReporterPicPath"
+          class="avatar"
+          alt="Reporter"
+        />
+        <div>
+          <p class="username">{{ r.ReporterUsername }}</p>
+          <mat-chip color="primary" selected>Reporter</mat-chip>
+        </div>
+      </div>
+
+      <mat-icon class="arrow">arrow_forward</mat-icon>
+
+      <div
+        class="user reported"
+        [routerLink]="['/profile', r.ReportedUsername]"
+      >
+        <img
+          [src]="'http://localhost:8081' + r.ReportedPicPath"
+          class="avatar"
+          alt="Reported"
+        />
+        <div>
+          <p class="username">{{ r.ReportedUsername }}</p>
+          <mat-chip color="warn" selected>Reported</mat-chip>
+        </div>
+      </div>
+    </div>
+
+    <mat-form-field appearance="outline" class="action-select">
+      <mat-label>Admin Action</mat-label>
+      <mat-select (selectionChange)="onAction(r, $event.value)">
+        <mat-option value="deletePost">🗑 Delete Post</mat-option>
+        <mat-option value="hidePost">🙈 Hide Post</mat-option>
+        <mat-option value="dismissReport">❌ Dismiss Report</mat-option>
+        <mat-option value="banUser">🚫 Ban User</mat-option>
+        <mat-option value="deleteUser">⚠️ Delete User</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="footer">
+      <span class="id">Report #{{ r.ReportId }}</span>
+      <span class="timestamp">Filed: {{ r.CreatedAt | date : 'shortTime' }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="loading && reports.length > 0" class="spinner small">
+    <mat-spinner diameter="30"></mat-spinner>
+  </div>
+</div>

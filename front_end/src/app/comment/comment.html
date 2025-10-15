@@ -1,0 +1,23 @@
+<div class="comments" (scroll)="onScroll($event)">
+  <h2>Comments</h2>
+  <div class="new-comment">
+    <textarea [(ngModel)]="newCommentContent" placeholder="Write your comment..."></textarea>
+    <button (click)="submitComment()" [disabled]="!newCommentContent || sending">Post</button>
+  </div>
+  
+  @for (c of comments; track c.id) {
+  <div class="comment">
+    <img
+      [src]="BaseUrl + c.user.pic"
+      [alt]="c.user.userName ? c.user.userName + ' profile picture' : 'User profile picture'"
+    />
+    <div class="comment-details">
+      <strong>{{ c.user.userName }}</strong>
+      <p class="comment-content">{{ c.content }}</p>
+      <small>{{ c.createdAt | date : 'short' }}</small>
+    </div>
+  </div>
+  } @empty {
+  <p class="no-comments">No comments yet. Be the first to post!</p>
+  }
+</div>

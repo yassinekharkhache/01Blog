@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Valid;
 import talent._Blog.Repository.PostRepository;
-import talent._Blog.Repository.SubscribeRepository;
+import talent._Blog.Repository.FollowRepository;
 import talent._Blog.dto.PostDto;
 import talent._Blog.Model.*;;
 
@@ -26,10 +26,17 @@ public class PostService {
     private static final int PAGE_SIZE = 6;
 
     @Autowired
-    private SubscribeRepository subscribeRepository;
+    private FollowRepository subscribeRepository;
 
     public List<Post> getAllPosts() {
         return postRepo.findAll();
+    }
+
+    @Transactional
+    public void hidePost(Integer PostId){
+        Post post = postRepo.findPostById(PostId);
+        post.setVisible(false);
+        postRepo.save(post);
     }
 
     // delete post
@@ -79,6 +86,7 @@ public class PostService {
         }
         existingPost.setTitle(data.title());
         existingPost.setContent(data.content());
+        existingPost.setUpdatedAt(java.time.LocalDateTime.now());
         if (data.image() != null) {
             existingPost.setPostPreviewImage(data.image());
         }
@@ -88,23 +96,22 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<Post> getUserPosts(String username) {
-        return postRepo.findByUser_userName(username);
+        return postRepo.findByUser_userNameAndVisibleTrue(username);
     }
 
-    public List<Post> getFollowingPosts(String username, Long lastId, int pageSize) {
-        // 1. Get all users that the current user follows
-        List<User> followingUsers = subscribeRepository.findBySubscriberUserName(username)
+    public List<Post> getFollowingPosts(User user, Long lastId, int pageSize) {
+        List<User> followingUsers = subscribeRepository.findByFollower(user)
                 .stream()
-                .map(Subscription::getSubscribedTo)
+                .map(Follow::getFollowed)
                 .toList();
 
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
         // 2. Fetch posts
         if (lastId == null) {
-            return postRepo.findByUserInOrderByIdDesc(followingUsers, pageable);
+            return postRepo.findByUserInAndVisibleTrueOrderByIdDesc(followingUsers, pageable);
         } else {
-            return postRepo.findByUserInAndIdLessThanOrderByIdDesc(followingUsers, lastId, pageable);
+            return postRepo.findByUserInAndIdLessThanAndVisibleTrueOrderByIdDesc(followingUsers, lastId, pageable);
         }
     }
 
@@ -121,10 +128,10 @@ public class PostService {
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
 
         if (lastId == null) {
-            return postRepo.findAllByOrderByIdDesc(pageable);
+            return postRepo.findAllByVisibleTrueOrderByIdDesc(pageable);
         }
 
-        return postRepo.findByIdLessThanOrderByIdDesc(lastId, pageable);
+        return postRepo.findByIdLessThanAndVisibleTrueOrderByIdDesc(lastId, pageable);
     }
 
     @Transactional(readOnly = true)
@@ -136,11 +143,13 @@ public class PostService {
         }
 
         if (lastId == null) {
-            return postRepo.findByUserInOrderByIdDesc(following, pageable);
+            return postRepo.findByUserInAndVisibleTrueOrderByIdDesc(following, pageable);
         }
 
-        return postRepo.findByUserInAndIdLessThanOrderByIdDesc(following, lastId, pageable);
+        return postRepo.findByUserInAndIdLessThanAndVisibleTrueOrderByIdDesc(following, lastId, pageable);
     }
+
+    
 
     public Post savePost(@Valid PostDto data, User user) {
         Post Post = new Post();
@@ -148,8 +157,8 @@ public class PostService {
         Post.setContent(data.content());
         Post.setPostPreviewImage(data.image());
         Post.setCreatedAt(java.time.LocalDateTime.now());
-        Post.setUpdatedAt(java.time.LocalDateTime.now());
         Post.setStatus(Status.Active);
+        Post.setVisible(true);
         Post.setUser(user);
         var post = postRepo.save(Post);
         return post;

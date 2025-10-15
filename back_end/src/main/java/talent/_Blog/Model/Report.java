@@ -1,5 +1,7 @@
 package talent._Blog.Model;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,8 +15,6 @@ public class Report {
 
     private String reason;
 
-    private boolean seen;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -23,6 +23,9 @@ public class Report {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @Column(nullable = false)
-    private String CreatedAt;
+    @CreationTimestamp
+    private java.time.LocalDateTime createdAt;
+
+    @Column(name = "visible")
+    private boolean visible;
 }

@@ -2,10 +2,35 @@
   <div class="post-header">
     <h1 class="post-title">{{ post?.title }}</h1>
     <div class="post-meta">
-      <img class="author-img" [src]="post?.authorProfileImageUrl" alt="Author image" />
-      <div class="author-details">
-        <span class="author-name">{{ post?.authorUsername }}</span>
-        <span class="post-date">{{ post?.createdAt }}</span>
+      <div class="meta-data">
+        <img class="author-img" [src]="post?.authorProfileImageUrl" alt="Author image" />
+        <div class="author-details">
+          <span class="author-name">{{ post?.authorUsername }}</span>
+          <span class="post-date">{{ post?.createdAt | date : 'short' }}</span>
+        </div>
+      </div>
+      <div>
+        <button class="menu" mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          @if(!is_mine){
+          <button (click)="openReportDialog()" class="Report-menu" mat-menu-item>
+            <mat-icon>warning</mat-icon>
+            <span>Report</span>
+          </button>
+          }@else {
+
+          <button (click)="onEditClick()" class="Report-menu" mat-menu-item>
+            <mat-icon>edit</mat-icon>
+            <span>Edit Post</span>
+          </button>
+          <button (click)="onDeleteClick()" class="Report-menu" mat-menu-item>
+            <mat-icon>delete</mat-icon>
+            <span>Delete Post</span>
+          </button>
+          }
+        </mat-menu>
       </div>
     </div>
   </div>
@@ -15,11 +40,22 @@
       {{post?.likecount}} likes
     </span> 
       </button> -->
-  <button class="love" (click)="onLikeClick()">
+
+  <div class="btns">
+    @if(!is_mine){
+    <button class="{{ is_followd ? 'following' : 'follow' }}" (click)="onFollowClick()">
+      <mat-icon>{{ is_followd ? 'check' : 'add' }}</mat-icon>
+      {{ is_followd ? 'Following' : 'Follow' }}
+    </button>
+    }
+
+    <button class="love" (click)="onLikeClick()">
       <mat-icon>{{ post?.isliked ? 'favorite' : 'favorite_border' }}</mat-icon>
       {{ post?.likecount }} like
-  </button>
+    </button>
+  </div>
   <hr class="divider" />
-
   <div class="post-body" [innerHTML]="safeContent"></div>
+  <hr class="divider" />
+  <app-comment [postId]="nbrId"></app-comment>
 </div>

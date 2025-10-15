@@ -1,7 +1,10 @@
 package talent._Blog.config;
 
+import talent._Blog.Model.User;
+import talent._Blog.Repository.UserRepository;
 import talent._Blog.Service.JwtService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailService;
 
+    @Autowired
+    UserRepository userRepository;
+
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,
@@ -31,11 +37,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return;
         }
         final String jwt = authHeader.substring(7);
-        System.out.println("jwt >>>>>>>>>>>>>>>>>>>>>>> " + jwt);
         try{
 
             final String userName = jwtService.extractUsername(jwt);
-            System.out.println(userName);
+            User user = userRepository.findByUserName(userName).orElseThrow();
+            if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
+                response.setStatus(403);
+                response.getWriter().write("Your account is banned until " + user.getBannedUntil());
+                return;
+            }
+
+
+
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
                 if (jwtService.isTokenValid(jwt, userDetails)) {

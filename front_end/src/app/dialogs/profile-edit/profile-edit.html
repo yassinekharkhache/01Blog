@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Edit Profile</h2>
+<mat-dialog-content>
+  <form class="profile-edit-form" #f="ngForm" (ngSubmit)="submit(f)">
+    <div class="w-full mb-3">
+        <label for="pic-upload" class="custom-file-upload">
+            + upload new profile pic
+        </label>
+      <input id="pic-upload" class="hidden" type="file" accept="image/*" (change)="onImageSelected($event)"/>
+    </div>
+
+    <div *ngIf="picPreview" class="preview">
+      <img [src]="picPreview" alt="Profile Preview" style="max-width: 100px; border-radius: 8px" />
+    </div>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <input placeholder="Email" matInput type="email" name="email" [(ngModel)]="email" email />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <input placeholder="Username" matInput type="text" name="username" [(ngModel)]="username" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <input placeholder="Age" matInput type="number" name="age" [(ngModel)]="age" min="0" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-full">
+      <input
+        placeholder="Password*"
+        matInput
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+      />
+    </mat-form-field>
+
+    <mat-dialog-actions align="end">
+      <button mat-raised-button color="primary" type="submit">Submit</button>
+      <button mat-button mat-dialog-close color="primary" type="button" (click)="closeDialog()">Close</button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>

@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { LikeService } from '../services/likes.service';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
-import { MatButton, MatButtonModule } from '@angular/material/button';
+import { LikeService } from '../services/like/likes.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { DatePipe } from '@angular/common';
+import { FollowService } from '../services/follow/follow.service';
+import { CommentsComponent } from '../comment/comment';
+import { UserService } from '../services/user/user.service';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatDialog } from '@angular/material/dialog';
+import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 
 interface PostDetailsDto {
   id: number;
@@ -14,35 +21,44 @@ interface PostDetailsDto {
   authorProfileImageUrl: string;
   likecount: number;
   isliked: boolean;
+  isfollow: boolean;
+  authorId: number;
   createdAt: string;
   updatedAt: string;
 }
 
 @Component({
-  imports : [MatIconModule,MatButtonModule],
+  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger],
   selector: 'app-post-details',
   templateUrl: './post-details.html',
-  styleUrls: ['./post-details.css']
+  styleUrls: ['./post-details.css'],
 })
 export class PostDetails implements OnInit {
-
   postId: string | null = null;
   post: PostDetailsDto | null = null;
   safeContent: SafeHtml | null = null;
+  is_followd: boolean | null = false;
+  is_mine: boolean | null = false;
 
   constructor(
     private sanitizer: DomSanitizer,
     private route: ActivatedRoute,
     private http: HttpClient,
-    public likeService: LikeService
-  ) { }
+    public likeService: LikeService,
+    public followService: FollowService,
+    public userService: UserService,
+    private router: Router,
+    private dialog: MatDialog
+  ) {}
 
+  public nbrId: number = 0;
   ngOnInit(): void {
     this.postId = this.route.snapshot.paramMap.get('id');
-
+    this.nbrId = Number(this.postId);
     if (this.postId) {
-      this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`)
-        .subscribe(post => {
+      this.http
+        .get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`)
+        .subscribe((post) => {
           this.post = post;
           this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
           this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
@@ -50,20 +66,60 @@ export class PostDetails implements OnInit {
           // Normalize to match toggleLike input
           if (this.post.isliked === undefined) this.post.isliked = false;
           if (this.post.likecount === undefined) this.post.likecount = 0;
+          this.is_followd = this.post.isfollow ?? false;
+          this.is_mine = this.post.authorUsername === this.userService.user()?.username;
         });
     }
+  }
+
+  onEditClick() {
+    if (!this.post) return;
+    this.router.navigate(['/post/edit', this.post.id]);
+  }
+
+  onFollowClick(): void {
+    if (!this.post) return;
+
+    this.followService.toggleFollow(this.is_followd!, this.post.authorUsername).subscribe({
+      next: (res) => {
+        this.is_followd = res.isFollowed;
+      },
+      error: (err) => console.error('Error toggling follow:', err),
+    });
+  }
+
+  openReportDialog() {
+    const postId = this.postId;
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '400px',
+      data: { postId },
+    });
+
+    dialogRef.afterClosed().subscribe((submitted) => {
+      if (submitted) {
+        console.log('Report submitted for post ID:', postId);
+      }
+    });
   }
 
   onLikeClick(): void {
     if (!this.post) return;
 
-    this.likeService.toggleLike(this.post.id, this.post.isliked, this.post.likecount)
-      .subscribe({
-        next: res => {
-          this.post!.isliked = res.isLiked;
-          this.post!.likecount = res.likecount;
-        },
-        error: err => console.error('Error toggling like:', err)
-      });
+    this.likeService.toggleLike(this.post.id, this.post.isliked, this.post.likecount).subscribe({
+      next: (res) => {
+        this.post!.isliked = res.isLiked;
+        this.post!.likecount = res.likecount;
+      },
+      error: (err) => console.error('Error toggling like:', err),
+    });
+  }
+  onDeleteClick(){
+    this.http.delete(`http://localhost:8081/api/post/delete/${this.nbrId}`).subscribe({
+      next: () => {
+        console.log(`Post ${this.nbrId} deleted successfully`);
+        this.router.navigate(['/']);
+      },
+      error: (err) => console.error(`Failed to delete post ${this.nbrId} err: ${err}`),
+    });
   }
 }

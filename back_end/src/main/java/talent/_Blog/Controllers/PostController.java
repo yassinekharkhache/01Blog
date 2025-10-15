@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
 import talent._Blog.Service.PostService;
 import talent._Blog.dto.PostDto;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/post")
@@ -43,33 +46,51 @@ public class PostController {
     }
 
     // edit post
-    @PostMapping(path = "/edit/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/edit")
     public ResponseEntity<?> editPost(
-            @PathVariable Long id,
-            @RequestPart("title") String title,
-            @RequestPart("content") String content,
-            @RequestPart(value = "image", required = false) MultipartFile image,
-            @AuthenticationPrincipal User user) throws IOException {
-        byte[] imageData = image != null ? image.getBytes() : null;
-        PostDto data = new PostDto(content, title, imageData);
-        var updatedPost = postService.editPost(id, data, user);
-        return ResponseEntity.status(200)
-                .body(Map.of("message", "Post updated successfully", "id", updatedPost.getId().toString()));
+            @RequestBody Map<String, Object> body,
+            @AuthenticationPrincipal User user) {
+
+        Long id = Long.valueOf(body.get("id").toString());
+        String title = body.get("title").toString();
+        String content = body.get("content").toString();
+        if (user == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        if (title == null || title.isBlank() || content == null || content.isBlank()) {
+            return ResponseEntity.badRequest().body("Title and content cannot be empty");
+        }
+
+        var updatedPost = postService.editPost(id, new PostDto(content, title, null), user);
+
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "Post updated successfully",
+                        "id", updatedPost.getId().toString()));
     }
+
+    // public ResponseEntity<?> editPost(
+    //         @RequestBody PostDto post,
+    //         @AuthenticationPrincipal User user) {
+
+    //     var updatedPost = postService.editPost(post.getId(), post, user);
+
+    //     return ResponseEntity.status(200).body(
+    //             Map.of("message", "Post updated successfully", "id", updatedPost.getId().toString()));
+    // }
 
     @GetMapping("/get/{id}")
     public ResponseEntity<?> get(
-        @PathVariable Long id,
-        @AuthenticationPrincipal User user
-        ) {
-        return ResponseEntity.ok(postPageMapper.toPage(postService.getPostById(id),user));
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(postPageMapper.toPage(postService.getPostById(id), user));
     }
 
     @GetMapping("/following")
     public List<postcarddto> getFollowing(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
-        return postService.getFollowingPosts(user.getUsername(), lastId, 10)
+        return postService.getFollowingPosts(user, lastId, 10)
                 .stream()
                 .map(post -> postcard.toCard(post, user))
                 .toList();
@@ -84,11 +105,17 @@ public class PostController {
                 .toList();
     }
 
-    @GetMapping("/my_posts")
-    public List<postcarddto> getMyPosts(@AuthenticationPrincipal User user) {
-        return postService.getUserPosts(user.getUsername()).stream()
-                .map(post -> postcard.toCard(post, user))
+    @GetMapping("/{username}")
+    public ResponseEntity<List<postcarddto>> getMyPosts(@PathVariable String username,
+            @AuthenticationPrincipal User currentUser) {
+        var posts = postService.getUserPosts(username);
+        if (posts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var dtoList = posts.stream()
+                .map(post -> postcard.toCard(post, currentUser))
                 .toList();
+        return ResponseEntity.ok(dtoList);
     }
 
     @DeleteMapping("/delete/{id}")
@@ -100,7 +127,7 @@ public class PostController {
                 return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
             }
 
-            if (!post.getUser().getUsername().equals(user.getUsername())) {
+            if (!post.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(Role.ADMIN)) {
                 return ResponseEntity.status(403).body(Map.of("message", "Not allowed"));
             }
             String content = post.getContent();
@@ -119,5 +146,17 @@ public class PostController {
             return ResponseEntity.status(500).body(Map.of("message", "Failed to delete post", "error", e.getMessage()));
         }
     }
+
+    @PostMapping("/hide")
+    public ResponseEntity<?> postMethodName(@RequestBody BanRequest request) {
+        postService.hidePost(request.PostId());
+        return ResponseEntity.ok(Map.of("valid","posthided"));
+    }
+
+    public record BanRequest(
+        Integer PostId
+    ) {
+    }
+    
 
 }

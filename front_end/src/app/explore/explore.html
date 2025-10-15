@@ -1,6 +1,12 @@
-<div class="home-container">
+<div class="explore-page">
+<div class="explore-container">
   <app-post-card *ngFor="let post of posts" [post]="post"></app-post-card>
 
   <div class="loading" *ngIf="loading">Loading...</div>
-  <div class="end" *ngIf="allLoaded && !loading">No more posts</div>
+  <div class="end" *ngIf="allLoaded">No more posts</div>
+
+  <!-- sentinel observed by IntersectionObserver -->
+  <div #sentinel class="sentinel"></div>
+</div>
+
 </div>

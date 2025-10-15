@@ -1,0 +1,90 @@
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 500px;
+  overflow: scroll;
+}
+
+
+
+.comment {
+  display: flex;
+  gap: 10px;
+  border-bottom: 1px solid #ddd;
+  padding: 8px 0;
+}
+.comment img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+
+
+
+
+
+
+.new-comment {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.new-comment textarea {
+  width: 100% - 20px;
+  padding: 10px;
+  min-height: 80px;
+  resize: none;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.new-comment textarea:focus {
+  border-color: #aa82c2;
+  background-color: #fff;
+}
+
+.new-comment button {
+  align-self: flex-end;
+  background-color: #d716e9;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.new-comment button:hover:not(:disabled) {
+  background-color: #2c3da3;
+}
+
+.new-comment button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.comment-details {
+  width: calc(100% - 50px); /* Adjusting for image width + gap */
+}
+
+.comment-content {
+
+  position: relative;
+  width: 100%;
+  overflow-wrap: break-word; /* breaks long words */
+  white-space: pre-line; /* respects newlines */
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}

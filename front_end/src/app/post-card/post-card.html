@@ -10,21 +10,7 @@
 
   <div class="post-content">
     <h3 class="post-title">{{ post.title }}</h3>
-    <div class="post-settings" *ngIf="is_mine">
-      <button mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>more_vert</mat-icon>
-      </button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="editPost()">
-          <mat-icon>edit</mat-icon>
-          <span>Edit Post</span>
-        </button>
-        <button mat-menu-item (click)="deletePost()">
-          <mat-icon>delete</mat-icon>
-          <span>Delete Post</span>
-        </button>
-      </mat-menu>
-    </div>
+    
 
     <div class="post-meta">
       <img
@@ -40,8 +26,8 @@
 
     <div class="post-actions">
       <button class="love" (click)="onLikeClick()">
-        <mat-icon>{{ post?.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
-        {{ post?.likecount }} like
+        <mat-icon>{{ post.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
+        {{ post.likecount }} like
       </button>
       <a
         href="/post/{{ post.id }}"

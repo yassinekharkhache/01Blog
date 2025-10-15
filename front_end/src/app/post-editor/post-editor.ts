@@ -5,20 +5,33 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-blog-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, EditorModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    EditorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
   providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
 })
 export class BlogEditorComponent {
+  imagePreview: File | string | null = null;
+  imagePreviewUrl: string | null = null;
+
   content: string = '';
   http = inject(HttpClient);
-  title: string = 'test title';
-  imagePreview: File | string | null = null;
+  title: string = '';
+  // imagePreview: File | string | null = null;
   router = inject(Router);
 
   editorConfig: any = {
@@ -26,10 +39,11 @@ export class BlogEditorComponent {
     menubar: false,
     plugins: ['image', 'link', 'media', 'paste', 'code', 'lists', 'heading'],
     toolbar:
-      'undo redo | bold italic underline | image media | code' +
-      ' | bullist numlist outdent indent' +
-      ' | alignleft aligncenter alignright alignjustify',
+      'undo redo | formatselect bold italic underline | image media | code' +
+      ' | bullist numlist outdent indent',
+
     images_upload_handler: (blobInfo: any) => this.uploadMedia(blobInfo.name, 'image'),
+
     file_picker_types: 'image media',
     file_picker_callback: (callback: any, value: any, meta: any) => {
       const type = meta.filetype === 'image' ? 'image' : 'video';
@@ -40,7 +54,9 @@ export class BlogEditorComponent {
 
       const getMediaUrls = () => {
         const content = editor.getContent() || '';
-        const imgMatches = Array.from(content.matchAll(/<img[^>]+src="([^"]+)"/g)) as RegExpMatchArray[];
+        const imgMatches = Array.from(
+          content.matchAll(/<img[^>]+src="([^"]+)"/g)
+        ) as RegExpMatchArray[];
         const sourceMatches = Array.from(
           content.matchAll(/<source[^>]+src="([^"]+)"/g)
         ) as RegExpMatchArray[];
@@ -123,6 +139,7 @@ export class BlogEditorComponent {
     const file = event.target.files[0];
     if (file) {
       this.imagePreview = file;
+      this.imagePreviewUrl = URL.createObjectURL(file);
     }
   }
 }

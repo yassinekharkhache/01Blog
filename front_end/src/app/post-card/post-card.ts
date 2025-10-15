@@ -1,12 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
 // date pip
 import { DatePipe, NgIf } from '@angular/common';
-import { UserService } from '../services/user.service';
+import { UserService } from '../services/user/user.service';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 
-import { LikeService } from '../services/likes.service';
+import { LikeService } from '../services/like/likes.service';
 // Interface matching your postcarddto structure
 export interface PostCardDto {
   id: number;
@@ -22,7 +22,7 @@ export interface PostCardDto {
 }
 
 @Component({
-  imports: [DatePipe, MatMenu, MatMenuTrigger, MatIcon, NgIf],
+  imports: [DatePipe, MatIcon],
   selector: 'app-post-card',
   templateUrl: './post-card.html',
   styleUrls: ['./post-card.css'],
@@ -54,27 +54,6 @@ export class PostCard implements OnInit {
       console.error('Post data is required for PostCard.');
     }
   }
-
-  // onLikeClick(): void {
-  //   if (this.post.isLiked) {
-  //     this.likeService.removeLike(this.post.id).subscribe({
-  //       next: () => {
-  //         this.post.isLiked = false;
-  //         this.post.likecount = Math.max(0, this.post.likecount - 1);
-  //       },
-  //       error: (err) => console.error('Error removing like:', err)
-  //     });
-  //   } else {
-  //     // Add like
-  //     this.likeService.addLike(this.post.id).subscribe({
-  //       next: () => {
-  //         this.post.isLiked = true;
-  //         this.post.likecount += 1;
-  //       },
-  //       error: (err) => console.error('Error adding like:', err)
-  //     });
-  //   }
-  // }
 
   onLikeClick(): void {
     this.likeService.toggleLike(this.post.id, this.post.isLiked, this.post.likecount).subscribe({

@@ -39,11 +39,18 @@
 .author-name {
   font-weight: 600;
   font-size: 1rem;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .post-date {
+  font-family: 'Courier New', Courier, monospace;
   font-size: 0.875rem;
   color: #777;
+}
+
+.btns{
+  display: flex;
+  justify-content: space-between;
 }
 
 .divider {
@@ -79,4 +86,49 @@
 
 .love{
   color: red;
+}
+
+.following{
+  color: #4CAF50;
+  border: none;
+  cursor: pointer;
+}
+
+.follow{
+  color: #008CBA; /* Blue */
+  border: none;
+  cursor: pointer;
+}
+
+.post-meta{
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 40px 0;
+}
+
+.meta-data{
+  display: flex;
+}
+
+.Report-menu{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: none;
+  border: none;
+}
+
+.Report-menu:hover{
+  background-color: #ddd;
+}
+
+.mat-menu{
+  padding: 0;
+  width: 1000px;
+  margin: 0;
+  border: 2px solid black;
+  background-color: red;
 }

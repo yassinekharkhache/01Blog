@@ -8,13 +8,14 @@ h2[mat-dialog-title] {
 
 .layout {
   display: flex;
+  flex-direction: row-reverse;
   height: calc(100% - 64px);
   overflow: hidden;
 }
 
 
 .side-bar {
-  background-color: #fa63ed;
+  background-color: #b3b3b3;
   width: 60px;
   transition: width 250ms ease, transform 250ms ease;
   overflow: hidden;
@@ -34,4 +35,22 @@ h2[mat-dialog-title] {
 
 @media (max-width: 600px) {
   .content { padding-top: 56px; }
+}
+
+/* .class{
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+}
+
+.side-bar{
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+} */
+
+
+
+.layout{
+  background-color: rgb(219, 219, 219);
 }

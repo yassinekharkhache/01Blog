@@ -1,0 +1,24 @@
+<div class="editor-container">
+  <h2>Edit Post</h2>
+
+  <form (ngSubmit)="submitPost(title)">
+    <!-- Title input -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="title" name="title" required />
+    </mat-form-field>
+
+    <!-- TinyMCE editor -->
+    <editor
+      [(ngModel)]="content"
+      [init]="editorConfig"
+      name="content"
+    ></editor>
+
+    <!-- Submit button -->
+    <div class="actions">
+      <button type="submit" mat-raised-button color="primary">Save</button>
+      <button type="button" mat-button (click)="router.navigate(['/'])">Cancel</button>
+    </div>
+  </form>
+</div>

@@ -1,3 +1,41 @@
 a:hover {
   color: white;
 }
+
+/* .side-bar-list *{
+  display: inline;
+}
+.side-bar-list{
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+}
+a{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid red;
+
+}
+
+.center-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+a.mat-list-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a.icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;  
+} */

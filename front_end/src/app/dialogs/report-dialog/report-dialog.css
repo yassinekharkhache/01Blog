@@ -1,0 +1,18 @@
+h2 {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.p-3 {
+  padding: 16px;
+}

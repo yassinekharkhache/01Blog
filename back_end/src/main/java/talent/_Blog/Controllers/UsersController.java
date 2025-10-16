@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import talent._Blog.Service.UserService;
-import talent._Blog.mapper.UserMapper;
 import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
 
@@ -21,8 +20,6 @@ import talent._Blog.Model.User;
 @RequestMapping("/api/users")
 public class UsersController {
 
-    @Autowired
-    UserMapper userMapper;
     @Autowired
     private final UserService userService;
 
@@ -85,7 +82,7 @@ public class UsersController {
         return ResponseEntity.ok(currentUser);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/get/{username}")
     public ResponseEntity<?> getUserData(
         @PathVariable String username,
         @AuthenticationPrincipal User user
@@ -95,8 +92,6 @@ public class UsersController {
         if (target_user == null) {
             return ResponseEntity.notFound().build();
         }
-
-        userMapper.toProfileDto(user);
 
         Map<String, Object> userData = Map.of(
                 "username", target_user.getUsername(),

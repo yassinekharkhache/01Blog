@@ -22,9 +22,9 @@ export class PostService {
     return this.http.get<PostCardDto[]>(`${this.baseUrl}/`+username, { params });
   }
 
-  getSavedPosts(lastId: number | null) {
+  getFollowingPosts(lastId: number | null) {
     let params = lastId !== null ? new HttpParams().set('lastId', lastId) : undefined;
-    return this.http.get<PostCardDto[]>(`${this.baseUrl}/saved_posts`, { params });
+    return this.http.get<PostCardDto[]>(`${this.baseUrl}/following`, { params });
   }
 }
 

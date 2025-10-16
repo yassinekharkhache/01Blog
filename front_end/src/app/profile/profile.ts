@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { PostService } from '../services/post/post.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from '../services/profile/profile.service';
 
 @Component({
@@ -23,10 +23,16 @@ export class Profile implements OnInit {
   constructor(
     public profileService: ProfileService,
     private postService: PostService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
+
   ngOnInit(): void {
     this.username = this.route.snapshot.paramMap.get('username');
+    if (!this.username || this.username === 'null') {
+      this.router.navigate(['/explore']);
+      return;
+    }
     if (this.username) {
       this.profileService.fetchUser(this.username);
     }else{

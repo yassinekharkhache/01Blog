@@ -99,6 +99,7 @@ public class PostService {
         return postRepo.findByUser_userNameAndVisibleTrue(username);
     }
 
+    @Transactional
     public List<Post> getFollowingPosts(User user, Long lastId, int pageSize) {
         List<User> followingUsers = subscribeRepository.findByFollower(user)
                 .stream()

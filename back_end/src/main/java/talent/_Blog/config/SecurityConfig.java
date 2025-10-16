@@ -31,7 +31,7 @@ public class SecurityConfig {
         // http.httpBasic(httpSecurity -> httpSecurity.disable());
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(
-                request -> request.requestMatchers("/register", "/login", "/default.png").permitAll()
+                request -> request.requestMatchers("/register", "/login", "/default.png","/api/users/get/**","/api/post/all").permitAll()
                         .requestMatchers("/images/**", "/videos/**", "/profiles/**").permitAll()
                         .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
@@ -69,16 +68,6 @@ public class PostController {
                         "id", updatedPost.getId().toString()));
     }
 
-    // public ResponseEntity<?> editPost(
-    //         @RequestBody PostDto post,
-    //         @AuthenticationPrincipal User user) {
-
-    //     var updatedPost = postService.editPost(post.getId(), post, user);
-
-    //     return ResponseEntity.status(200).body(
-    //             Map.of("message", "Post updated successfully", "id", updatedPost.getId().toString()));
-    // }
-
     @GetMapping("/get/{id}")
     public ResponseEntity<?> get(
             @PathVariable Long id,
@@ -87,13 +76,16 @@ public class PostController {
     }
 
     @GetMapping("/following")
-    public List<postcarddto> getFollowing(
+    public ResponseEntity<?> getFollowing(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
-        return postService.getFollowingPosts(user, lastId, 10)
+                if (user == null){
+                    return ResponseEntity.status(403).body(Map.of("valid","ss"));
+                }
+        return ResponseEntity.ok(postService.getFollowingPosts(user, lastId, 10)
                 .stream()
                 .map(post -> postcard.toCard(post, user))
-                .toList();
+                .toList());
     }
 
     @GetMapping("/all")
@@ -150,13 +142,11 @@ public class PostController {
     @PostMapping("/hide")
     public ResponseEntity<?> postMethodName(@RequestBody BanRequest request) {
         postService.hidePost(request.PostId());
-        return ResponseEntity.ok(Map.of("valid","posthided"));
+        return ResponseEntity.ok(Map.of("valid", "posthided"));
     }
 
     public record BanRequest(
-        Integer PostId
-    ) {
+            Integer PostId) {
     }
-    
 
 }

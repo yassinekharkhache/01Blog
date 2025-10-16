@@ -10,7 +10,7 @@ export class ProfileService {
   constructor(private http: HttpClient) {}
 
   fetchUser(username :string) {
-    this.http.get<User>('http://localhost:8081/api/users/'+username, { withCredentials: true })
+    this.http.get<User>('http://localhost:8081/api/users/get/'+username, { withCredentials: true })
       .subscribe({
         next: user => this.userSignal.set(user),
         error: () => this.userSignal.set(null)

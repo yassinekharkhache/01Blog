@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, HostListener, computed, input, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+  computed,
+  input,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,24 +15,24 @@ import { MatBadge } from '@angular/material/badge';
 import { UserService } from '../services/user/user.service';
 import { ProfileEditComponent } from '../dialogs/profile-edit/profile-edit';
 import { MatDialog } from '@angular/material/dialog';
+import { LoginDialog } from '../dialogs/login-dialog/login-dialog';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
   imports: [CommonModule, MatToolbar, MatIconModule, MatBadge],
   templateUrl: './nav-bar.html',
-  styleUrls: ['./nav-bar.css']
+  styleUrls: ['./nav-bar.css'],
 })
 export class NavBarComponent {
+  userService = inject(UserService);
+  user = this.userService.user;
   @Input() expanded = false;
-  user: any;
   @Output() menuToggle = new EventEmitter<void>();
   private dialog = inject(MatDialog);
   menuOpen = false;
 
-  userAge = computed(() => this.userService.user()?.age);
-
-  constructor(public userService: UserService) {
+  constructor() {
     this.userService.fetchUser();
   }
 
@@ -39,7 +48,7 @@ export class NavBarComponent {
 
   logout() {
     // Remove all cookies
-    document.cookie.split(';').forEach(c => {
+    document.cookie.split(';').forEach((c) => {
       document.cookie = c
         .replace(/^ +/, '')
         .replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
@@ -53,5 +62,13 @@ export class NavBarComponent {
 
   editProfile() {
     this.dialog.open(ProfileEditComponent);
+  }
+  openLogin() {
+    this.dialog
+      .open(LoginDialog)
+      .afterClosed()
+      .subscribe((result) => {
+        if (result) console.log('12-test User logged in:', result);
+      });
   }
 }

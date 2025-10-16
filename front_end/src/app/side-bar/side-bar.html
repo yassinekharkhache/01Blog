@@ -1,12 +1,12 @@
 <nav>
   <mat-nav-list class="side-bar-list">
 
-    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/followed">
+    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/">
       <mat-icon class="center-icon" matListItemIcon>group</mat-icon>
       <span matListItemTitle *ngIf="expanded">Followed</span>
     </a>
 
-    <a class="test" (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/">
+    <a class="test" (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/explore">
       <mat-icon matListItemIcon>explore</mat-icon>
       <span matListItemTitle *ngIf="expanded">Explore</span>
     </a>

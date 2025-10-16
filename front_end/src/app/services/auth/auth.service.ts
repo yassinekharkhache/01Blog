@@ -12,7 +12,7 @@ export class AuthService {
       withCredentials: true,
     }).pipe(
       tap(() => {
-        // this.userService.fetchUser(); // << todo
+        this.userService.fetchUser();
       })
     );
   }

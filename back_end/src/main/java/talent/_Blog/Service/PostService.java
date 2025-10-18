@@ -155,7 +155,8 @@ public class PostService {
     public Post savePost(@Valid PostDto data, User user) {
         Post Post = new Post();
         Post.setTitle(data.title());
-        Post.setContent(data.content());
+        var content = data.content();
+        Post.setContent(content);
         Post.setPostPreviewImage(data.image());
         Post.setCreatedAt(java.time.LocalDateTime.now());
         Post.setStatus(Status.Active);

@@ -14,18 +14,16 @@ import java.nio.file.*;
 @RequestMapping("/api/upload")
 public class uploadmedia {
 
-    private final String IMAGE_UPLOAD_DIR = "uploads/images/";
-    private final String VIDEO_UPLOAD_DIR = "uploads/videos/";
+    private final String IMAGE_UPLOAD_DIR = "uploads/images/tmp";
+    private final String VIDEO_UPLOAD_DIR = "uploads/videos/tmp";
 
     @PostMapping("/image")
     public ResponseEntity<?> uploadImage(
             @RequestParam("image") MultipartFile file,
             @AuthenticationPrincipal User user) {
         if (file.isEmpty()) {
-            System.out.println("adding >>>>>>>>>>>>>>");
             return ResponseEntity.badRequest().body("No file selected");
         }
-        System.out.println("debug28 >>>>>>>>>>>>>>");
 
         try {
             Path uploadPath = Paths.get(IMAGE_UPLOAD_DIR);
@@ -49,7 +47,7 @@ public class uploadmedia {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
 
-            String publicUrl = "http://localhost:8081/images/" + uniqueFileName;
+            String publicUrl = "http://localhost:8081/images/tmp/" + uniqueFileName;
             return ResponseEntity.ok().body("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {

@@ -13,8 +13,10 @@ import talent._Blog.Repository.PostRepository;
 
 @Service
 public class LikeService {
+
     @Autowired
     private LikeRepository likeRepository;
+
     @Autowired
     private PostRepository postRepository;
 
@@ -31,7 +33,6 @@ public class LikeService {
     public boolean addLike(User user, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
         if (likeRepository.existsByUserAndPost(user, post)) return false;
-
         Like like = new Like();
         like.setUser(user);
         like.setPost(post);

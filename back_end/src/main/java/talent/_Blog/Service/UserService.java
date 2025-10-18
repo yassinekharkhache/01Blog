@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import talent._Blog.Exception.EmailAlreadyExistsException;
+import talent._Blog.Exception.UsernameAlreadyExistsException;
 import talent._Blog.Model.Role;
 import talent._Blog.Model.Status;
 import talent._Blog.Model.User;
@@ -17,12 +18,10 @@ import talent._Blog.dto.RegisterDto;
 
 @Service
 public class UserService {
-    @Autowired
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private UserRepository userRepository;
+
 
     public void banUser(String username) {
         User user = userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("user not found"));
@@ -30,9 +29,9 @@ public class UserService {
         user.setStatus(Status.Banned);
         userRepository.save(user);
     }
+
     @Transactional
     public void deleteUser(String username) {
-        System.out.println(">>>>>>>>>>>>>>"+username +"<<<<<<<<<<<<<<<<<<<<<<<<<<");
         userRepository.deleteByUserName(username);
     }
 
@@ -57,6 +56,8 @@ public class UserService {
     public void saveUser(@Valid RegisterDto data) {
         if (userRepository.existsByEmail(data.email())) {
             throw new EmailAlreadyExistsException("Email '" + data.email() + "' is already registered.");
+        }else if (userRepository.existsByUserName(data.name())){
+            throw new UsernameAlreadyExistsException("Username '" + data.name() + "' is already registered.");
         }
 
         User user = new User();

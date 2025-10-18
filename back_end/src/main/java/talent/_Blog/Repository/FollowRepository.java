@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
 
 import talent._Blog.Model.Follow;
 import talent._Blog.Model.User;
 
+@Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
     List<Follow> findByFollowed(User followed);
     List<Follow> findByFollower(User follower);

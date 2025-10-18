@@ -11,6 +11,7 @@ import talent._Blog.Model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
+    boolean existsByUserName(String UserName);
     Optional<User> findByUserName(String name);
     Optional<User> findByEmail(String email);
     void deleteByUserName(String userName);

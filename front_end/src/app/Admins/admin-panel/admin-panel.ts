@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ReportSearch } from '../report-search/report-search';
 import { ReportsTable } from '../reports-table/reports-table';
 import { ReportService, ReportResDto } from '../../services/reports/report.service';
+import { AdminSearch } from '../Admin-search/admin-search';
 
 @Component({
   selector: 'app-admin-panel',
@@ -15,7 +15,7 @@ import { ReportService, ReportResDto } from '../../services/reports/report.servi
     MatToolbarModule,
     MatCardModule,
     ReportsTable,
-    ReportSearch,
+    AdminSearch,
     MatProgressSpinnerModule
   ],
   templateUrl: './admin-panel.html',

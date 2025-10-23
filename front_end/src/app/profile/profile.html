@@ -1,10 +1,12 @@
+@if (profileService.user() != null){
 <div class="profile-page-container">
   <div class="profile-header-card">
     <div class="avatar-section">
       <img
-           [src]="'http://localhost:8081' + profileService.user()?.pic"
-           alt="User Avatar"
-           class="profile-avatar">
+        [src]="'http://localhost:8081' + profileService.user()?.pic"
+        alt="User Avatar"
+        class="profile-avatar"
+      />
       <ng-template #defaultAvatar>
         <div class="profile-avatar default-avatar">
           <span>{{ profileService.user()?.username }}</span>
@@ -12,10 +14,11 @@
       </ng-template>
     </div>
 
+    
     <div class="profile-summary">
       <h1 class="username-display">{{ profileService.user()?.username }}</h1>
       <p class="role-display">{{ profileService.user()?.role }}</p>
-
+      
       <div class="stats-bar">
         <div class="stat-item">
           <strong>{{ profileService.user()?.followers }}</strong>
@@ -27,10 +30,13 @@
           <span>Following</span>
         </div>
       </div>
-      
     </div>
+    <button class="{{ is_followd ? 'following' : 'follow' }}" (click)="onFollowClick()">
+      <mat-icon>{{ is_followd ? 'check' : 'add' }}</mat-icon>
+      {{ is_followd ? 'Following' : 'Follow' }}
+    </button>
   </div>
-  
+
   <div class="profile-content">
     <div class="details-card">
       <h2>About Me</h2>
@@ -45,20 +51,22 @@
         </div>
       </div>
     </div>
-  
+
     <div class="user-posts-sectio">
       <h2 class="section-title">User Posts</h2>
-      
+
       <div class="user-posts-section">
-      <ng-container *ngIf="userPosts && userPosts.length > 0; else noPosts">
-        <app-post-card *ngFor="let post of userPosts" [post]="post"></app-post-card>
-      </ng-container>
-    
-      <ng-template #noPosts>
-        <p class="no-posts-message">This user hasn't created any posts yet.</p>
-      </ng-template>
-    </div>
+        <ng-container *ngIf="userPosts && userPosts.length > 0; else noPosts">
+          <app-post-card *ngFor="let post of userPosts" [post]="post"></app-post-card>
+        </ng-container>
+
+        <ng-template #noPosts>
+          <p class="no-posts-message">This user hasn't created any posts yet.</p>
+        </ng-template>
+      </div>
     </div>
   </div>
-  
 </div>
+}@else {
+  <app-not-found></app-not-found>
+}

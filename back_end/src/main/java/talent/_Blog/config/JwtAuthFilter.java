@@ -3,8 +3,6 @@ package talent._Blog.config;
 import talent._Blog.Model.User;
 import talent._Blog.Repository.UserRepository;
 import talent._Blog.Service.JwtService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,9 +18,7 @@ import java.io.IOException;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailService;
-
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -30,24 +26,25 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         @NonNull jakarta.servlet.http.HttpServletResponse response,
         @NonNull jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
-        System.out.println(request.getRequestURI());
-        System.out.println("auth >>>>>>>>>>>>>>>>>>>>>>> " + authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+
         final String jwt = authHeader.substring(7);
         try{
-
             final String userName = jwtService.extractUsername(jwt);
-            User user = userRepository.findByUserName(userName).orElseThrow();
+            User user = userRepository.findByUserName(userName).get();
+            if (user == null) {
+                response.setStatus(404);
+                response.getWriter().write("User not found");
+                return;
+            }
             if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
                 response.setStatus(403);
                 response.getWriter().write("Your account is banned until " + user.getBannedUntil());
                 return;
             }
-
-
 
             if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);

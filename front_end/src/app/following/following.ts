@@ -2,10 +2,11 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { PostService } from '../services/post/post.service';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-following',
-  imports: [PostCard,CommonModule],
+  imports: [PostCard, CommonModule, RouterLink],
   templateUrl: './following.html',
   styleUrl: './following.css'
 })

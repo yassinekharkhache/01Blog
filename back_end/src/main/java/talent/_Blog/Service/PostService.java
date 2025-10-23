@@ -1,6 +1,10 @@
 package talent._Blog.Service;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -9,7 +13,6 @@ import java.util.regex.Pattern;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +20,26 @@ import jakarta.validation.Valid;
 import talent._Blog.Repository.PostRepository;
 import talent._Blog.Repository.FollowRepository;
 import talent._Blog.dto.PostDto;
-import talent._Blog.Model.*;;
+import talent._Blog.Exception.PostNotFoundException;
+import talent._Blog.Model.*;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 
 @Service
 public class PostService {
-    @Autowired
+
+    private final NotificationService notificationService;
     private final PostRepository postRepo;
+    private final FollowRepository subscribeRepository;
+
     private static final int PAGE_SIZE = 6;
 
-    @Autowired
-    private FollowRepository subscribeRepository;
+    public PostService(NotificationService notificationService, PostRepository postRepo, FollowRepository subscribeRepository) {
+        this.notificationService = notificationService;
+        this.postRepo = postRepo;
+        this.subscribeRepository = subscribeRepository;
+    }
 
     public List<Post> getAllPosts() {
         return postRepo.findAll();
@@ -34,15 +47,16 @@ public class PostService {
 
     @Transactional
     public void hidePost(Integer PostId){
-        Post post = postRepo.findPostById(PostId);
+        Post post = postRepo.findPostById(PostId).orElseThrow(() -> new PostNotFoundException("Post not found"));
         post.setVisible(false);
         postRepo.save(post);
+        
     }
 
     // delete post
     public void deletePost(Long id, User user) {
-        Post existingPost = postRepo.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
-        if (!existingPost.getUser().getId().equals(user.getId())) {
+        Post existingPost = postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
+        if (!existingPost.getUser().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
             throw new RuntimeException("You are not authorized to delete this post");
         }
         postRepo.deleteById(id);
@@ -71,11 +85,6 @@ public class PostService {
         File file = new File(folder + fileName);
         if (file.exists())
             file.delete();
-    }
-
-    // Delete the post record
-    public void deletePost(Long id) {
-        postRepo.deleteById(id);
     }
 
     // edit
@@ -108,7 +117,6 @@ public class PostService {
 
         Pageable pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "id"));
 
-        // 2. Fetch posts
         if (lastId == null) {
             return postRepo.findByUserInAndVisibleTrueOrderByIdDesc(followingUsers, pageable);
         } else {
@@ -116,12 +124,8 @@ public class PostService {
         }
     }
 
-    public PostService(PostRepository postRepo) {
-        this.postRepo = postRepo;
-    }
-
     public Post getPostById(Long id) {
-        return postRepo.findById(id).orElse(null);
+        return postRepo.findById(id).orElseThrow(()-> new PostNotFoundException("Post not found"));
     }
 
     @Transactional(readOnly = true)
@@ -138,7 +142,6 @@ public class PostService {
     @Transactional(readOnly = true)
     public List<Post> getFollowingPosts(List<User> following, Long lastId) {
         Pageable pageable = PageRequest.of(0, PAGE_SIZE);
-
         if (following.isEmpty()) {
             return List.of();
         }
@@ -150,19 +153,44 @@ public class PostService {
         return postRepo.findByUserInAndIdLessThanAndVisibleTrueOrderByIdDesc(following, lastId, pageable);
     }
 
-    
+    public String handle_image_paths(String content){
+        String regex = "<img src=\"http://localhost:8081/images/tmp/(.*?)@";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(content);
 
+        while (matcher.find()) {
+            String imagename = matcher.group(1) + "@.png";
+            Path source = Paths.get("/home/yassine/project/01Blog/back_end/uploads/images/tmp/" + imagename);
+            Path destination = Paths.get("/home/yassine/project/01Blog/back_end/uploads/images/"+imagename);
+            try {
+                // Move the file (will overwrite if file already exists)
+                Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File moved successfully! code 212");
+            } catch (Exception e) {
+                System.out.println("Error moving file: " + e.getMessage());
+            }
+        }
+
+
+        return content.replace("<img src=\"http://localhost:8081/images/tmp/", "<img src=\"http://localhost:8081/images/");
+    }
+    
+    @Transactional
     public Post savePost(@Valid PostDto data, User user) {
         Post Post = new Post();
         Post.setTitle(data.title());
         var content = data.content();
-        Post.setContent(content);
+        content = handle_image_paths(content);
+        String safeHtml = Jsoup.clean(content, Safelist.relaxed());
+
+        Post.setContent(safeHtml);
         Post.setPostPreviewImage(data.image());
         Post.setCreatedAt(java.time.LocalDateTime.now());
         Post.setStatus(Status.Active);
         Post.setVisible(true);
         Post.setUser(user);
         var post = postRepo.save(Post);
+        notificationService.notifyFollowers(user, post);
         return post;
     }
 }

@@ -21,7 +21,6 @@ import talent._Blog.Model.Report;
 import talent._Blog.Model.User;
 import talent._Blog.Service.ReportService;
 import talent._Blog.dto.ReportRequestDto;
-import talent._Blog.dto.ReportResDto;
 import talent._Blog.mapper.ReportMapper;
 
 @RestController
@@ -32,25 +31,35 @@ public class ReportController {
     ReportService reportService;
 
     @PostMapping("/add")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> addReport(@Valid @RequestBody ReportRequestDto request,
             @AuthenticationPrincipal User reporter) {
+        if( reporter == null){
+            return ResponseEntity.status(401).body(Map.of("not authrized", 401));
+        }
         reportService.saveReport(request.reason(), request.postId(), reporter);
-        return ResponseEntity.ok(Map.of("valid","Report submitted"));
+        return ResponseEntity.ok(Map.of("valid", "Report submitted"));
     }
 
     @GetMapping("/get")
-    public ResponseEntity<List<ReportResDto>> getReports(
-            @RequestParam(required = false) Long lastId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getReports(
+            @RequestParam(required = false) Long lastId,
+            @AuthenticationPrincipal User user) {
+        if (user == null || user.getRole() != talent._Blog.Model.Role.ADMIN) {
+            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
+        }
         List<Report> reports = reportService.getReports(lastId);
         return ResponseEntity.ok(reports.stream().map(ReportMapper::toReportRes).toList());
     }
 
     @DeleteMapping("/delete/{ReportId}")
-    // @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> markAsSeen(@PathVariable Long ReportId) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> delete(@PathVariable Long ReportId, @AuthenticationPrincipal User user) {
+        if (user == null || user.getRole() != talent._Blog.Model.Role.ADMIN) {
+            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
+        }
         reportService.delete(ReportId);
-        return ResponseEntity.ok(Map.of("Valid","Report is hided"));
+        return ResponseEntity.ok(Map.of("Valid", "Report is hided"));
     }
 
 }

@@ -45,6 +45,4 @@ public class ReportService {
             return reportRepository.findByIdLessThanOrderByIdDesc(lastId, pageable);
         }
     }
-
-    
 }

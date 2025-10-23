@@ -28,8 +28,9 @@
       }
     </ng-container>
   </div>
-
-  <button class="notification-btn" mat-icon-button aria-label="Notifications">
-    <mat-icon matBadge="1" matBadgeColor="warn">notifications</mat-icon>
-  </button>
+  @if(userService.user()){
+    <app-notification class="notification-container"></app-notification>
+  }@else{
+    <mat-icon class="notifications" (click)="openLogin()" matBadgeColor="warn">notifications</mat-icon>
+  }
 </mat-toolbar>

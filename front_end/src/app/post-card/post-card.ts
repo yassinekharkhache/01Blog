@@ -2,11 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 // date pip
 import { DatePipe, NgIf } from '@angular/common';
 import { UserService } from '../services/user/user.service';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
 
 import { LikeService } from '../services/like/likes.service';
+import { RouterModule } from '@angular/router';
 // Interface matching your postcarddto structure
 export interface PostCardDto {
   id: number;
@@ -22,7 +22,7 @@ export interface PostCardDto {
 }
 
 @Component({
-  imports: [DatePipe, MatIcon],
+  imports: [DatePipe, MatIcon,RouterModule],
   selector: 'app-post-card',
   templateUrl: './post-card.html',
   styleUrls: ['./post-card.css'],

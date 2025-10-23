@@ -1,36 +1,30 @@
-<nav>
+<nav class="responsive-sidebar" [class.expanded]="expanded">
   <mat-nav-list class="side-bar-list">
-
-    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/">
-      <mat-icon class="center-icon" matListItemIcon>group</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Followed</span>
+    <a mat-list-item routerLink="/" routerLinkActive="active-link" (click)="handleclick()">
+      <mat-icon>group</mat-icon>
+      @if(expanded){
+        <span class="item-text">Followed</span>
+      }
     </a>
 
-    <a class="test" (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/explore">
-      <mat-icon matListItemIcon>explore</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Explore</span>
+    <a mat-list-item routerLink="/explore" routerLinkActive="active-link" (click)="handleclick()">
+      <mat-icon>explore</mat-icon>
+      <span class="item-text" *ngIf="expanded">Explore</span>
     </a>
 
-
-    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" [routerLink]="['/profile', user()?.username]">
-      <mat-icon matListItemIcon>person</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Profile</span>
+    <a mat-list-item [routerLink]="['/profile', user()?.username]" routerLinkActive="active-link" (click)="handleclick()">
+      <mat-icon>person</mat-icon>
+      <span class="item-text" *ngIf="expanded">Profile</span>
     </a>
 
-    <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/new-post">
-      <mat-icon matListItemIcon>add_circle</mat-icon>
-      <span matListItemTitle *ngIf="expanded">New Post</span>
+    <a mat-list-item routerLink="/new-post" routerLinkActive="active-link" (click)="handleclick()">
+      <mat-icon>add_circle</mat-icon>
+      <span class="item-text" *ngIf="expanded">New Post</span>
     </a>
 
-    <a *ngIf="user()?.role === 'ADMIN'" (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/admins">
-      <mat-icon >admin_panel_settings</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Admin Panel</span>
+    <a *ngIf="user()?.role === 'ADMIN'" mat-list-item routerLink="/admins" routerLinkActive="active-link" (click)="handleclick()">
+      <mat-icon>admin_panel_settings</mat-icon>
+      <span class="item-text" *ngIf="expanded">Admin Panel</span>
     </a>
-    <!-- <a (click)="handleclick()" mat-list-item routerLinkActive="active-link" routerLink="/saved">
-      <mat-icon matListItemIcon>bookmark</mat-icon>
-      <span matListItemTitle *ngIf="expanded">Saved Posts</span>
-    </a> -->
-
-
   </mat-nav-list>
 </nav>

@@ -32,15 +32,13 @@ public class uploadmedia {
             }
 
             String originalName = StringUtils.cleanPath(file.getOriginalFilename());
-            String extension = "";
 
             int dotIndex = originalName.lastIndexOf('.');
             if (dotIndex > 0) {
-                extension = originalName.substring(dotIndex);
                 originalName = originalName.substring(0, dotIndex);
             }
 
-            String uniqueFileName = user.getUsername() + "_" + originalName + "_" + System.currentTimeMillis() + extension;
+            String uniqueFileName = user.getUsername().replace("@", "") + "_" + originalName.replace("@", "") + "_" + System.currentTimeMillis()+"@" + ".png";
 
             Path filePath = uploadPath.resolve(uniqueFileName);
 

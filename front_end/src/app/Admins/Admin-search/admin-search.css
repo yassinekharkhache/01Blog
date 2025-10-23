@@ -1,0 +1,142 @@
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.search-container input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px 15px;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #1e1e1e;
+  color: #fff;
+}
+
+.status{
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #1e1e1e;
+  color: #fff;
+  margin: 10px;
+  padding: 10px;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #2a2a2a;
+  padding: 15px;
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+
+.user-pic {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #444;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-main h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.role {
+  background-color: #444;
+  color: #ccc;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.email {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin: 2px 0;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: #ddd;
+}
+
+.no-results {
+  text-align: center;
+  margin-top: 20px;
+  color: #888;
+}
+
+/* Responsive layout */
+@media (max-width: 600px) {
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .user-pic {
+    width: 80px;
+    height: 80px;
+  }
+
+  .stats {
+    gap: 6px;
+  }
+}
+
+
+.actions {
+  margin-left: auto;
+}
+
+.actions select {
+  background-color: #1e1e1e;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.actions select:hover {
+  border-color: #777;
+}

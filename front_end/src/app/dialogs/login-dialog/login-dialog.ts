@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { RegisterDialog } from '../register-dialog/register-dialog';
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-login-dialog',
@@ -19,7 +20,7 @@ import { Router } from '@angular/router';
 export class LoginDialog {
   username = '';
   password = '';
-  api = 'http://localhost:8081/login';
+  api = environment.apiUrl + '/login';
   private userService = inject(UserService);
   private router = inject(Router);
   constructor(

@@ -18,7 +18,6 @@ import talent._Blog.Model.User;
 import talent._Blog.Service.CommentService;
 import talent._Blog.dto.CommentDto;
 import talent._Blog.dto.CommentResponseDto;
-import talent._Blog.mapper.CommentMapper;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,10 +30,6 @@ public class CommentsController {
     @Autowired
     private CommentService commentService;
 
-
-    @Autowired
-    private CommentMapper commentMapper;
-
     @GetMapping("/{postId}")
     public List<CommentResponseDto> getCommentsByPostId(
         @PathVariable Long postId,
@@ -42,7 +37,7 @@ public class CommentsController {
         ) {
         var comments =  commentService.getCommentsByPostId(postId,lastId);
         return comments.stream()
-                .map(commentMapper::toDto)
+                .map(CommentResponseDto::toDto)
                 .toList();
     }
 

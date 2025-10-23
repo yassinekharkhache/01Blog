@@ -1,0 +1,114 @@
+.notification-btn {
+  position: relative;
+  color: #555;
+  background: none;
+  border: none;
+  cursor: pointer;
+  scale: 1.3;
+  margin: 20px;
+  padding: 30px;
+}
+
+.notifications-dropdown {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 5%;
+  width: 30vw;
+  max-height: 75vh;
+  text-wrap: wrap;
+  background-color: #fff;
+  border: 1px solid #aaa;
+  border-radius: 10px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  animation: dropdownFade 0.2s ease-out;
+  overflow: hidden; /* prevent button overlap with scroll */
+}
+
+.notifications-dropdown h1 {
+  margin: 0;
+  padding: 10px 20px;
+  border-bottom: 1px solid #eee;
+  font-size: 1.2rem;
+  background: #fafafa;
+}
+
+/* Scrollable list container */
+.notifications-dropdown .list {
+  flex: 1; /* take remaining space */
+  overflow-y: auto;
+  padding: 10px 20px;
+}
+
+.notifications-dropdown .list div {
+  padding: 8px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notifications-dropdown .list div:hover {
+  background-color: #f8f8f8;
+}
+
+/* Seen notifications style */
+.notifications-dropdown p.seen {
+  color: #999;
+  font-weight: normal;
+  margin: 10px;
+}
+
+/* Unseen notifications */
+.notifications-dropdown p:not(.seen) {
+  font-weight: 600;
+  color: #333;
+}
+
+/* Bottom button area */
+.notifications-dropdown .actions {
+  border-top: 1px solid #ddd;
+  padding: 10px 20px;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.notifications-dropdown .actions button {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.notifications-dropdown .actions button:hover {
+  background-color: #155fa0;
+}
+
+@media screen and (max-width: 600px) {
+  .notifications-dropdown {
+    width: 80vw;
+    right: 10%;
+  }
+}
+
+
+.item{
+    display: flex;
+    align-items: center;
+}
+
+img{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0;
+    object-fit: cover;
+    border: 2px solid #aa03aa;
+    cursor: pointer;
+    margin-right: 10px;
+}

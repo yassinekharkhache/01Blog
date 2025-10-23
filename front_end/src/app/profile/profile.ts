@@ -1,44 +1,72 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { PostService } from '../services/post/post.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from '../services/profile/profile.service';
+import { Notfound } from '../notfound/notfound';
+import { FollowService } from '../services/follow/follow.service';
+import { HttpClient } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule,PostCard],
+  imports: [MatIconModule, CommonModule, PostCard, Notfound],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
 export class Profile implements OnInit {
-  user: any = null;
+  public followService = inject(FollowService);
+  public profileService = inject(ProfileService);
+  private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private postService = inject(PostService);
   userPosts: PostCardDto[] = [];
   loading = false;
-  lastId: number | null = null;
   allLoaded = false;
+  is_followd: boolean | null = false;
+  lastId: number | null = null;
   username: string | null = '';
 
-  constructor(
-    public profileService: ProfileService,
-    private postService: PostService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+  onFollowClick(): void {
+    this.followService.toggleFollow(this.is_followd as boolean, this.username as string).subscribe({
+      next: (res) => {
+        this.is_followd = res.isFollowed;
+      },
+      error: (err) => console.error('Error toggling follow:', err),
+    });
+  }
 
   ngOnInit(): void {
-    this.username = this.route.snapshot.paramMap.get('username');
-    if (!this.username || this.username === 'null') {
-      this.router.navigate(['/explore']);
-      return;
-    }
-    if (this.username) {
+    this.route.paramMap.subscribe((params) => {
+      this.username = params.get('username');
+      if (!this.username || this.username === 'null') {
+        this.router.navigate(['/explore']);
+        return;
+      }
+      this.userPosts = [];
+      this.lastId = null;
+      this.allLoaded = false;
+
+      // Fetch profile info
       this.profileService.fetchUser(this.username);
-    }else{
-      this.username = "yassine";
-    }
-    this.loadPosts()
+
+      // Check if user is followed
+      this.http
+        .get<{ is_subsciberd: boolean }>(
+          `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
+          { withCredentials: true }
+        )
+        .subscribe({
+          next: (data) => (this.is_followd = data.is_subsciberd),
+          error: () => (this.is_followd = false),
+        });
+
+      // Load posts
+      this.loadPosts();
+    });
   }
 
   loadPosts(): void {

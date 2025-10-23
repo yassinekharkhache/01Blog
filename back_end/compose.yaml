@@ -1,12 +1,14 @@
-services:
-  postgres:
-    image: 'postgres:latest'
-    environment:
-      - 'POSTGRES_DB=Database'
-      - 'POSTGRES_PASSWORD=ykharkha'
-      - 'POSTGRES_USER=yassine'
-    ports:
-      - '5432:5432'
+# services:
+#   postgres:
+#     image: 'postgres:latest'
+#     environment:
+#       - 'POSTGRES_DB=Database'
+#       - 'POSTGRES_PASSWORD=ykharkha'
+#       - 'POSTGRES_USER=yassine'
+#     ports:
+#       - '5432:5432'
+
+
 # services:
 #   postgres:
 #     image: postgres:latest
@@ -17,4 +19,18 @@ services:
 #     ports:
 #       - "5432:5432"
 #     volumes:
-#       - ./postgres-data:/var/lib/postgresql/data
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=Database
+      - POSTGRES_PASSWORD=ykharkha
+      - POSTGRES_USER=yassine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

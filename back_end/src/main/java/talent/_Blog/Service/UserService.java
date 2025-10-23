@@ -2,13 +2,14 @@ package talent._Blog.Service;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+
+import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import talent._Blog.Exception.EmailAlreadyExistsException;
+import talent._Blog.Exception.UserNotFoundException;
 import talent._Blog.Exception.UsernameAlreadyExistsException;
 import talent._Blog.Model.Role;
 import talent._Blog.Model.Status;
@@ -19,12 +20,21 @@ import talent._Blog.dto.RegisterDto;
 @Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder encoder;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
+
+    public List<User> searchUsers(String query) {
+        return userRepository.findByUserNameContainingIgnoreCase(query);
+    }
 
 
     public void banUser(String username) {
-        User user = userRepository.findByUserName(username).orElseThrow(() -> new RuntimeException("user not found"));
+        User user = userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("user not found"));
         user.setBannedUntil(java.time.LocalDateTime.now().plusDays(7));
         user.setStatus(Status.Banned);
         userRepository.save(user);
@@ -32,38 +42,39 @@ public class UserService {
 
     @Transactional
     public void deleteUser(String username) {
-        userRepository.deleteByUserName(username);
+        userRepository.deleteByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public void updateUser(User user) {
+        if (!userRepository.existsByUserName(user.getUsername())){
+            throw new UserNotFoundException("User not found");
+        }
         userRepository.save(user);
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
+    
 
     public User getUserByName(String username) {
-        return userRepository.findByUserName(username).get();
+        return userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
-
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(10);
 
     public String hashCode(String s) {
         return encoder.encode(s);
     }
+    
 
+    @Transactional
     public void saveUser(@Valid RegisterDto data) {
-        if (userRepository.existsByEmail(data.email())) {
-            throw new EmailAlreadyExistsException("Email '" + data.email() + "' is already registered.");
-        }else if (userRepository.existsByUserName(data.name())){
+        if (userRepository.existsByEmail(data.email().toLowerCase())) {
+            throw new EmailAlreadyExistsException("Email '" + data.email().toLowerCase() + "' is already registered.");
+        } else if (userRepository.existsByUserName(data.name())) {
             throw new UsernameAlreadyExistsException("Username '" + data.name() + "' is already registered.");
         }
 
         User user = new User();
         user.setUserName(data.name());
-        user.setEmail(data.email());
-        user.setPassword(data.password());
+        user.setEmail(data.email().toLowerCase());
+        user.setPassword(encoder.encode(data.password())); // hash password
         user.setAge(data.age());
         user.setRole(Role.USER);
         user.setStatus(Status.Active);

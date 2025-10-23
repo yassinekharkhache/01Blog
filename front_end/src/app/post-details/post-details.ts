@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -12,6 +12,7 @@ import { UserService } from '../services/user/user.service';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
+import { Notfound } from '../notfound/notfound';
 
 interface PostDetailsDto {
   id: number;
@@ -28,7 +29,7 @@ interface PostDetailsDto {
 }
 
 @Component({
-  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger],
+  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger,Notfound],
   selector: 'app-post-details',
   templateUrl: './post-details.html',
   styleUrls: ['./post-details.css'],
@@ -39,17 +40,15 @@ export class PostDetails implements OnInit {
   safeContent: SafeHtml | null = null;
   is_followd: boolean | null = false;
   is_mine: boolean | null = false;
-
-  constructor(
-    private sanitizer: DomSanitizer,
-    private route: ActivatedRoute,
-    private http: HttpClient,
-    public likeService: LikeService,
-    public followService: FollowService,
-    public userService: UserService,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  postNotFound = false;
+  public followService= inject(FollowService);
+  private sanitizer = inject(DomSanitizer);
+  private route = inject(ActivatedRoute);
+  private http = inject(HttpClient);
+  public likeService = inject(LikeService);
+  public userService = inject(UserService);
+  private router = inject(Router);
+  private dialog = inject(MatDialog); 
 
   public nbrId: number = 0;
   ngOnInit(): void {
@@ -58,7 +57,8 @@ export class PostDetails implements OnInit {
     if (this.postId) {
       this.http
         .get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`)
-        .subscribe((post) => {
+        .subscribe({
+          next: (post) => {
           this.post = post;
           this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
           this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
@@ -68,7 +68,9 @@ export class PostDetails implements OnInit {
           if (this.post.likecount === undefined) this.post.likecount = 0;
           this.is_followd = this.post.isfollow ?? false;
           this.is_mine = this.post.authorUsername === this.userService.user()?.username;
-        });
+        },
+          error: () => this.postNotFound = true,
+      });
     }
   }
 

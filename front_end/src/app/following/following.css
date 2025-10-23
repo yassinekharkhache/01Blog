@@ -5,9 +5,23 @@
   background: #f8f9fa;
   padding: 1rem;
   min-height: 100vh;
-
   overflow-x: hidden;
+}
 
+.a{
+  text-align: center;
+  padding: 30px 10px;
+  color: #007bff;
+  background-color: none;
+  text-decoration: none;
+  border: 1px solid #007bff;
+  border-radius: 5px
+}
+
+.no-posts{
+  text-align: center;
+  padding: 30px 10px;
+  color: #444;
 }
 
 .explore-container {

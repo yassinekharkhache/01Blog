@@ -65,9 +65,7 @@ export class ProfileEditComponent {
     if (this.email.trim()) {
       formData.append('email', this.email.trim());
     }
-    if (this.username.trim()) {
-      formData.append('username', this.username.trim());
-    }
+    
     if (this.password.trim()) {
       formData.append('password', this.password.trim());
     }

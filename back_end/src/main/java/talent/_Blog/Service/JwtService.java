@@ -17,6 +17,7 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
     public String SECRET = "u8h9QxZ3Lpm8iN+eQ27pL7NMPaQs7W9v1N3y1XpS7+8=";
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -30,10 +31,10 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
-        return generateToke(new HashMap<>(), userDetails);
+        return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToke(
+    public String generateToken(
         Map<String, Object> extraClaims,
         UserDetails userDetails
     ){

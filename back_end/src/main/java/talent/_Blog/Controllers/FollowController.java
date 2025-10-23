@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/api/follow")
@@ -31,9 +33,9 @@ public class FollowController {
     public ResponseEntity<?> subscribeUser(@RequestBody Map<String, String> body,
             @AuthenticationPrincipal User user) {
         String usernameToFollow = body.get("username");
-        if (user.getUsername().equals(usernameToFollow)) {
-            return ResponseEntity.status(403).body("You cannot subscribe to yourself.");
-        }
+        // if (user.getUsername().equals(usernameToFollow)) {
+        //     return ResponseEntity.status(403).body("You cannot subscribe to yourself.");
+        // }
         try {
 
             User user2 = userService.getUserByName(usernameToFollow);
@@ -51,9 +53,9 @@ public class FollowController {
     @DeleteMapping("/delete/{followed}")
     public ResponseEntity<String> unsubscribeUser(@PathVariable String followed,
             @AuthenticationPrincipal User user) {
-        if (user.getUsername().equals(followed)) {
-            return ResponseEntity.status(403).body("You cannot unsubscribe to yourself.");
-        }
+        // if (user.getUsername().equals(followed)) {
+        //     return ResponseEntity.status(403).body("You cannot unsubscribe to yourself.");
+        // }
         try {
             User user2 = userService.getUserByName(followed);
 
@@ -73,4 +75,14 @@ public class FollowController {
             return ResponseEntity.status(500).body("An internal error occurred during unsubscription.");
         }
     }
+
+    @GetMapping("/is_subsciberd/{username}")
+    public ResponseEntity<?> getMethodName(@PathVariable String username,@AuthenticationPrincipal User user) {
+        var follower = userService.getUserByName(username);
+        if (follower == null){
+            return ResponseEntity.status(404).body("User not found");
+        }
+        return ResponseEntity.ok(Map.of("is_subsciberd",followService.is_subsciberd(user, follower)));
+    }
+    
 }

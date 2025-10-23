@@ -1,0 +1,43 @@
+<div class="search-container">
+  <input
+    type="text"
+    placeholder="Search users..."
+    [(ngModel)]="searchQuery"
+    (input)="searchUsers()"
+  />
+</div>
+@if(users && users.length > 0){
+
+<div class="results">
+  @for (user of users; track user.id; let i = $index) {
+  <div [routerLink]="['/profile', user.username]" class="user-card">
+    <img [src]="baseurl + user.pic" alt="User profile" class="user-pic" />
+    <div class="user-info">
+      <div class="user-main">
+        <h3>{{ user.username }}</h3>
+        <span class="role">{{ user.role }}</span>
+      </div>
+      <p class="email">{{ user.email }}</p>
+      <div class="stats">
+        <span><strong>Age:</strong> {{ user.age }}</span>
+      </div>
+    </div>
+    @if(user.role === "USER"){
+    
+    <div class="actions">
+      <select (change)="handleAction($event, user)">
+        <option value="">Actions</option>
+        <option value="ban">🚫 Ban</option>
+        <option value="delete">❌ Delete</option>
+      </select>
+    </div>
+    }@else {
+      <p class="status">status: {{user.status}}</p>
+    }
+  </div>
+  }
+</div>
+}
+<!-- @else if(searchQuery && users?.length === 0){
+<p class="no-results">No users found</p>
+} -->

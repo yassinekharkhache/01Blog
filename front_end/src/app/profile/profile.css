@@ -35,7 +35,7 @@ mat-toolbar {
   height: 130px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #6a0dad;
+  border: 4px solid #008CBA;
   background: #eee;
 }
 
@@ -45,7 +45,7 @@ mat-toolbar {
   justify-content: center;
   font-weight: 600;
   font-size: 1.3rem;
-  color: #6a0dad;
+  color: #008CBA;
   background: #f3e9ff;
 }
 
@@ -79,7 +79,7 @@ mat-toolbar {
 .stat-item strong {
   display: block;
   font-size: 1.2rem;
-  color: #6a0dad;
+  color: #008CBA;
 }
 
 .stat-item span {
@@ -107,7 +107,7 @@ mat-toolbar {
 .details-card h2 {
   font-size: 1.3rem;
   margin-bottom: 15px;
-  color: #6a0dad;
+  color: #008CBA;
 }
 
 .detail-group {
@@ -142,7 +142,7 @@ mat-toolbar {
 .section-title {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #6a0dad;
+  color: #008CBA;
   margin: 25px 0;
 }
 
@@ -167,4 +167,27 @@ mat-toolbar {
   .detail-group {
     flex-direction: column;
   }
+}
+
+
+.following{
+  color: #4CAF50;
+  border: 1px solid #4CAF50;
+  cursor: pointer;
+}
+
+.follow{
+  color: #008CBA; /* Blue */
+  border: 1px solid #008CBA;
+  cursor: pointer;
+}
+button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  padding: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  border-radius: 10px
 }

@@ -1,44 +1,50 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  HostListener,
-  computed,
-  input,
-  inject,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatToolbar } from '@angular/material/toolbar';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { MatBadge } from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatDialog } from '@angular/material/dialog';
 import { UserService } from '../services/user/user.service';
 import { ProfileEditComponent } from '../dialogs/profile-edit/profile-edit';
-import { MatDialog } from '@angular/material/dialog';
 import { LoginDialog } from '../dialogs/login-dialog/login-dialog';
+import { NotificationsComponent } from '../notification/notification';
 
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
-  imports: [CommonModule, MatToolbar, MatIconModule, MatBadge],
+  imports: [CommonModule, MatToolbarModule, MatIconModule, MatBadgeModule, NotificationsComponent],
   templateUrl: './nav-bar.html',
   styleUrls: ['./nav-bar.css'],
 })
 export class NavBarComponent {
   userService = inject(UserService);
-  user = this.userService.user;
+  private dialog = inject(MatDialog);
+
   @Input() expanded = false;
   @Output() menuToggle = new EventEmitter<void>();
-  private dialog = inject(MatDialog);
   menuOpen = false;
+  showNotifications = false;
 
-  constructor() {
-    this.userService.fetchUser();
+  logout() {
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
+    });
+    localStorage.clear();
+    sessionStorage.clear();
+    this.userService.clearUser();
+    window.location.href = '/';
   }
 
-  @HostListener('document:click')
-  closeMenu() {
-    this.menuOpen = false;
+  editProfile() {
+    this.dialog.open(ProfileEditComponent);
+  }
+
+  openLogin() {
+    this.dialog.open(LoginDialog).afterClosed().subscribe((result) => {
+      if (result) this.userService.fetchUser();
+    });
   }
 
   toggleMenu(event: MouseEvent) {
@@ -46,29 +52,17 @@ export class NavBarComponent {
     this.menuOpen = !this.menuOpen;
   }
 
-  logout() {
-    // Remove all cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
-    });
-
-    localStorage.clear();
-    sessionStorage.clear();
-
-    window.location.href = '/';
+  toggleNotifications(event: MouseEvent) {
+    event.stopPropagation();
+    this.showNotifications = !this.showNotifications;
   }
 
-  editProfile() {
-    this.dialog.open(ProfileEditComponent);
-  }
-  openLogin() {
-    this.dialog
-      .open(LoginDialog)
-      .afterClosed()
-      .subscribe((result) => {
-        if (result) console.log('12-test User logged in:', result);
-      });
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-menu-wrapper') && !target.closest('.notification-container')) {
+      this.menuOpen = false;
+      this.showNotifications = false;
+    }
   }
 }

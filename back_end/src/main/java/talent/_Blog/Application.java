@@ -2,6 +2,7 @@ package talent._Blog;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class Application {
@@ -22,6 +23,6 @@ public class Application {
 				                                                                          
 				""");
 		});
-		app.run(args);
+	    ConfigurableApplicationContext x = app.run(args);
 	}
 }

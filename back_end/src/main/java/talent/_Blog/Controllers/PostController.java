@@ -72,16 +72,17 @@ public class PostController {
     public ResponseEntity<?> get(
             @PathVariable Long id,
             @AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(postPageMapper.toPage(postService.getPostById(id), user));
+        var post = postPageMapper.toPage(postService.getPostById(id), user);
+        return ResponseEntity.ok(post);
     }
 
     @GetMapping("/following")
-    public ResponseEntity<?> getFollowing(
+    public ResponseEntity<?> getFollowingPosts(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
-                if (user == null){
-                    return ResponseEntity.status(403).body(Map.of("valid","ss"));
-                }
+        if (user == null) {
+            return ResponseEntity.status(403).body(Map.of("valid", "ss"));
+        }
         return ResponseEntity.ok(postService.getFollowingPosts(user, lastId, 10)
                 .stream()
                 .map(post -> postcard.toCard(post, user))
@@ -98,7 +99,7 @@ public class PostController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<List<postcarddto>> getMyPosts(@PathVariable String username,
+    public ResponseEntity<List<postcarddto>> getPosts(@PathVariable String username,
             @AuthenticationPrincipal User currentUser) {
         var posts = postService.getUserPosts(username);
         if (posts.isEmpty()) {
@@ -112,41 +113,38 @@ public class PostController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        try {
-            // 1. Retrieve post
-            var post = postService.getPostById(id);
-            if (post == null) {
-                return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
-            }
-
-            if (!post.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(Role.ADMIN)) {
-                return ResponseEntity.status(403).body(Map.of("message", "Not allowed"));
-            }
-            String content = post.getContent();
-            List<String> mediaUrls = postService.extractMediaUrls(content); // implement in service
-
-            for (String url : mediaUrls) {
-                String fileName = url.substring(url.lastIndexOf('/') + 1);
-                String type = url.matches(".*\\.(mp4|webm|ogg)$") ? "video" : "image";
-                postService.deleteFile(type, fileName); // implement in service
-            }
-
-            // 4. Delete post
-            postService.deletePost(id);
-            return ResponseEntity.ok(Map.of("message", "Post and all media deleted successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("message", "Failed to delete post", "error", e.getMessage()));
+        var post = postService.getPostById(id);
+        if (post == null) {
+            return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
         }
+        if (!post.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(Role.ADMIN)) {
+            return ResponseEntity.status(403).body(Map.of("message", "Not allowed"));
+        }
+
+        String content = post.getContent();
+        List<String> mediaUrls = postService.extractMediaUrls(content); // implement in service
+
+        for (String url : mediaUrls) {
+            String fileName = url.substring(url.lastIndexOf('/') + 1);
+            String type = url.matches(".*\\.(mp4|webm|ogg)$") ? "video" : "image";
+            postService.deleteFile(type, fileName); // implement in service
+        }
+
+        postService.deletePost(id, user);
+        return ResponseEntity.ok(Map.of("message", "Post and all media deleted successfully"));
     }
 
     @PostMapping("/hide")
-    public ResponseEntity<?> postMethodName(@RequestBody BanRequest request) {
+    public ResponseEntity<?> postMethodName(@RequestBody HideRequest request, @AuthenticationPrincipal User user) {
+        if (user == null || (user.getRole() != Role.ADMIN)) {
+            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
+
+        }
         postService.hidePost(request.PostId());
         return ResponseEntity.ok(Map.of("valid", "posthided"));
     }
 
-    public record BanRequest(
-            Integer PostId) {
+    public record HideRequest(Integer PostId) {
     }
 
 }

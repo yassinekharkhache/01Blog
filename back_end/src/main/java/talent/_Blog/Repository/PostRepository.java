@@ -14,7 +14,7 @@ import talent._Blog.Model.User;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // Post FindById(Integer PostId);
-    Post findPostById(Integer id);  
+    Optional<Post> findPostById(Integer id);  
 
     // Only fetch if Visible = true
     Optional<Post> findByIdAndVisibleTrue(Long id);

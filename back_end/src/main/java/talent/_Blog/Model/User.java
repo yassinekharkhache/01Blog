@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
-@ToString(exclude = { "posts", "likes", "reports", "subscriptions", "subscribers" })
 @Entity
 @Builder
 @NoArgsConstructor
@@ -35,6 +33,11 @@ public class User implements UserDetails {
             return List.of();
         }
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", username=" + userName + "}";
     }
 
     @Override
@@ -144,6 +147,6 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = true)
-    private java.time.LocalDateTime BannedUntil; 
-    
+    private java.time.LocalDateTime BannedUntil;
+
 }

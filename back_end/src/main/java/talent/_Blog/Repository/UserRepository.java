@@ -1,5 +1,6 @@
 package talent._Blog.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 // import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
@@ -14,6 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByUserName(String UserName);
     Optional<User> findByUserName(String name);
     Optional<User> findByEmail(String email);
-    void deleteByUserName(String userName);
-
+    Optional<User> deleteByUserName(String userName);
+    List<User> findByUserNameContainingIgnoreCase(String username);
 }

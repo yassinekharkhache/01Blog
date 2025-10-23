@@ -3,14 +3,14 @@ import { RoleGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   {
-    path: '', // USER only
+    path: '', // USER and ADMIN
     pathMatch: 'full',
     loadComponent: () => import('./following/following').then(m => m.Following),
     canActivate: [RoleGuard],
     data: { role: 'USER' }
   },
   {
-    path: 'new-post', // USER only
+    path: 'new-post', // USER and ADMIN
     pathMatch: 'full',
     loadComponent: () => import('./post-editor/post-editor').then(m => m.BlogEditorComponent),
     canActivate: [RoleGuard],
@@ -32,11 +32,11 @@ export const routes: Routes = [
     loadComponent: () => import('./explore/explore').then(m => m.Explore)
   },
   {
-    path: 'post/edit/:id', // USER only
+    path: 'post/edit/:id', // USER and ADMIN
     pathMatch: 'full',
     loadComponent: () => import('./edit/edit').then(m => m.Edit),
     canActivate: [RoleGuard],
-    data: { role: 'USER' }
+    data: { role: 'USER'}
   },
   {
     path: 'admins', // ADMIN only
@@ -46,7 +46,9 @@ export const routes: Routes = [
     data: { role: 'ADMIN' }
   },
   {
-    path: '**', // fallback
-    redirectTo: ''
+    path: '**',
+    pathMatch: 'full',
+    loadComponent: () => import('./notfound/notfound').then(m => m.Notfound)
+
   }
 ];

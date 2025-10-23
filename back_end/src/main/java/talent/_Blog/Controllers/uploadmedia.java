@@ -56,24 +56,14 @@ public class uploadmedia {
         }
     }
 
-    //delete images 
-    /*
-    const response = await this.http
-      .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
-      .toPromise();
-     */
     @DeleteMapping("/{type}/{filename}")
     public ResponseEntity<?> deleteFile(
             @PathVariable("type") String type,
             @PathVariable("filename") String filename,
             @AuthenticationPrincipal User user) {
-        System.out.println("delete >>>>>>>>>>>>>>");
-        System.out.println(user.getUsername());
-        System.out.println(filename);
         if (!filename.startsWith(user.getUsername())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Not allowed to delete this file");
         }
-        System.out.println("--");
 
         try {
             Path filePath = Paths.get(type.equals("image") ? IMAGE_UPLOAD_DIR : VIDEO_UPLOAD_DIR).resolve(filename);

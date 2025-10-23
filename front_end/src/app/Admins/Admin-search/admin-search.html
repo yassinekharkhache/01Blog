@@ -10,9 +10,9 @@
 
 <div class="results">
   @for (user of users; track user.id; let i = $index) {
-  <div [routerLink]="['/profile', user.username]" class="user-card">
-    <img [src]="baseurl + user.pic" alt="User profile" class="user-pic" />
-    <div class="user-info">
+  <div  class="user-card">
+    <img [routerLink]="['/profile', user.username]" [src]="baseurl + user.pic" alt="User profile" class="user-pic" />
+    <div [routerLink]="['/profile', user.username]" class="user-info">
       <div class="user-main">
         <h3>{{ user.username }}</h3>
         <span class="role">{{ user.role }}</span>

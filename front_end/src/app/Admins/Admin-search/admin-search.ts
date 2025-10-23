@@ -6,11 +6,12 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { environment } from '../../../environment/environment';
 import { RouterModule } from '@angular/router';
-
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog';
 @Component({
   selector: 'app-admin-search',
   standalone: true,
-  imports: [FormsModule,RouterModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './admin-search.html',
   styleUrls: ['./admin-search.css'],
 })
@@ -18,9 +19,12 @@ export class AdminSearch implements OnInit, OnDestroy {
   public baseurl = environment.apiUrl;
   searchQuery = '';
   users: any[] = [];
+
   private http = inject(HttpClient);
+  private dialog = inject(MatDialog);
   private searchSubject = new Subject<string>();
   private subscription?: Subscription;
+  private baseApi = environment.apiUrl;
 
   ngOnInit() {
     this.subscription = this.searchSubject
@@ -32,7 +36,7 @@ export class AdminSearch implements OnInit, OnDestroy {
         )
       )
       .subscribe({
-        next: (data) => {this.users = data},
+        next: (data) => { this.users = data },
         error: (err) => console.error('Search error:', err),
       });
   }
@@ -47,32 +51,33 @@ export class AdminSearch implements OnInit, OnDestroy {
   }
 
   handleAction(event: Event, user: any) {
-  const select = event.target as HTMLSelectElement;
-  const action = select.value;
+    const select = event.target as HTMLSelectElement;
+    const action = select.value;
 
-  if (!action) return;
+    if (!action) return;
 
-  if (action === 'ban') {
-    if (!confirm(`Are you sure you want to ban ${user.username}?`)) return;
-    this.http.post(`${this.baseurl}/api/admin/ban/${user.id}`, {}).subscribe({
-      next: () => alert(`${user.username} has been banned.`),
-      error: (err) => console.error('Ban failed:', err),
-    });
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+          data: { message: `Are you sure you want to ${action}?` },
+        });
+    
+        const confirmed = dialogRef.afterClosed();
+
+    if (action === 'ban') {
+      this.http.post(this.baseApi + '/api/users/ban', { username: user.username }).subscribe({
+        next: () => console.log(`user ${user.username} banned successfully`),
+        error: (err) => console.error(`Failed to ban the user ${user.username} err: ${err}`),
+      });
+    }
+
+    if (action === 'delete') {
+      this.http.delete(this.baseApi + '/api/users/delete/' + user.username).subscribe({
+        next: () => console.log(`user ${user.username} deleted successfully`),
+        error: (err) => console.error(`Failed to delete the user ${user.username} err: ${err}`),
+      });
+    }
+
+    select.value = '';
   }
-
-  if (action === 'delete') {
-    if (!confirm(`Delete ${user.username}? This cannot be undone.`)) return;
-    this.http.delete(`${this.baseurl}/api/admin/delete/${user.id}`).subscribe({
-      next: () => {
-        this.users = this.users.filter((u) => u.id !== user.id);
-        alert(`${user.username} has been deleted.`);
-      },
-      error: (err) => console.error('Delete failed:', err),
-    });
-  }
-
-  select.value = ''; // reset menu
-}
 
   ngOnDestroy() {
     this.subscription?.unsubscribe();

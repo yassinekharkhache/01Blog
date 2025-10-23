@@ -25,7 +25,6 @@ export class AdminPannel implements OnInit {
   reports: ReportResDto[] = [];
   filteredReports: ReportResDto[] = [];
   loading = true;
-
   constructor(private reportService: ReportService) {}
 
   ngOnInit() {

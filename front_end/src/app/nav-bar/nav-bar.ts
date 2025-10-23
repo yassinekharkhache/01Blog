@@ -19,9 +19,9 @@ import { NotificationsComponent } from '../notification/notification';
 export class NavBarComponent {
   userService = inject(UserService);
   private dialog = inject(MatDialog);
-
   @Input() expanded = false;
   @Output() menuToggle = new EventEmitter<void>();
+
   menuOpen = false;
   showNotifications = false;
 

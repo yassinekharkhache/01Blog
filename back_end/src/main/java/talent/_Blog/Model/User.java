@@ -112,11 +112,11 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Follow> subscriptions; // users this user follows
+    private List<Follow> subscriptions;
 
     @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
-    private List<Follow> subscribers; // users who follow this user
+    private List<Follow> subscribers;
 
     @JsonIgnore
     public List<User> getFollowers() {

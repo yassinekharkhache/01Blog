@@ -53,7 +53,6 @@ public class PostService {
         
     }
 
-    // delete post
     public void deletePost(Long id, User user) {
         Post existingPost = postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
         if (!existingPost.getUser().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
@@ -62,11 +61,9 @@ public class PostService {
         postRepo.deleteById(id);
     }
 
-    // Extract media URLs from post content
     public List<String> extractMediaUrls(String content) {
         List<String> urls = new ArrayList<>();
 
-        // images
         Matcher imgMatcher = Pattern.compile("<img[^>]+src=\"([^\"]+)\"").matcher(content);
         while (imgMatcher.find())
             urls.add(imgMatcher.group(1));

@@ -31,10 +31,12 @@
         </div>
       </div>
     </div>
-    <button class="{{ is_followd ? 'following' : 'follow' }}" (click)="onFollowClick()">
-      <mat-icon>{{ is_followd ? 'check' : 'add' }}</mat-icon>
-      {{ is_followd ? 'Following' : 'Follow' }}
-    </button>
+    @if(!isMyProfile){
+      <button class="{{ is_followd ? 'following' : 'follow' }}" (click)="onFollowClick()">
+        <mat-icon>{{ is_followd ? 'check' : 'add' }}</mat-icon>
+        {{ is_followd ? 'Following' : 'Follow' }}
+      </button>
+    }
   </div>
 
   <div class="profile-content">

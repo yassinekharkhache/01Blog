@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import talent._Blog.Model.User;
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/upload")
@@ -38,7 +39,9 @@ public class uploadmedia {
                 originalName = originalName.substring(0, dotIndex);
             }
 
-            String uniqueFileName = user.getUsername().replace("@", "") + "_" + originalName.replace("@", "") + "_" + System.currentTimeMillis()+"@" + ".png";
+
+            String name = UUID.randomUUID().toString();
+            String uniqueFileName = name + ".png";
 
             Path filePath = uploadPath.resolve(uniqueFileName);
 
@@ -50,7 +53,6 @@ public class uploadmedia {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("add >>>>>>>>>>>>>>");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Could not store the file. Error: " + e.getMessage());
         }
@@ -92,24 +94,15 @@ public class uploadmedia {
                 Files.createDirectories(uploadPath);
             }
 
-            // Clean original filename
-            String originalName = StringUtils.cleanPath(file.getOriginalFilename());
-            String extension = "";
-            int dotIndex = originalName.lastIndexOf('.');
-            if (dotIndex > 0) {
-                extension = originalName.substring(dotIndex); // include dot
-                originalName = originalName.substring(0, dotIndex);
-            }
-
-            // Generate unique filename: username_originalname_timestamp.ext
-            String uniqueFileName = user.getUsername() + "_" + originalName + "_" + System.currentTimeMillis() + extension;
+            String name = UUID.randomUUID().toString();
+            String uniqueFileName =  name +"@.mp4";
 
             // Save the file
             Path filePath = uploadPath.resolve(uniqueFileName);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Return public URL
-            String publicUrl = "http://localhost:8081/videos/" + uniqueFileName;
+            String publicUrl = "http://localhost:8081/videos/tmp/" + uniqueFileName;
             return ResponseEntity.ok("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {

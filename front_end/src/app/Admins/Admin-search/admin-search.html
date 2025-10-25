@@ -3,15 +3,18 @@
     type="text"
     placeholder="Search users..."
     [(ngModel)]="searchQuery"
-    (input)="searchUsers()"
   />
 </div>
-@if(users && users.length > 0){
 
-<div class="results">
-  @for (user of users; track user.id; let i = $index) {
-  <div  class="user-card">
-    <img [routerLink]="['/profile', user.username]" [src]="baseurl + user.pic" alt="User profile" class="user-pic" />
+<!-- Results list -->
+<div class="results" *ngIf="users().length > 0">
+  <div class="user-card" *ngFor="let user of users(); let i = index; trackBy: trackById">
+    <img 
+      [routerLink]="['/profile', user.username]" 
+      [src]="baseApi + user.pic" 
+      alt="User profile" 
+      class="user-pic" 
+    />
     <div [routerLink]="['/profile', user.username]" class="user-info">
       <div class="user-main">
         <h3>{{ user.username }}</h3>
@@ -22,22 +25,21 @@
         <span><strong>Age:</strong> {{ user.age }}</span>
       </div>
     </div>
-    @if(user.role === "USER"){
-    
-    <div class="actions">
+
+    <!-- Actions for regular users -->
+    <div *ngIf="user.role === 'USER'; else statusBlock" class="actions">
       <select (change)="handleAction($event, user)">
         <option value="">Actions</option>
         <option value="ban">🚫 Ban</option>
         <option value="delete">❌ Delete</option>
       </select>
     </div>
-    }@else {
-      <p class="status">status: {{user.status}}</p>
-    }
+
+    <!-- Status for non-USER roles -->
+    <ng-template #statusBlock>
+      <p class="status">Status: {{ user.status }}</p>
+    </ng-template>
   </div>
-  }
 </div>
-}
-<!-- @else if(searchQuery && users?.length === 0){
-<p class="no-results">No users found</p>
-} -->
+
+

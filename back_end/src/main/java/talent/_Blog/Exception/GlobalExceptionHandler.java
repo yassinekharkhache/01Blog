@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -55,5 +56,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleNotFound(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
-    
+
+    @ExceptionHandler(MediaLimitExceededException.class)
+    public ResponseEntity<Map<String, String>> handleImageLimitExceededException(MediaLimitExceededException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
 }

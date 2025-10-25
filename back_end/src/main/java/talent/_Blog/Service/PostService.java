@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import talent._Blog.Repository.PostRepository;
 import talent._Blog.Repository.FollowRepository;
 import talent._Blog.dto.PostDto;
+import talent._Blog.Exception.MediaLimitExceededException;
 import talent._Blog.Exception.PostNotFoundException;
 import talent._Blog.Model.*;
 
@@ -35,7 +36,8 @@ public class PostService {
 
     private static final int PAGE_SIZE = 6;
 
-    public PostService(NotificationService notificationService, PostRepository postRepo, FollowRepository subscribeRepository) {
+    public PostService(NotificationService notificationService, PostRepository postRepo,
+            FollowRepository subscribeRepository) {
         this.notificationService = notificationService;
         this.postRepo = postRepo;
         this.subscribeRepository = subscribeRepository;
@@ -46,11 +48,11 @@ public class PostService {
     }
 
     @Transactional
-    public void hidePost(Integer PostId){
+    public void hidePost(Integer PostId) {
         Post post = postRepo.findPostById(PostId).orElseThrow(() -> new PostNotFoundException("Post not found"));
         post.setVisible(false);
         postRepo.save(post);
-        
+
     }
 
     public void deletePost(Long id, User user) {
@@ -77,8 +79,10 @@ public class PostService {
     }
 
     // Delete a file from filesystem
-    public void deleteFile(String type, String fileName) {//my image is here abs path : file:/home/yassine/project/01Blog/back_end/uploads/images/
-        String folder = type.equals("image") ? "/home/yassine/project/01Blog/back_end/uploads/images/" : "/home/yassine/project/01Blog/back_end/uploads/videos/";
+    public void deleteFile(String type, String fileName) {// my image is here abs path :
+                                                          // file:/home/yassine/project/01Blog/back_end/uploads/images/
+        String folder = type.equals("image") ? "/home/yassine/project/01Blog/back_end/uploads/images/"
+                : "/home/yassine/project/01Blog/back_end/uploads/videos/";
         File file = new File(folder + fileName);
         if (file.exists())
             file.delete();
@@ -122,7 +126,7 @@ public class PostService {
     }
 
     public Post getPostById(Long id) {
-        return postRepo.findById(id).orElseThrow(()-> new PostNotFoundException("Post not found"));
+        return postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
     }
 
     @Transactional(readOnly = true)
@@ -150,35 +154,58 @@ public class PostService {
         return postRepo.findByUserInAndIdLessThanAndVisibleTrueOrderByIdDesc(following, lastId, pageable);
     }
 
-    public String handle_image_paths(String content){
+    public ContentMediaCount handle_image_paths(String content) {
         String regex = "<img src=\"http://localhost:8081/images/tmp/(.*?)@";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
 
+        int count = 0;
         while (matcher.find()) {
+            count++;
             String imagename = matcher.group(1) + "@.png";
             Path source = Paths.get("/home/yassine/project/01Blog/back_end/uploads/images/tmp/" + imagename);
-            Path destination = Paths.get("/home/yassine/project/01Blog/back_end/uploads/images/"+imagename);
+            Path destination = Paths.get("/home/yassine/project/01Blog/back_end/uploads/images/" + imagename);
             try {
                 // Move the file (will overwrite if file already exists)
                 Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("File moved successfully! code 212");
             } catch (Exception e) {
                 System.out.println("Error moving file: " + e.getMessage());
             }
         }
+        String videoRegex = "<source src=\"http://localhost:8081/videos/tmp/(.*?)@";
+        Pattern videoPattern = Pattern.compile(videoRegex);
+        Matcher videoMatcher = videoPattern.matcher(content);
 
+        int videoCount = 0;
+        while (videoMatcher.find()) {
+            videoCount++;
+            String videoname = videoMatcher.group(1) + "@.mp4";
+            Path source = Paths.get("/home/yassine/project/01Blog/back_end/uploads/videos/tmp/" + videoname);
+            Path destination = Paths.get("/home/yassine/project/01Blog/back_end/uploads/videos/" + videoname);
+            try {
+                Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                System.out.println("Error moving video file: " + e.getMessage());
+            }
+        }
+        content = content.replace("<img src=\"http://localhost:8081/images/tmp/",
+                "<img src=\"http://localhost:8081/images/");
+        content = content.replace("<source src=\"http://localhost:8081/videos/tmp/",
+                "<source src=\"http://localhost:8081/videos/");
 
-        return content.replace("<img src=\"http://localhost:8081/images/tmp/", "<img src=\"http://localhost:8081/images/");
+        return new ContentMediaCount(count, videoCount, content);
     }
-    
+
     @Transactional
     public Post savePost(@Valid PostDto data, User user) {
         Post Post = new Post();
         Post.setTitle(data.title());
         var content = data.content();
-        content = handle_image_paths(content);
-        String safeHtml = Jsoup.clean(content, Safelist.relaxed());
+        var contentAndtImageCount = handle_image_paths(content);
+        if (contentAndtImageCount.ImageCount() > 10 || contentAndtImageCount.VideoCount() >= 1) {
+            throw new MediaLimitExceededException("you can't load more than 10 images and 1 video");
+        }
+        String safeHtml = Jsoup.clean(contentAndtImageCount.content(), Safelist.relaxed());
 
         Post.setContent(safeHtml);
         Post.setPostPreviewImage(data.image());
@@ -189,5 +216,8 @@ public class PostService {
         var post = postRepo.save(Post);
         notificationService.notifyFollowers(user, post);
         return post;
+    }
+
+    public record ContentMediaCount(Integer ImageCount, Integer VideoCount, String content) {
     }
 }

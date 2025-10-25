@@ -8,6 +8,7 @@ import { Notfound } from '../notfound/notfound';
 import { FollowService } from '../services/follow/follow.service';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -23,23 +24,27 @@ export class Profile implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private postService = inject(PostService);
+  private userService = inject(UserService);
   userPosts: PostCardDto[] = [];
   loading = false;
   allLoaded = false;
   is_followd: boolean | null = false;
   lastId: number | null = null;
   username: string | null = '';
-
+  isMyProfile = false;
+  
   onFollowClick(): void {
     this.followService.toggleFollow(this.is_followd as boolean, this.username as string).subscribe({
       next: (res) => {
         this.is_followd = res.isFollowed;
+        this.profileService.fetchUser(this.username as string);
       },
       error: (err) => console.error('Error toggling follow:', err),
     });
   }
 
   ngOnInit(): void {
+    
     this.route.paramMap.subscribe((params) => {
       this.username = params.get('username');
       if (!this.username || this.username === 'null') {
@@ -50,10 +55,10 @@ export class Profile implements OnInit {
       this.lastId = null;
       this.allLoaded = false;
 
-      // Fetch profile info
       this.profileService.fetchUser(this.username);
+      const user = this.userService.user();
+      this.isMyProfile = !!user && user.username === this.username;
 
-      // Check if user is followed
       this.http
         .get<{ is_subsciberd: boolean }>(
           `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
@@ -64,7 +69,6 @@ export class Profile implements OnInit {
           error: () => (this.is_followd = false),
         });
 
-      // Load posts
       this.loadPosts();
     });
   }

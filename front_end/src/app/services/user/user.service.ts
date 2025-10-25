@@ -9,13 +9,13 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
+  addsubscribe() {}
+
   fetchUser() {
-    this.http
-      .get<User>('http://localhost:8081/userdata', { withCredentials: true })
-      .subscribe({
-        next: (user) => this.userSignal.set(user),
-        error: () => this.userSignal.set(null),
-      });
+    this.http.get<User>('http://localhost:8081/userdata', { withCredentials: true }).subscribe({
+      next: (user) => this.userSignal.set(user),
+      error: () => this.userSignal.set(null),
+    });
   }
 
   setUser(user: User) {
@@ -25,6 +25,5 @@ export class UserService {
   clearUser() {
     this.userSignal.set(null);
   }
-
   readonly isLoggedIn = computed(() => !!this.userSignal());
 }

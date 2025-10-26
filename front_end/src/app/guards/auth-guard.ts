@@ -6,8 +6,9 @@ import { UserService } from '../services/user/user.service';
 export class RoleGuard implements CanActivate {
   private userService = inject(UserService);
   private router = inject(Router);
-
+  
   canActivate(route: ActivatedRouteSnapshot): boolean {
+    
     const user = this.userService.user();
     const requiredRole = route.data?.['role'];
 

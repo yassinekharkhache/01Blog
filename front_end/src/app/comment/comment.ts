@@ -59,14 +59,12 @@ export class CommentsComponent implements OnInit {
         this.sending = false;
       },
       error: () => {
-        alert('Failed to post comment.');
         this.sending = false;
       },
     });
   }
 
   onScroll(event: Event) {
-    // alert("add")
     const target = event.target as HTMLElement;
     const atBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
 

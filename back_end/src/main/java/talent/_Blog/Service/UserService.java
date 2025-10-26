@@ -5,6 +5,9 @@ import jakarta.validation.Valid;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
 
@@ -27,12 +30,17 @@ public class UserService {
         this.userRepository = userRepository;
         this.encoder = encoder;
     }
-
-    public List<User> searchUsers(String query) {
-        return userRepository.findByUserNameContainingIgnoreCase(query);
+    @Transactional
+    public List<User> searchUsers(String query,Integer lastId) {
+        Pageable pageable = PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "id"));
+        if (lastId == 0){
+            return userRepository.findByUserNameContainingIgnoreCase(query,pageable);
+        }else{
+            return userRepository.findByUserNameContainingIgnoreCaseAndIdLessThan(query,lastId,pageable);
+        }
     }
 
-
+    @Transactional
     public void banUser(String username) {
         User user = userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("user not found"));
         user.setBannedUntil(java.time.LocalDateTime.now().plusDays(7));
@@ -44,7 +52,7 @@ public class UserService {
     public void deleteUser(String username) {
         userRepository.deleteByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
-
+    @Transactional
     public void updateUser(User user) {
         if (!userRepository.existsByUserName(user.getUsername())){
             throw new UserNotFoundException("User not found");
@@ -53,7 +61,7 @@ public class UserService {
     }
 
     
-
+    @Transactional
     public User getUserByName(String username) {
         return userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
@@ -74,7 +82,7 @@ public class UserService {
         User user = new User();
         user.setUserName(data.name());
         user.setEmail(data.email().toLowerCase());
-        user.setPassword(encoder.encode(data.password())); // hash password
+        user.setPassword(encoder.encode(data.password()));
         user.setAge(data.age());
         user.setRole(Role.USER);
         user.setStatus(Status.Active);

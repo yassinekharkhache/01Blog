@@ -29,10 +29,14 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam("q") String query) {
-        List<User> users = userService.searchUsers(query);
-        return ResponseEntity.ok(users);
+    @GetMapping("/search/{lastId}")
+    public ResponseEntity<List<UserDto>> searchUsers(@RequestParam("q") String query, @PathVariable Integer lastId) {
+        if (query == "" || query.isBlank()) {
+            return ResponseEntity.badRequest().build();
+        }
+        List<User> users = userService.searchUsers(query, lastId);
+        return ResponseEntity.ok(users.stream().map(UserDto::toDto).toList());
+
     }
 
     @PostMapping("/ban")

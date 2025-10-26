@@ -9,12 +9,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:/home/yassine/project/01Blog/back_end/uploads/images/");
+                .addResourceLocations("file:/home/ykharkha/Desktop/01Blog/back_end/uploads/images/");
 
         registry.addResourceHandler("/videos/**")
-                .addResourceLocations("file:/home/yassine/project/01Blog/back_end/uploads/videos/");
+                .addResourceLocations("file:/home/ykharkha/Desktop/01Blog/back_end/uploads/videos/");
 
         registry.addResourceHandler("/profiles/**")
-                .addResourceLocations("file:/home/yassine/project/01Blog/back_end/uploads/profiles/");
+                .addResourceLocations("file:/home/ykharkha/Desktop/01Blog/back_end/uploads/profiles/");
     }
 }

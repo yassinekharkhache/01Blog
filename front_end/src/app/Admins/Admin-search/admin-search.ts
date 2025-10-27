@@ -101,18 +101,16 @@ export class AdminSearch {
     this.lastid = 0;
     effect(() => {
       const query = this.searchQuery().trim();
-      if (query == this.lastquery) {
-        return;
-      }
       this.lastquery = query;
-      this.lastid = 0;
       this.users.set([]);
+      this.lastid = 0;
       timer(400)
         .pipe(switchMap(() => this.http.get<any[]>(`${this.baseApi}/api/users/search/0?q=${query}`)))
         .subscribe({
           next: (data) => {
             if (data.length) {
-              this.lastid = data[data.length - 1].id;
+              this.lastid = data[data.length - 1].Id;
+              console.log(data)
               this.users.update(u => [...data]);
             } else {
               this.users.set([]);
@@ -123,10 +121,11 @@ export class AdminSearch {
     });
   }
   public loadusers(){
+    
     this.http.get<any[]>(`${this.baseApi}/api/users/search/${this.lastid}?q=${this.lastquery}`).subscribe({
       next: (data) => {
         if (data.length) {
-          this.lastid = data[data.length - 1].id;
+          this.lastid = data[data.length - 1].Id;
           this.users.update(u => [...u,...data]);
         } else {
           this.allLoaded = true;

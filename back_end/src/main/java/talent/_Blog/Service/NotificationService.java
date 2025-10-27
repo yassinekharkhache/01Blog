@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import talent._Blog.Model.*;
 import talent._Blog.Repository.NotificationRepository;
+import talent._Blog.Repository.UserRepository;
 
 import java.util.List;
 
@@ -13,9 +14,12 @@ import java.util.List;
 public class NotificationService {
 
     private final NotificationRepository notificationRepo;
+    private final UserRepository UserRepository;
+
 
     @Transactional
-    public void notifyFollowers(User author, Post post) {
+    public void notifyFollowers(User UserAuthor, Post post) {
+        var author = UserRepository.findByUserName(UserAuthor.getUsername()).get();
         author.getFollowers().forEach(follower -> {
             Notification notif = Notification.builder()
                     .receiver(follower)

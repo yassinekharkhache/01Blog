@@ -18,7 +18,7 @@ export class PostService {
   }
 
   getUserPosts(lastId: number | null,username :string) {
-    let params = lastId !== null ? new HttpParams().set('lastId', lastId) : undefined;
+    let params = lastId !== null ? new HttpParams().set('lastId', lastId) : new HttpParams().set('lastId', 0);
     return this.http.get<PostCardDto[]>(`${this.baseUrl}/`+username, { params });
   }
 
@@ -26,5 +26,6 @@ export class PostService {
     let params = lastId !== null ? new HttpParams().set('lastId', lastId) : undefined;
     return this.http.get<PostCardDto[]>(`${this.baseUrl}/following`, { params });
   }
+
 }
 

@@ -105,8 +105,13 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<Post> getUserPosts(String username) {
-        return postRepo.findByUser_userNameAndVisibleTrue(username);
+    public List<Post> getUserPosts(String username, Long lastId) {
+        Pageable pageable = PageRequest.of(0, 10);
+        if (lastId == null || lastId == 0) {
+            return postRepo.findByUser_userNameAndVisibleTrueOrderByIdDesc(username, pageable);
+        }
+        return postRepo.findByUser_userNameAndIdLessThanAndVisibleTrueOrderByIdDesc(username, lastId, pageable);
+
     }
 
     @Transactional
@@ -199,6 +204,7 @@ public class PostService {
     @Transactional
     public Post savePost(@Valid PostDto data, User user) {
         Post Post = new Post();
+
         Post.setTitle(data.title());
         var content = data.content();
         var contentAndtImageCount = handle_image_paths(content);

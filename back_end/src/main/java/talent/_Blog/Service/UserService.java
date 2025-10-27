@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,19 +31,41 @@ public class UserService {
         this.userRepository = userRepository;
         this.encoder = encoder;
     }
+
     @Transactional
-    public List<User> searchUsers(String query,Integer lastId) {
+    public Map<String, Object> getUserData(String username) {
+        User user = getUserByName(username);
+        Map<String, Object> userData = Map.of(
+                "username", user.getUsername(),
+                "email", user.getEmail(),
+                "age", user.getAge(),
+                "role", user.getRole(),
+                "pic", user.getPic(),
+                "followers", user.getFollowers().size(),
+                "following", user.getFollowing().size());
+        return userData;
+    }
+
+    @Transactional
+    public List<User> searchUsers(String query, Integer lastId) {
+
         Pageable pageable = PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "id"));
-        if (lastId == 0){
-            return userRepository.findByUserNameContainingIgnoreCase(query,pageable);
-        }else{
-            return userRepository.findByUserNameContainingIgnoreCaseAndIdLessThan(query,lastId,pageable);
+        boolean noQuery = query == null || query.isEmpty();
+        if (lastId == 0) {
+            return noQuery
+                    ? userRepository.findAll(pageable).getContent()
+                    : userRepository.findByUserNameContainingIgnoreCase(query, pageable);
         }
+
+        return noQuery
+                ? userRepository.findByIdLessThan(lastId, pageable)
+                : userRepository.findByUserNameContainingIgnoreCaseAndIdLessThan(query, lastId, pageable);
     }
 
     @Transactional
     public void banUser(String username) {
-        User user = userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("user not found"));
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
         user.setBannedUntil(java.time.LocalDateTime.now().plusDays(7));
         user.setStatus(Status.Banned);
         userRepository.save(user);
@@ -52,24 +75,27 @@ public class UserService {
     public void deleteUser(String username) {
         userRepository.deleteByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
+
     @Transactional
     public void updateUser(User user) {
-        if (!userRepository.existsByUserName(user.getUsername())){
+        if (!userRepository.existsByUserName(user.getUsername())) {
             throw new UserNotFoundException("User not found");
         }
         userRepository.save(user);
     }
 
-    
     @Transactional
     public User getUserByName(String username) {
-        return userRepository.findByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
+        var user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.getFollowers();
+        user.getFollowing();
+        return user;
     }
 
     public String hashCode(String s) {
         return encoder.encode(s);
     }
-    
 
     @Transactional
     public void saveUser(@Valid RegisterDto data) {

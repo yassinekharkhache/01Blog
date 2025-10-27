@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import talent._Blog.Service.UserService;
+import talent._Blog.dto.UserCardDto;
 import talent._Blog.dto.UserDto;
 import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
@@ -30,13 +31,9 @@ public class UsersController {
     }
 
     @GetMapping("/search/{lastId}")
-    public ResponseEntity<List<UserDto>> searchUsers(@RequestParam("q") String query, @PathVariable Integer lastId) {
-        if (query == "" || query.isBlank()) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<List<UserCardDto>> searchUsers(@RequestParam("q") String query, @PathVariable Integer lastId) {
         List<User> users = userService.searchUsers(query, lastId);
-        return ResponseEntity.ok(users.stream().map(UserDto::toDto).toList());
-
+        return ResponseEntity.ok(users.stream().map(UserCardDto::toDto).toList());
     }
 
     @PostMapping("/ban")

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { PostService } from '../services/post/post.service';
 import { PostCardDto } from '../post-card/post-card';
 import { PostCard } from '../post-card/post-card';
@@ -65,5 +65,17 @@ export class Explore implements OnInit, OnDestroy {
       },
       error: (err) => { console.error(err); this.loading = false; }
     });
+  }
+  @HostListener('window:scroll', [])
+  handleScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
+
+    if (atBottom && !this.loading && !this.allLoaded) {
+      this.loadPosts();
+    }
   }
 }

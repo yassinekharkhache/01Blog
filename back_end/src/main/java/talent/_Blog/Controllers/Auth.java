@@ -59,15 +59,15 @@ public class Auth {
             if (user == null) {
                 return ResponseEntity.status(404).body(Map.of("error", "User not found"));
             }
-
-            Map<String, Object> userData = Map.of(
-                    "username", user.getUsername(),
-                    "email", user.getEmail(),
-                    "age", user.getAge(),
-                    "role", user.getRole(),
-                    "pic", user.getPic(),
-                    "followers", user.getFollowers().size(),
-                    "following", user.getFollowing().size());
+            var userData = userService.getUserData(user.getUsername());
+            // Map<String, Object> userData = Map.of(
+            //         "username", user.getUsername(),
+            //         "email", user.getEmail(),
+            //         "age", user.getAge(),
+            //         "role", user.getRole(),
+            //         "pic", user.getPic(),
+            //         "followers", user.getFollowers().size(),
+            //         "following", user.getFollowing().size());
 
             return ResponseEntity.ok(userData);
 

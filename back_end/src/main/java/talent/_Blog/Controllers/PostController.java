@@ -100,8 +100,15 @@ public class PostController {
 
     @GetMapping("/{username}")
     public ResponseEntity<List<postcarddto>> getPosts(@PathVariable String username,
-            @AuthenticationPrincipal User currentUser) {
-        var posts = postService.getUserPosts(username);
+            @AuthenticationPrincipal User currentUser,
+            @RequestParam(required = true) Long lastId) {
+        var posts = postService.getUserPosts(username,lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
         if (posts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

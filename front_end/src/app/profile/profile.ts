@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, HostListener, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { PostService } from '../services/post/post.service';
@@ -17,6 +17,7 @@ import { UserService } from '../services/user/user.service';
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
+
 export class Profile implements OnInit {
   public followService = inject(FollowService);
   public profileService = inject(ProfileService);
@@ -32,7 +33,7 @@ export class Profile implements OnInit {
   lastId: number | null = null;
   username: string | null = '';
   isMyProfile = false;
-  
+
   onFollowClick(): void {
     this.followService.toggleFollow(this.is_followd as boolean, this.username as string).subscribe({
       next: (res) => {
@@ -44,7 +45,6 @@ export class Profile implements OnInit {
   }
 
   ngOnInit(): void {
-    
     this.route.paramMap.subscribe((params) => {
       this.username = params.get('username');
       if (!this.username || this.username === 'null') {
@@ -89,4 +89,19 @@ export class Profile implements OnInit {
       complete: () => (this.loading = false),
     });
   }
+
+  // lazy load
+    @HostListener('window:scroll', [])
+  handleScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
+
+    if (atBottom && !this.loading && !this.allLoaded) {
+      this.loadPosts();
+    }
+  }
+
 }

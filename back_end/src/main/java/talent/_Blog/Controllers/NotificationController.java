@@ -32,4 +32,11 @@ public class NotificationController {
         notificationService.markAllAsSeen(username);
         return ResponseEntity.ok(Map.of("Valid","Notifications are hided"));
     }
+
+    @GetMapping("/count")
+    public ResponseEntity<?> getNotificationsCount(@AuthenticationPrincipal User user) {
+        var count = notificationService.getNotificationsCount(user);
+        return ResponseEntity.ok().body(Map.of("count", count));
+    }
+
 }

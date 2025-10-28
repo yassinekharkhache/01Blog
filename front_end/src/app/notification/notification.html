@@ -1,5 +1,9 @@
 <button mat-icon-button class="notification-btn" (click)="toggleNotifications()">
-  <mat-icon [matBadge]="unseenCount()" matBadgeColor="warn">notifications</mat-icon>
+  @if(unseenCount() != 0){
+    <mat-icon   [matBadge]="unseenCount()" matBadgeColor="warn">notifications</mat-icon>
+  }@else {
+    <mat-icon  matBadgeColor="warn">notifications</mat-icon>
+  }
 </button>
 
 <div class="notifications-dropdown" *ngIf="showNotifications">

@@ -11,7 +11,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(() => {
       const userService = inject(UserService);
-      return userService.fetchUser(); // Should return Promise or Observable
+      return userService.fetchUser();
     }),
     provideRouter(routes),
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'assets/tinymce/tinymce.min.js' },

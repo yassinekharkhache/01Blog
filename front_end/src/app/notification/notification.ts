@@ -15,21 +15,21 @@ import { UserService } from '../services/user/user.service';
 export class NotificationsComponent {
   private notificationService = inject(NotificationService);
   private userService = inject(UserService);
+  private NotificationService = inject(NotificationService);
+
 
   @Output() unseenCountChange = new EventEmitter<number>();
 
   notifications = this.notificationService.notifications;
-  unseenCount = this.notificationService.unseenCount;
   showNotifications = false;
+  unseenCount = this.notificationService.unseenCount;
 
+  
   private loadEffect = effect(() => {
     const user = this.userService.user();
     if (user) this.notificationService.loadNotifications(user.username);
   });
 
-  private emitCountEffect = effect(() => {
-    this.unseenCountChange.emit(this.unseenCount());
-  });
 
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;

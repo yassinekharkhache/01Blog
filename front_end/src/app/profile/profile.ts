@@ -90,8 +90,7 @@ export class Profile implements OnInit {
     });
   }
 
-  // lazy load
-    @HostListener('window:scroll', [])
+  @HostListener('window:scroll', [])
   handleScroll(): void {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const scrollHeight = document.documentElement.scrollHeight;
@@ -103,5 +102,4 @@ export class Profile implements OnInit {
       this.loadPosts();
     }
   }
-
 }

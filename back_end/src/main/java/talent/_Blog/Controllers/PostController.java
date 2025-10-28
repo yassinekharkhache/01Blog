@@ -38,6 +38,12 @@ public class PostController {
             @RequestPart("content") String content,
             @RequestPart("image") MultipartFile image,
             @AuthenticationPrincipal User user) throws IOException {
+        if (content.length() < 4 || content.length() > 4000){
+            return ResponseEntity.badRequest().body("content must be between 4 and 4000 characters");
+        }
+        if (title.length() < 4 || title.length() > 100){
+            return ResponseEntity.badRequest().body("title must be between 4 and 100 characters");
+        }
         PostDto data = new PostDto(content, title, image.getBytes());
         var submittedPost = postService.savePost(data, user);
         return ResponseEntity.status(201)
@@ -102,13 +108,7 @@ public class PostController {
     public ResponseEntity<List<postcarddto>> getPosts(@PathVariable String username,
             @AuthenticationPrincipal User currentUser,
             @RequestParam(required = true) Long lastId) {
-        var posts = postService.getUserPosts(username,lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
-        System.out.println(">>>>>>>>>>>>>>>>>"+lastId);
+        var posts = postService.getUserPosts(username, lastId);
         if (posts.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

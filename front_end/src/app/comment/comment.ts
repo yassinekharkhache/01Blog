@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { CommentService } from '../services/Comment/comment.service';
 import { Comment } from '../model/comment/comment.model';
 import { DatePipe } from '@angular/common';
@@ -21,7 +21,7 @@ export class CommentsComponent implements OnInit {
   public newCommentContent = '';
   public sending = false;
 
-  constructor(private commentService: CommentService) {}
+  constructor(private commentService: CommentService) { }
 
   ngOnInit() {
     this.loadComments();
@@ -31,16 +31,6 @@ export class CommentsComponent implements OnInit {
     return item.id;
   }
 
-  loadComments() {
-    if (this.loading) return;
-    this.loading = true;
-
-    this.commentService.getComments(this.postId, this.lastId).subscribe((res) => {
-      this.comments.push(...res);
-      if (res.length > 0) this.lastId = res[res.length - 1].id;
-      this.loading = false;
-    });
-  }
 
   submitComment() {
     if (!this.newCommentContent.trim()) return;
@@ -64,9 +54,24 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  onScroll(event: Event) {
-    const target = event.target as HTMLElement;
-    const atBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
+
+  public loadComments() {
+    if (this.loading) return;
+    this.loading = true;
+
+    this.commentService.getComments(this.postId, this.lastId).subscribe((res) => {
+      this.comments.push(...res);
+      if (res.length > 0) this.lastId = res[res.length - 1].id;
+      this.loading = false;
+    });
+  }
+  @HostListener('window:scroll', [])
+  handleScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
 
     if (atBottom && !this.loading) {
       this.loadComments();

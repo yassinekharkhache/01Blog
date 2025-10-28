@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -13,6 +13,8 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 import { Notfound } from '../notfound/notfound';
+import { CommentService } from '../services/Comment/comment.service';
+import { Comment } from '../model/comment/comment.model';
 
 interface PostDetailsDto {
   id: number;
@@ -29,7 +31,7 @@ interface PostDetailsDto {
 }
 
 @Component({
-  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger,Notfound],
+  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger, Notfound],
   selector: 'app-post-details',
   templateUrl: './post-details.html',
   styleUrls: ['./post-details.css'],
@@ -41,16 +43,21 @@ export class PostDetails implements OnInit {
   is_followd: boolean | null = false;
   is_mine: boolean | null = false;
   postNotFound = false;
-  public followService= inject(FollowService);
+  loading = false;
+  comments: Comment[] = [];
+  lastId?: number = 0;
+
+  public followService = inject(FollowService);
   private sanitizer = inject(DomSanitizer);
   private route = inject(ActivatedRoute);
   private http = inject(HttpClient);
   public likeService = inject(LikeService);
   public userService = inject(UserService);
   private router = inject(Router);
-  private dialog = inject(MatDialog); 
-
+  private dialog = inject(MatDialog);
+  private commentService = inject(CommentService);
   public nbrId: number = 0;
+
   ngOnInit(): void {
     this.postId = this.route.snapshot.paramMap.get('id');
     this.nbrId = Number(this.postId);
@@ -59,18 +66,18 @@ export class PostDetails implements OnInit {
         .get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`)
         .subscribe({
           next: (post) => {
-          this.post = post;
-          this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
-          this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
+            this.post = post;
+            this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
+            this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
 
-          // Normalize to match toggleLike input
-          if (this.post.isliked === undefined) this.post.isliked = false;
-          if (this.post.likecount === undefined) this.post.likecount = 0;
-          this.is_followd = this.post.isfollow ?? false;
-          this.is_mine = this.post.authorUsername === this.userService.user()?.username;
-        },
+            // Normalize to match toggleLike input
+            if (this.post.isliked === undefined) this.post.isliked = false;
+            if (this.post.likecount === undefined) this.post.likecount = 0;
+            this.is_followd = this.post.isfollow ?? false;
+            this.is_mine = this.post.authorUsername === this.userService.user()?.username;
+          },
           error: () => this.postNotFound = true,
-      });
+        });
     }
   }
 
@@ -115,7 +122,7 @@ export class PostDetails implements OnInit {
       error: (err) => console.error('Error toggling like:', err),
     });
   }
-  onDeleteClick(){
+  onDeleteClick() {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.nbrId}`).subscribe({
       next: () => {
         console.log(`Post ${this.nbrId} deleted successfully`);

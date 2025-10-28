@@ -1,4 +1,4 @@
-<div class="comments" (scroll)="onScroll($event)">
+<div class="comments" >
   <h2>Comments</h2>
   <div class="new-comment">
     <textarea [(ngModel)]="newCommentContent" placeholder="Write your comment..."></textarea>
@@ -9,10 +9,10 @@
   <div class="comment">
     <img
       [src]="BaseUrl + c.user.pic"
-      [alt]="c.user.userName ? c.user.userName + ' profile picture' : 'User profile picture'"
+      [alt]="c.user.username ? c.user.username + ' profile picture' : 'User profile picture'"
     />
     <div class="comment-details">
-      <strong>{{ c.user.userName }}</strong>
+      <strong>{{ c.user.username }}</strong>
       <p class="comment-content">{{ c.content }}</p>
       <small>{{ c.createdAt | date : 'short' }}</small>
     </div>

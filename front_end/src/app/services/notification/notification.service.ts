@@ -23,19 +23,30 @@ export class NotificationService {
   private notificationsSignal = signal<Notification[]>([]);
   readonly notifications = this.notificationsSignal.asReadonly();
 
-  readonly unseenCount = computed(() =>
-    this.notificationsSignal().filter(n => !n.seen).length
-  );
+
 
   private lastId: number | null = null;
   private isLoading = false;
 
+  public unseenCount = signal(0);
+
   constructor() {
     effect(() => {
       const user = this.userService.user();
-      if (user) this.loadNotifications(user.username);
-      else this.notificationsSignal.set([]);
+      if (user) {
+        this.loadNotifications(user.username);
+        this.loadUnseenCount(user.username);
+      } else {
+        this.notificationsSignal.set([]);
+        this.unseenCount.set(0);
+      }
     });
+  }
+
+  private loadUnseenCount(username: string) {
+    this.http
+      .get<{ count: number }>(`${environment.apiUrl}/api/notifications/count`)
+      .subscribe(res => {this.unseenCount.set(res.count)});
   }
 
   loadNotifications(username: string, lastId?: number) {
@@ -48,12 +59,9 @@ export class NotificationService {
 
     this.http.get<Notification[]>(url).subscribe({
       next: (data) => {
-        console.log(data)
         if (lastId) {
-          // append for infinite scroll
           this.notificationsSignal.update(prev => [...prev, ...data]);
         } else {
-          // initial load
           this.notificationsSignal.set(data);
         }
 

@@ -46,6 +46,9 @@ public class CommentsController {
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+        if(commentDto.content().length() > 1000){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
         Comment savedComment = commentService.saveComment(commentDto.content(),commentDto.postId(),user);
         return ResponseEntity.ok(savedComment);
     }

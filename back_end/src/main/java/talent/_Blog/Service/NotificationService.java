@@ -16,6 +16,11 @@ public class NotificationService {
     private final NotificationRepository notificationRepo;
     private final UserRepository UserRepository;
 
+    public Integer getNotificationsCount(User user) {
+        return notificationRepo.countByReceiverAndSeenFalse(user);
+    }
+
+
 
     @Transactional
     public void notifyFollowers(User UserAuthor, Post post) {

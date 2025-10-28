@@ -22,7 +22,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
   ],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
+  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'assets/tinymce/tinymce.min.js' }],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
 })
@@ -182,4 +182,5 @@ export class BlogEditorComponent {
       this.imagePreviewUrl = URL.createObjectURL(file);
     }
   }
+  
 }

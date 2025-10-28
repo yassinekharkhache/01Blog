@@ -4,7 +4,6 @@
       [src]="getPostImageUrl()"
       [alt]="post.title"
       class="post-image"
-      onerror="this.onerror=null"
     />
   </div>
 
@@ -17,7 +16,6 @@
         [src]="'http://localhost:8081' + post.authorProfileImageUrl"
         alt="Author Profile"
         class="author-avatar"
-        onerror="this.onerror=null;this.src='https://localhost:8081/default.png'"
       />
       <span class="author-name">{{ post.authorUsername }}</span>
       <span class="meta-separator">|</span>

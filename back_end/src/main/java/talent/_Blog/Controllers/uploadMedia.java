@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/upload")
-public class uploadmedia {
+public class uploadMedia {
 
     private final String IMAGE_UPLOAD_DIR = "uploads/images/tmp";
     private final String VIDEO_UPLOAD_DIR = "uploads/videos/tmp";
@@ -41,7 +41,7 @@ public class uploadmedia {
 
 
             String name = UUID.randomUUID().toString();
-            String uniqueFileName = name + ".png";
+            String uniqueFileName = name + "@.png";
 
             Path filePath = uploadPath.resolve(uniqueFileName);
 

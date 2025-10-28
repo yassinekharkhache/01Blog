@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../model/user/user.model';
-import { catchError, of, tap } from 'rxjs';
+import { firstValueFrom, catchError, of, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -12,16 +12,15 @@ export class UserService {
 
   addsubscribe() { }
 
-  fetchUser() {
-  return this.http.get<User>('http://localhost:8081/userdata', { withCredentials: true }).pipe(
-    tap({
-      next: (user) => this.userSignal.set(user),
-      error: () => this.userSignal.set(null),
-    }),
-    catchError(() => {
-      this.userSignal.set(null);
-      return of(null);
-    })
+fetchUser(): Promise<User | null> {
+  return firstValueFrom(
+    this.http.get<User>('http://localhost:8081/userdata', { withCredentials: true }).pipe(
+      tap(user => this.userSignal.set(user)),
+      catchError(() => {
+        this.userSignal.set(null);
+        return of(null);
+      })
+    )
   );
 }
 

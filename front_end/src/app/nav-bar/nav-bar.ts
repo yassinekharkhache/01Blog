@@ -19,6 +19,7 @@ import { NotificationsComponent } from '../notification/notification';
 export class NavBarComponent {
   userService = inject(UserService);
   private dialog = inject(MatDialog);
+  public pop = false;
   @Input() expanded = false;
   @Output() menuToggle = new EventEmitter<void>();
 
@@ -42,6 +43,12 @@ export class NavBarComponent {
   }
 
   openLogin() {
+    if (this.pop == true){
+      this.dialog.closeAll();
+      this.pop = false;
+      return;
+    }
+    this.pop = true;
     this.dialog.open(LoginDialog).afterClosed().subscribe((result) => {
       if (result) this.userService.fetchUser();
     });

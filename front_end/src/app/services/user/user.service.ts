@@ -12,17 +12,17 @@ export class UserService {
 
   addsubscribe() { }
 
-fetchUser(): Promise<User | null> {
-  return firstValueFrom(
-    this.http.get<User>('http://localhost:8081/userdata', { withCredentials: true }).pipe(
-      tap(user => this.userSignal.set(user)),
-      catchError(() => {
-        this.userSignal.set(null);
-        return of(null);
-      })
-    )
-  );
-}
+  fetchUser(): Promise<User | null> {
+    return firstValueFrom(
+      this.http.get<User | null>('http://localhost:8081/userdata', { withCredentials: true }).pipe(
+        tap(user => this.userSignal.set(user)),
+        catchError(() => {
+          this.userSignal.set(null);
+          return of(null);
+        })
+      )
+    );
+  }
 
 
   setUser(user: User) {

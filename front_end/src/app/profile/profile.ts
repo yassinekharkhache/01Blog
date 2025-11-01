@@ -9,6 +9,7 @@ import { FollowService } from '../services/follow/follow.service';
 import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../services/user/user.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -26,6 +27,7 @@ export class Profile implements OnInit {
   private router = inject(Router);
   private postService = inject(PostService);
   private userService = inject(UserService);
+  private authService = inject(AuthService);
   userPosts: PostCardDto[] = [];
   loading = false;
   allLoaded = false;
@@ -35,6 +37,11 @@ export class Profile implements OnInit {
   isMyProfile = false;
 
   onFollowClick(): void {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return
+    }
+
     this.followService.toggleFollow(this.is_followd as boolean, this.username as string).subscribe({
       next: (res) => {
         this.is_followd = res.isFollowed;
@@ -45,8 +52,10 @@ export class Profile implements OnInit {
   }
 
   ngOnInit(): void {
+    this.allLoaded = false;
     this.route.paramMap.subscribe((params) => {
       this.username = params.get('username');
+      console.log(this.username);
       if (!this.username || this.username === 'null') {
         this.router.navigate(['/explore']);
         return;
@@ -54,12 +63,14 @@ export class Profile implements OnInit {
       this.userPosts = [];
       this.lastId = null;
       this.allLoaded = false;
-
+      
       this.profileService.fetchUser(this.username);
       const user = this.userService.user();
       this.isMyProfile = !!user && user.username === this.username;
 
-      this.http
+      if (this.userService.user() != null){
+
+        this.http
         .get<{ is_subsciberd: boolean }>(
           `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
           { withCredentials: true }
@@ -68,13 +79,15 @@ export class Profile implements OnInit {
           next: (data) => (this.is_followd = data.is_subsciberd),
           error: () => (this.is_followd = false),
         });
-
+      }
+      
       this.loadPosts();
+
     });
   }
 
   loadPosts(): void {
-    if (this.loading || this.allLoaded) return;
+    if (this.loading || this.allLoaded || !this.username) return;
     this.loading = true;
     this.postService.getUserPosts(this.lastId, this.username as string).subscribe({
       next: (newPosts) => {
@@ -97,7 +110,6 @@ export class Profile implements OnInit {
     const clientHeight = document.documentElement.clientHeight;
 
     const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
-
     if (atBottom && !this.loading && !this.allLoaded) {
       this.loadPosts();
     }

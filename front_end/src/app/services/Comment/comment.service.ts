@@ -23,7 +23,7 @@ export class CommentService {
   // }
   getComments(postId: number, lastId?: number): Observable<Comment[]> {
     const params: any = lastId ? { lastId } : {};
-    return this.http.get<Comment[]>(`${this.baseUrl}/${postId}`, { params });
+    return this.http.get<Comment[]>(`${this.baseUrl}/post/${postId}`, { params });
   }
 
   addComment(comment: Partial<Comment>): Observable<Comment> {

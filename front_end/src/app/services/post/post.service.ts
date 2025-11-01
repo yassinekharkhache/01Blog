@@ -19,7 +19,7 @@ export class PostService {
 
   getUserPosts(lastId: number | null,username :string) {
     let params = lastId !== null ? new HttpParams().set('lastId', lastId) : new HttpParams().set('lastId', 0);
-    return this.http.get<PostCardDto[]>(`${this.baseUrl}/`+username, { params });
+    return this.http.get<PostCardDto[]>(`${this.baseUrl}/profile/`+username, { params });
   }
 
   getFollowingPosts(lastId: number | null) {

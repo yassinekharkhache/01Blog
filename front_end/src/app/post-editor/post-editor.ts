@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,7 +22,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatInputModule,
     MatButtonModule,
   ],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'assets/tinymce/tinymce.min.js' }],
   templateUrl: './post-editor.html',
   styleUrls: ['./post-editor.css'],
 })
@@ -41,7 +40,7 @@ export class BlogEditorComponent {
   editorConfig: any = {
     height: 500,
     menubar: false,
-    plugins: ['image', 'link', 'media', 'paste', 'code', 'lists', 'heading'],
+    plugins: ['image', 'link', 'media', 'paste', 'code', 'lists'],
     toolbar:
       'undo redo | formatselect bold italic underline | image media | code | bullist numlist outdent indent',
 
@@ -118,9 +117,9 @@ export class BlogEditorComponent {
       if (!file) return;
 
       let maxSizeInMB;
-      if (type === 'image'){
+      if (type === 'image') {
         maxSizeInMB = 2;
-      }else{
+      } else {
         maxSizeInMB = 10;
       }
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
@@ -138,8 +137,41 @@ export class BlogEditorComponent {
     };
   }
 
+  // make notify that take message string
+  notify(message: string): void {
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+    });
+  }
+
+
   async submitPost() {
     if (!this.title.trim() || !this.content.trim()) return;
+
+    if (this.title.length >= 100) {
+      this.notify("title is to long")
+      return
+    }
+
+    if (this.title.length <= 5) {
+      this.notify("title is to long")
+      return
+    }
+
+    if (this.content.length >= 4000) {
+      this.notify("content is to long")
+      return
+    }
+
+    if (this.content.length <= 50) {
+      this.notify("content is to short")
+      return
+    }
+
+    if (!this.imagePreview) {
+      this.notify("image is required")
+      return
+    }
 
     this.loading = true;
     const formData = new FormData();
@@ -151,15 +183,15 @@ export class BlogEditorComponent {
 
     try {
       const res = await firstValueFrom(
-        this.http.post<{ id: number }>(`${this.apiBase}/post/add`, formData)
+        this.http.post<{ postId: number }>(`${this.apiBase}/post/add`, formData)
       );
 
-      if (res?.id) {
-        console.log('Post created:', res.id);
-        this.router.navigate(['/post', res.id]);
+      console.log('Post created: ', res);
+      if (res?.postId) {
+        this.router.navigate(['/post', res.postId]);
       }
-    } catch (err) {
-      console.error('Failed to submit post:', err);
+    } catch (err: any) {
+      console.log('Failed to submit post:', err);
     } finally {
       this.loading = false;
     }
@@ -182,5 +214,5 @@ export class BlogEditorComponent {
       this.imagePreviewUrl = URL.createObjectURL(file);
     }
   }
-  
+
 }

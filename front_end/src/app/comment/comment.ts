@@ -1,10 +1,12 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, inject, Input, OnInit } from '@angular/core';
 import { CommentService } from '../services/Comment/comment.service';
 import { Comment } from '../model/comment/comment.model';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { environment } from '../../environment/environment';
+import { AuthService } from '../services/auth/auth.service';
+import { UserService } from '../services/user/user.service';
 
 @Component({
   selector: 'app-comment',
@@ -14,6 +16,8 @@ import { environment } from '../../environment/environment';
 })
 export class CommentsComponent implements OnInit {
   public BaseUrl = environment.apiUrl;
+  public userService = inject(UserService);
+  public authService = inject(AuthService);
   @Input() postId!: number;
   comments: Comment[] = [];
   loading = false;
@@ -33,6 +37,10 @@ export class CommentsComponent implements OnInit {
 
 
   submitComment() {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return;
+    }
     if (!this.newCommentContent.trim()) return;
 
     this.sending = true;
@@ -43,7 +51,6 @@ export class CommentsComponent implements OnInit {
 
     this.commentService.addComment(comment).subscribe({
       next: (saved) => {
-        console.log(saved);
         this.comments.unshift(saved);
         this.newCommentContent = '';
         this.sending = false;

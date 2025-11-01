@@ -2,8 +2,10 @@ package talent._Blog.Controllers;
 
 // import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,18 +38,52 @@ public class PostController {
     public ResponseEntity<?> addPost(
             @RequestPart("title") String title,
             @RequestPart("content") String content,
-            @RequestPart("image") MultipartFile image,
+            @RequestPart(value = "image", required = true) MultipartFile image,
             @AuthenticationPrincipal User user) throws IOException {
-        if (content.length() < 4 || content.length() > 4000){
-            return ResponseEntity.badRequest().body("content must be between 4 and 4000 characters");
+
+        System.out.println(content+" "+title);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("error", "User not authenticated. Please log in to create a post."));
         }
-        if (title.length() < 4 || title.length() > 100){
-            return ResponseEntity.badRequest().body("title must be between 4 and 100 characters");
+
+        if (title == null || title.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Title cannot be empty."));
         }
-        PostDto data = new PostDto(content, title, image.getBytes());
+        if (title.length() < 4 || title.length() > 100) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Title must be between 4 and 100 characters."));
+        }
+
+        // Validate content
+        if (content == null || content.trim().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Content cannot be empty."));
+        }
+        if (content.length() < 4 || content.length() > 4000) {
+            return ResponseEntity.badRequest()
+                    .body(Map.of("error", "Content must be between 4 and 4000 characters."));
+        }
+
+        byte[] imageBytes = null;
+        if (image != null && !image.isEmpty()) {
+            if (image.getSize() > 1 * 1024 * 1024) { // 2 MB
+                return ResponseEntity.badRequest()
+                        .body(Map.of("error", "Image size exceeds the maximum limit of 5 MB."));
+            }
+            imageBytes = image.getBytes();
+        }
+
+        // Build DTO and save post
+        PostDto data = new PostDto(content.trim(), title.trim(), imageBytes);
         var submittedPost = postService.savePost(data, user);
-        return ResponseEntity.status(201)
-                .body(Map.of("message", "Post submitted successfully", "id", submittedPost.getId().toString()));
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of(
+                        "message", "Post submitted successfully.",
+                        "postId", submittedPost.getId().toString(),
+                        "author", user.getUsername()));
     }
 
     // edit post
@@ -78,6 +114,7 @@ public class PostController {
     public ResponseEntity<?> get(
             @PathVariable Long id,
             @AuthenticationPrincipal User user) {
+
         var post = postPageMapper.toPage(postService.getPostById(id), user);
         return ResponseEntity.ok(post);
     }
@@ -104,14 +141,11 @@ public class PostController {
                 .toList();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/profile/{username}")
     public ResponseEntity<List<postcarddto>> getPosts(@PathVariable String username,
             @AuthenticationPrincipal User currentUser,
             @RequestParam(required = true) Long lastId) {
         var posts = postService.getUserPosts(username, lastId);
-        if (posts.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
         var dtoList = posts.stream()
                 .map(post -> postcard.toCard(post, currentUser))
                 .toList();
@@ -119,12 +153,13 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
         var post = postService.getPostById(id);
         if (post == null) {
             return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
         }
-        if (!post.getUser().getUsername().equals(user.getUsername()) && !user.getRole().equals(Role.ADMIN)) {
+        if (!post.getUser().getUsername().equals(user.getUsername())) {
             return ResponseEntity.status(403).body(Map.of("message", "Not allowed"));
         }
 
@@ -142,8 +177,9 @@ public class PostController {
     }
 
     @PostMapping("/hide")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> postMethodName(@RequestBody HideRequest request, @AuthenticationPrincipal User user) {
-        if (user == null || (user.getRole() != Role.ADMIN)) {
+        if (user == null) {
             return ResponseEntity.status(403).body(Map.of("not authrized", 403));
 
         }

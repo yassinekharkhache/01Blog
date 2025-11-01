@@ -79,9 +79,9 @@ export class NotificationService {
   }
 
   markAllAsSeen(username: string) {
+    this.unseenCount.set(0)
     this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/${username}`, {})
       .subscribe((data) => {
-        console.log(data)
         const updated = this.notificationsSignal().map(n => ({ ...n, seen: true }));
         this.notificationsSignal.set(updated);
       });

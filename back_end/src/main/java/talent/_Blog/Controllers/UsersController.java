@@ -3,6 +3,7 @@ package talent._Blog.Controllers;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,9 +38,10 @@ public class UsersController {
     }
 
     @PostMapping("/ban")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> Baneuser(@RequestBody BanRequest request, @AuthenticationPrincipal User user) {
-        if (user == null || user.getRole() != Role.ADMIN) {
-            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
+        if (user == null) {
+            return ResponseEntity.status(403).body(Map.of("forbidden", 403));
         }
         userService.banUser(request.username());
         return ResponseEntity.ok(Map.of("valid", 200));
@@ -49,10 +51,10 @@ public class UsersController {
     }
 
     @DeleteMapping("/delete/{username}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> Deleteuser(@PathVariable String username, @AuthenticationPrincipal User user) {
-
-        if (user == null || user.getRole() != Role.ADMIN) {
-            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
+        if (user == null) {
+            return ResponseEntity.status(403).body(Map.of("forbidden", 403));
         }
         userService.deleteUser(username);
         return ResponseEntity.ok(Map.of("valid", 200));
@@ -91,7 +93,7 @@ public class UsersController {
 
         return ResponseEntity.ok(currentUser);
     }
-
+///api/post/get
     @GetMapping("/get/{username}")
     public ResponseEntity<?> getUserData(
             @PathVariable String username,
@@ -100,7 +102,6 @@ public class UsersController {
         if (targetUser == null){
             return ResponseEntity.notFound().build();
         }
-
         return ResponseEntity.ok(UserDto.toDto(targetUser));
     }
 }

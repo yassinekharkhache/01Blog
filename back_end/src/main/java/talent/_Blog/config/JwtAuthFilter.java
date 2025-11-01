@@ -34,15 +34,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String jwt = authHeader.substring(7);
         try{
             final String userName = jwtService.extractUsername(jwt);
+            
             User user = userRepository.findByUserName(userName).get();
-            if (user == null) {
-                response.setStatus(404);
-                response.getWriter().write("User not found");
-                return;
-            }
-            if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
-                response.setStatus(403);
-                response.getWriter().write("Your account is banned until " + user.getBannedUntil());
+            if (user == null || user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
+                filterChain.doFilter(request, response);
                 return;
             }
 

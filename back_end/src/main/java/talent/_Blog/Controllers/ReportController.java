@@ -45,7 +45,7 @@ public class ReportController {
     public ResponseEntity<?> getReports(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
-        if (user == null || user.getRole() != talent._Blog.Model.Role.ADMIN) {
+        if (user == null) {
             return ResponseEntity.status(403).body(Map.of("not authrized", 403));
         }
         List<Report> reports = reportService.getReports(lastId);
@@ -55,7 +55,7 @@ public class ReportController {
     @DeleteMapping("/delete/{ReportId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable Long ReportId, @AuthenticationPrincipal User user) {
-        if (user == null || user.getRole() != talent._Blog.Model.Role.ADMIN) {
+        if (user == null) {
             return ResponseEntity.status(403).body(Map.of("not authrized", 403));
         }
         reportService.delete(ReportId);

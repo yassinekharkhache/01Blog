@@ -11,6 +11,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(() => {
       const userService = inject(UserService);
+      
       return userService.fetchUser();
     }),
     provideRouter(routes),
@@ -20,6 +21,5 @@ export const appConfig: ApplicationConfig = {
     ),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    
   ]
 };

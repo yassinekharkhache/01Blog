@@ -16,27 +16,20 @@ import { UserService } from '../services/user/user.service';
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.css',
 })
-export class SideBar implements OnInit {
+export class SideBar {
   @Input() expanded = false;
   private dialog = inject(MatDialog);
   private http = inject(HttpClient);
   private userService = inject(UserService);
   user = this.userService.user;
-  ngOnInit() {
-    this.userService.fetchUser();
-  }
+  // ngOnInit() {
+  //   this.userService.fetchUser();
+  // }
 
   handleclick() {
-    this.http
-      .get('http://localhost:8081/isLoggedIn', { withCredentials: true })
-      .pipe(
-        catchError((err) => {
-          console.log('[SideBar] Error:', err);
-          this.openLogin();
-          return of(null);
-        })
-      )
-      .subscribe();
+    if (this.userService.user() == null){
+      this.openLogin();
+    }
   }
 
   openLogin() {
@@ -44,7 +37,7 @@ export class SideBar implements OnInit {
       .open(LoginDialog, { width: '350px' })
       .afterClosed()
       .subscribe((result) => {
-        if (result) console.log('12-test User logged in:', result);
+        if (result) console.log('User logged in:', result);
       });
   }
 }

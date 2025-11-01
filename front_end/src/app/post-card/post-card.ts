@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 // date pip
 import { DatePipe, NgIf } from '@angular/common';
 import { UserService } from '../services/user/user.service';
@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { LikeService } from '../services/like/likes.service';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
 // Interface matching your postcarddto structure
 export interface PostCardDto {
   id: number;
@@ -27,18 +28,16 @@ export interface PostCardDto {
   templateUrl: './post-card.html',
   styleUrls: ['./post-card.css'],
 })
-export class PostCard implements OnInit {
+export class PostCard {
   @Input() post!: PostCardDto;
   public is_mine: boolean = true;
+  public authService = inject(AuthService);
+
   constructor(
     public likeService: LikeService,
     public userService: UserService,
     private http: HttpClient
   ) {}
-
-  editPost(): void {
-    console.log(`Editing post ID: ${this.post.id}`);
-  }
 
   deletePost(): void {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.post.id}`).subscribe({
@@ -48,14 +47,14 @@ export class PostCard implements OnInit {
     console.log(`Deleting post ID: ${this.post.id}`);
   }
 
-  ngOnInit(): void {
-    this.userService.fetchUser();
-    if (!this.post) {
-      console.error('Post data is required for PostCard.');
-    }
-  }
-
   onLikeClick(): void {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return;
+    }
+    if (this.userService.user() === null){
+      return;
+    }
     this.likeService.toggleLike(this.post.id, this.post.isLiked, this.post.likecount).subscribe({
       next: (res) => {
         this.post.isLiked = res.isLiked;
@@ -67,8 +66,5 @@ export class PostCard implements OnInit {
 
   getPostImageUrl(): string {
     return `data:image/jpeg;base64,${this.post.postPreviewImage}`;
-  }
-  viewPostDetails(): void {
-    console.log(`Viewing post ID: ${this.post.id}`);
   }
 }

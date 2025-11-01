@@ -2,6 +2,8 @@ package talent._Blog.Controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
+
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,6 +43,8 @@ public class Auth {
                 .body(Map.of("message", "User " + data.name() + " registered successfully!"));
     }
 
+
+
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@Valid @RequestBody LoginDto data) {
         User user = userService.getUserByName(data.username());
@@ -52,27 +56,19 @@ public class Auth {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
+
     @GetMapping("/userdata")
     public ResponseEntity<?> getUserData(String token, @AuthenticationPrincipal User user) {
 
         try {
             if (user == null) {
-                return ResponseEntity.status(404).body(Map.of("error", "User not found"));
+                return ResponseEntity.status(200).body(null);
             }
             var userData = userService.getUserData(user.getUsername());
-            // Map<String, Object> userData = Map.of(
-            //         "username", user.getUsername(),
-            //         "email", user.getEmail(),
-            //         "age", user.getAge(),
-            //         "role", user.getRole(),
-            //         "pic", user.getPic(),
-            //         "followers", user.getFollowers().size(),
-            //         "following", user.getFollowing().size());
-
             return ResponseEntity.ok(userData);
 
         } catch (Exception e) {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid or expired token"));
+            return ResponseEntity.status(200).body(null);
         }
     }
 

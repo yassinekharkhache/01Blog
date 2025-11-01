@@ -10,48 +10,18 @@ import { CommonModule } from '@angular/common';
   templateUrl: './explore.html',
   styleUrls: ['./explore.css'],
 })
-export class Explore implements OnInit, OnDestroy {
-  @ViewChild('sentinel', { static: true }) sentinel!: ElementRef<HTMLElement>;
+export class Explore implements OnInit {
 
   posts: PostCardDto[] = [];
   loading = false;
   lastId: number | null = null;
   allLoaded = false;
 
-  private observer?: IntersectionObserver;
 
   constructor(private postService: PostService) {}
 
   ngOnInit(): void {
     this.loadPosts();
-    this.initObserver();
-  }
-
-  ngOnDestroy(): void {
-    this.observer?.disconnect();
-  }
-
-  private initObserver() {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !this.loading && !this.allLoaded) {
-            this.loadPosts();
-          }
-        });
-      },
-      {
-        root: null,           // observe viewport (null = whole page). Set to container element if using inner scroll.
-        rootMargin: '0px 0px 300px 0px', // load earlier
-        threshold: 0.1
-      }
-    );
-
-    if (this.sentinel?.nativeElement) {
-      this.observer.observe(this.sentinel.nativeElement);
-    } else {
-      console.warn('Sentinel not available to observe');
-    }
   }
 
   loadPosts(): void {

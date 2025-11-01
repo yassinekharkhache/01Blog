@@ -10,9 +10,8 @@ import { RouterLink } from "@angular/router";
   templateUrl: './following.html',
   styleUrl: './following.css'
 })
-export class Following implements OnInit, OnDestroy {
+export class Following implements OnInit {
 
-  @ViewChild('sentinel', { static: true }) sentinel!: ElementRef<HTMLElement>;
 
   posts: PostCardDto[] = [];
   loading = false;
@@ -25,35 +24,35 @@ export class Following implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.loadPosts();
-    this.initObserver();
+    // this.initObserver();
   }
   
-  ngOnDestroy(): void {
-    this.observer?.disconnect();
-  }
+  // ngOnDestroy(): void {
+  //   this.observer?.disconnect();
+  // }
   
-  private initObserver() {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !this.loading && !this.allLoaded) {
-            this.loadPosts();
-          }
-        });
-      },
-      {
-        root: null,           // observe viewport (null = whole page). Set to container element if using inner scroll.
-        rootMargin: '0px 0px 300px 0px', // load earlier
-        threshold: 0.1
-      }
-    );
+  // private initObserver() {
+  //   this.observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach(entry => {
+  //         if (entry.isIntersecting && !this.loading && !this.allLoaded) {
+  //           this.loadPosts();
+  //         }
+  //       });
+  //     },
+  //     {
+  //       root: null,
+  //       rootMargin: '0px 0px 300px 0px',
+  //       threshold: 0.1
+  //     }
+  //   );
   
-    if (this.sentinel?.nativeElement) {
-      this.observer.observe(this.sentinel.nativeElement);
-    } else {
-      console.warn('Sentinel not available to observe');
-    }
-  }
+  //   if (this.sentinel?.nativeElement) {
+  //     this.observer.observe(this.sentinel.nativeElement);
+  //   } else {
+  //     console.warn('Sentinel not available to observe');
+  //   }
+  // }
 
   loadPosts(): void {
     if (this.loading || this.allLoaded) return;

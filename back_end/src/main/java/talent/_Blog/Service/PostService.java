@@ -57,7 +57,7 @@ public class PostService {
 
     public void deletePost(Long id, User user) {
         Post existingPost = postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
-        if (!existingPost.getUser().getId().equals(user.getId()) && user.getRole() != Role.ADMIN) {
+        if (!existingPost.getUser().getId().equals(user.getId())) {
             throw new RuntimeException("You are not authorized to delete this post");
         }
         postRepo.deleteById(id);
@@ -111,7 +111,6 @@ public class PostService {
             return postRepo.findByUser_userNameAndVisibleTrueOrderByIdDesc(username, pageable);
         }
         return postRepo.findByUser_userNameAndIdLessThanAndVisibleTrueOrderByIdDesc(username, lastId, pageable);
-
     }
 
     @Transactional

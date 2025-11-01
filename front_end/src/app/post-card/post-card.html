@@ -1,5 +1,5 @@
-<div class="post-card" (click)="viewPostDetails()">
-  <div class="post-image-container">
+<div class="post-card">
+  <div [routerLink]="['/post', post.id]" class="post-image-container">
     <img
       [src]="getPostImageUrl()"
       [alt]="post.title"
@@ -8,16 +8,17 @@
   </div>
 
   <div class="post-content">
-    <h3 class="post-title">{{ post.title }}</h3>
+    <h3 [routerLink]="['/post', post.id]" class="post-title">{{ post.title }}</h3>
     
 
-    <div [routerLink]="['/profile', post.authorUsername]" class="post-meta">
+    <div class="post-meta">
       <img
+        [routerLink]="['/profile', post.authorUsername]"
         [src]="'http://localhost:8081' + post.authorProfileImageUrl"
         alt="Author Profile"
         class="author-avatar"
       />
-      <span class="author-name">{{ post.authorUsername }}</span>
+      <span [routerLink]="['/profile', post.authorUsername]" class="author-name">{{ post.authorUsername }}</span>
       <span class="meta-separator">|</span>
       <span class="post-date">Posted: {{ post.createdAt | date : 'dd/MM/yyyy hh:mm' }}</span>
     </div>
@@ -28,11 +29,10 @@
         {{ post.likecount }} like
       </button>
       <a
-        href="/post/{{ post.id }}"
+        [routerLink]="['/post', post.id]"
         class="read-more"
-        (click)="$event.stopPropagation(); viewPostDetails()"
-        >Read More &rarr;</a
-      >
+        (click)="$event.stopPropagation();"
+        >Read More &rarr;</a>
     </div>
   </div>
 </div>

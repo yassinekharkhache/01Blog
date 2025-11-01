@@ -15,6 +15,8 @@ import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 import { Notfound } from '../notfound/notfound';
 import { CommentService } from '../services/Comment/comment.service';
 import { Comment } from '../model/comment/comment.model';
+import { LoginDialog } from '../dialogs/login-dialog/login-dialog';
+import { AuthService } from '../services/auth/auth.service';
 
 interface PostDetailsDto {
   id: number;
@@ -53,9 +55,9 @@ export class PostDetails implements OnInit {
   private http = inject(HttpClient);
   public likeService = inject(LikeService);
   public userService = inject(UserService);
+  public authService = inject(AuthService)
   private router = inject(Router);
   private dialog = inject(MatDialog);
-  private commentService = inject(CommentService);
   public nbrId: number = 0;
 
   ngOnInit(): void {
@@ -87,6 +89,10 @@ export class PostDetails implements OnInit {
   }
 
   onFollowClick(): void {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return;
+    }
     if (!this.post) return;
 
     this.followService.toggleFollow(this.is_followd!, this.post.authorUsername).subscribe({
@@ -98,6 +104,10 @@ export class PostDetails implements OnInit {
   }
 
   openReportDialog() {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return;
+    }
     const postId = this.postId;
     const dialogRef = this.dialog.open(ReportDialogComponent, {
       width: '400px',
@@ -112,6 +122,10 @@ export class PostDetails implements OnInit {
   }
 
   onLikeClick(): void {
+    if (this.userService.user() == null){
+      this.authService.openLogin();
+      return
+    }
     if (!this.post) return;
 
     this.likeService.toggleLike(this.post.id, this.post.isliked, this.post.likecount).subscribe({
@@ -122,6 +136,7 @@ export class PostDetails implements OnInit {
       error: (err) => console.error('Error toggling like:', err),
     });
   }
+  
   onDeleteClick() {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.nbrId}`).subscribe({
       next: () => {

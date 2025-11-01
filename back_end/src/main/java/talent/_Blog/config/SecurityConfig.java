@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
@@ -29,7 +31,7 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(
-                request -> request.requestMatchers("/register", "/login", "/default.png","/api/users/get/**","/api/post/all").permitAll()
+                request -> request.requestMatchers("/register", "/login", "/default.png","/api/users/get/*","/api/post/all","/api/post/get/*","/api/post/profile/*","/userdata","/api/comments/post/*").permitAll()
                         .requestMatchers("/images/**", "/videos/**", "/profiles/**").permitAll()
                         .anyRequest().authenticated());
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

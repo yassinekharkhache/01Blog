@@ -1,5 +1,3 @@
-
-
 .post-container {
   max-width: 700px;
   margin: 40px auto;
@@ -48,7 +46,7 @@
   color: #777;
 }
 
-.btns{
+.btns {
   display: flex;
   justify-content: space-between;
 }
@@ -62,8 +60,8 @@
 .post-body {
   font-size: 1.125rem;
   color: #444;
+  overflow-wrap: break-word;
 }
-
 
 .post-body h2,
 .post-body h3 {
@@ -84,33 +82,33 @@
   background: none;
 }
 
-.love{
+.love {
   color: red;
 }
 
-.following{
-  color: #4CAF50;
+.following {
+  color: #4caf50;
   border: none;
   cursor: pointer;
 }
 
-.follow{
-  color: #008CBA; /* Blue */
+.follow {
+  color: #008cba; /* Blue */
   border: none;
   cursor: pointer;
 }
 
-.post-meta{
+.post-meta {
   display: flex;
   justify-content: space-between;
   margin: 0 0 40px 0;
 }
 
-.meta-data{
+.meta-data {
   display: flex;
 }
 
-.Report-menu{
+.Report-menu {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -121,11 +119,11 @@
   border: none;
 }
 
-.Report-menu:hover{
+.Report-menu:hover {
   background-color: #ddd;
 }
 
-.mat-menu{
+.mat-menu {
   padding: 0;
   width: 1000px;
   margin: 0;

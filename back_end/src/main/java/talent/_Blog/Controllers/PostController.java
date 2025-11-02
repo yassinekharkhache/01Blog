@@ -13,7 +13,8 @@ import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
 import talent._Blog.Service.PostService;
 import talent._Blog.dto.PostDto;
-import talent._Blog.dto.postcarddto;
+import talent._Blog.dto.UserCardDto;
+import talent._Blog.dto.PostCardDto;
 import talent._Blog.mapper.Postcard;
 import talent._Blog.mapper.postpage;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,7 +42,7 @@ public class PostController {
             @RequestPart(value = "image", required = true) MultipartFile image,
             @AuthenticationPrincipal User user) throws IOException {
 
-        System.out.println(content+" "+title);
+        System.out.println(content + " " + title);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "User not authenticated. Please log in to create a post."));
@@ -84,6 +85,13 @@ public class PostController {
                         "message", "Post submitted successfully.",
                         "postId", submittedPost.getId().toString(),
                         "author", user.getUsername()));
+    }
+
+    @GetMapping("/search/{lastId}")
+    public ResponseEntity<List<PostCardDto>> searchPosts(@RequestParam("q") String query,
+            @PathVariable Integer lastId) {
+        var Posts = postService.searchPosts(query, lastId);
+        return ResponseEntity.ok(Posts);
     }
 
     // edit post
@@ -133,7 +141,7 @@ public class PostController {
     }
 
     @GetMapping("/all")
-    public List<postcarddto> getAllPosts(
+    public List<PostCardDto> getAllPosts(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
         return postService.getPosts(lastId).stream()
@@ -142,7 +150,7 @@ public class PostController {
     }
 
     @GetMapping("/profile/{username}")
-    public ResponseEntity<List<postcarddto>> getPosts(@PathVariable String username,
+    public ResponseEntity<List<PostCardDto>> getPosts(@PathVariable String username,
             @AuthenticationPrincipal User currentUser,
             @RequestParam(required = true) Long lastId) {
         var posts = postService.getUserPosts(username, lastId);

@@ -5,7 +5,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReportsTable } from '../reports-table/reports-table';
 import { ReportService, ReportResDto } from '../../services/reports/report.service';
-import { AdminSearch } from '../Admin-search/admin-search';
+import { UserSearch } from '../user-search/user-search';
+import {MatTabsModule} from '@angular/material/tabs';
+import { PostSearch } from '../post-search/post-search';
 
 @Component({
   selector: 'app-admin-panel',
@@ -15,8 +17,10 @@ import { AdminSearch } from '../Admin-search/admin-search';
     MatToolbarModule,
     MatCardModule,
     ReportsTable,
-    AdminSearch,
-    MatProgressSpinnerModule
+    UserSearch,
+    MatProgressSpinnerModule,
+    PostSearch,
+    MatTabsModule
   ],
   templateUrl: './admin-panel.html',
   styleUrls: ['./admin-panel.css']

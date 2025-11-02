@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import talent._Blog.Repository.PostRepository;
 import talent._Blog.Repository.FollowRepository;
+import talent._Blog.dto.PostCardDto;
 import talent._Blog.dto.PostDto;
 import talent._Blog.Exception.MediaLimitExceededException;
 import talent._Blog.Exception.PostNotFoundException;
@@ -35,6 +36,35 @@ public class PostService {
     private final FollowRepository subscribeRepository;
 
     private static final int PAGE_SIZE = 6;
+
+    @Transactional
+    public List<PostCardDto> searchPosts(String query, Integer lastId) {
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "id"));
+        boolean noQuery = query == null || query.isEmpty();
+        if (lastId == 0) {
+            return noQuery
+                    ? postRepo.findAll(pageable).getContent().stream().map(PostCardDto::toDto).toList()
+                    : postRepo.findByTitleContainingIgnoreCase(query, pageable).stream().map(PostCardDto::toDto).toList();
+        }
+        return noQuery ? postRepo.findByIdLessThan(lastId, pageable).stream().map(PostCardDto::toDto).toList()
+                : postRepo.findByTitleContainingIgnoreCaseAndIdLessThan(query, lastId, pageable).stream().map(PostCardDto::toDto).toList();
+    }
+
+    // @Transactional
+    // public List<User> searchUsers(String query, Integer lastId) {
+
+    //     Pageable pageable = PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "id"));
+    //     boolean noQuery = query == null || query.isEmpty();
+    //     if (lastId == 0) {
+    //         return noQuery
+    //                 ? userRepository.findAll(pageable).getContent()
+    //                 : userRepository.findByUserNameContainingIgnoreCase(query, pageable);
+    //     }
+
+    //     return noQuery
+    //             ? userRepository.findByIdLessThan(lastId, pageable)
+    //             : userRepository.findByUserNameContainingIgnoreCaseAndIdLessThan(query, lastId, pageable);
+    // }
 
     public PostService(NotificationService notificationService, PostRepository postRepo,
             FollowRepository subscribeRepository) {

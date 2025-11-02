@@ -3,12 +3,13 @@ import { RouterOutlet } from '@angular/router';
 import { SideBar } from './side-bar/side-bar';
 import { NavBarComponent } from './nav-bar/nav-bar';
 import { MatToolbar } from '@angular/material/toolbar';
+import { SnackbarComponent } from './snackbar/snackbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SideBar, NavBarComponent, MatIconModule, MatDialogModule],
+  imports: [RouterOutlet, SideBar, NavBarComponent, MatIconModule, MatDialogModule,SnackbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -19,12 +20,8 @@ export class App {
   toggleSidebar() {
     this.isExpanded = !this.isExpanded;
   }
-  onScroll(event: any): void {
-  const element = event.target;
-  alert("ss")
-  if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-  }
-}
+
+  
 
 }
 

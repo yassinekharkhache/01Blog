@@ -4,19 +4,19 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { debounceTime, switchMap, distinctUntilChanged, last } from 'rxjs/operators';
-import { of, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { timer } from 'rxjs';
 import { environment } from '../../../environment/environment';
 import { ConfirmDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog';
 
 @Component({
-  selector: 'app-admin-search',
+  selector: 'app-user-search',
   standalone: true,
   imports: [FormsModule, CommonModule, RouterModule],
-  templateUrl: './admin-search.html',
-  styleUrls: ['./admin-search.css'],
+  templateUrl: './user-search.html',
+  styleUrls: ['./user-search.css'],
 })
-export class AdminSearch {
+export class UserSearch {
   searchQuery = signal('');
   users = signal<any[]>([]);
   loading = signal(false);

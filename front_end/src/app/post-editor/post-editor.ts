@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-blog-editor',
@@ -34,6 +35,7 @@ export class BlogEditorComponent {
   title = '';
   loading = false;
   router = inject(Router);
+  snackbarr = inject(SnackbarService);
   http = inject(HttpClient);
   snackBar = inject(MatSnackBar);
 
@@ -124,7 +126,6 @@ export class BlogEditorComponent {
       }
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
-
       if (file.size > maxSizeInBytes) {
         this.snackBar.open('media is too big', 'Close', {
           duration: 3000,
@@ -144,33 +145,38 @@ export class BlogEditorComponent {
     });
   }
 
-
   async submitPost() {
-    if (!this.title.trim() || !this.content.trim()) return;
+    if (!this.title.trim() || !this.content.trim()) {
+        this.snackbarr.show('empty field', 'success');
+      return
+
+    };
 
     if (this.title.length >= 100) {
-      this.notify("title is to long")
-      return
+      this.notify('title is to long');
+      return;
     }
-
+    
     if (this.title.length <= 5) {
-      this.notify("title is to long")
-      return
+      this.snackbarr.show('Post not created!', 'error');
+      this.notify('title is to short');
+      return;
     }
 
     if (this.content.length >= 4000) {
-      this.notify("content is to long")
-      return
+      this.notify('content is to long');
+      return;
     }
 
     if (this.content.length <= 50) {
-      this.notify("content is to short")
-      return
+      this.notify('content is to short');
+
+      return;
     }
 
     if (!this.imagePreview) {
-      this.notify("image is required")
-      return
+      this.notify('image is required');
+      return;
     }
 
     this.loading = true;
@@ -189,9 +195,9 @@ export class BlogEditorComponent {
       console.log('Post created: ', res);
       if (res?.postId) {
         this.router.navigate(['/post', res.postId]);
+        this.snackbarr.show('Post created!', 'success');
       }
     } catch (err: any) {
-      console.log('Failed to submit post:', err);
     } finally {
       this.loading = false;
     }
@@ -214,5 +220,4 @@ export class BlogEditorComponent {
       this.imagePreviewUrl = URL.createObjectURL(file);
     }
   }
-
 }

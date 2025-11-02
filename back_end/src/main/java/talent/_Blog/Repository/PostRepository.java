@@ -30,6 +30,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByUserInAndIdLessThanAndVisibleTrueOrderByIdDesc(List<User> users, Long lastId, Pageable pageable);
     
     List<Post> findByUser_userNameAndVisibleTrueOrderByIdDesc(String username, Pageable pageable);
+
     List<Post> findByUser_userNameAndIdLessThanAndVisibleTrueOrderByIdDesc(String username, Long lastId, Pageable pageable);
+
+    List<Post> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    List<Post> findByIdLessThan(Integer lastId, Pageable pageable);
+    
+    List<Post> findByTitleContainingIgnoreCaseAndIdLessThan(String title, Integer lastId, Pageable pageable);
 
 }

@@ -1,0 +1,45 @@
+<div class="search-container">
+  <input type="text" placeholder="Search users..." [(ngModel)]="searchQuery" />
+</div>
+
+<div class="results" (scroll)="handleScroll($event)" *ngIf="posts().length > 0">
+  <div class="user-card" *ngFor="let post of posts(); let i = index; trackBy: trackById">
+    <img
+      [routerLink]="['/profile', post.postPreviewImage]"
+      [src]="'data:image/jpeg;base64,' + post.postPreviewImage"
+      alt="Post preview image"
+      class="post-pic"
+    />
+    <div [routerLink]="['/profile', post.username]" class="user-info">
+      <div class="user-main">
+        <h3>{{ post.title }}</h3>
+        <br />
+        <!-- <span class="role">likes: {{ post.likecount }}</span> -->
+      </div>
+      <div class="user-data">
+
+        <img
+        [routerLink]="['/profile', post.postPreviewImage]"
+        [src]= "baseApi + post.authorProfileImageUrl"
+        alt="Post preview image"
+        class="profile-pic"
+        />
+        <div class="stats">
+          <span> {{ post.authorUsername }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <select (change)="handleAction($event, post)">
+        <option value="">Actions</option>
+        <option value="delete">❌ Delete</option>
+        <option value="hide">🚫 hide</option>
+      </select>
+    </div>
+
+    <!-- Status for non-USER roles -->
+    <ng-template #statusBlock>
+      <p class="status">Status: {{ post.likecount }}</p>
+    </ng-template>
+  </div>
+</div>

@@ -138,44 +138,36 @@ export class BlogEditorComponent {
     };
   }
 
-  // make notify that take message string
-  notify(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-    });
-  }
 
   async submitPost() {
     if (!this.title.trim() || !this.content.trim()) {
-        this.snackbarr.show('empty field', 'success');
+        this.snackbarr.show('empty field', 'error');
       return
 
     };
 
     if (this.title.length >= 100) {
-      this.notify('title is to long');
+      this.snackbarr.show('title is to long', 'error');
       return;
     }
     
     if (this.title.length <= 5) {
-      this.snackbarr.show('Post not created!', 'error');
-      this.notify('title is to short');
+      this.snackbarr.show('title is to short', 'error');
       return;
     }
 
     if (this.content.length >= 4000) {
-      this.notify('content is to long');
+      this.snackbarr.show('content is to long', 'error');
       return;
     }
 
     if (this.content.length <= 50) {
-      this.notify('content is to short');
-
+      this.snackbarr.show('content is to short', 'error');
       return;
     }
 
     if (!this.imagePreview) {
-      this.notify('image is required');
+      this.snackbarr.show('preview image is required', 'error');
       return;
     }
 

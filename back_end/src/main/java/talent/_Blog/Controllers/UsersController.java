@@ -40,9 +40,6 @@ public class UsersController {
     @PostMapping("/ban")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> Baneuser(@RequestBody BanRequest request, @AuthenticationPrincipal User user) {
-        if (user == null) {
-            return ResponseEntity.status(403).body(Map.of("forbidden", 403));
-        }
         userService.banUser(request.username());
         return ResponseEntity.ok(Map.of("valid", 200));
     }

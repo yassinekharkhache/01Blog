@@ -12,6 +12,7 @@ public class ReportMapper {
             report.getPost().getTitle(),
             report.getUser().getUsername(),
             report.getPost().getUser().getUsername(),
+            report.getPost().getUser().getRole().name(),
             report.getUser().getPic(),
             report.getPost().getUser().getPic(),
             report.getCreatedAt().toString()

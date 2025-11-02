@@ -48,7 +48,7 @@ export class ReportsTable implements OnInit {
     private http: HttpClient,
     private reportService: ReportService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadReports();
@@ -80,27 +80,35 @@ export class ReportsTable implements OnInit {
       switch (action) {
         case 'deletePost':
           this.http.delete(this.baseApi + '/api/post/delete/' + report.PostId).subscribe({
-            next: () => console.log(`Post ${report.PostId} deleted successfully`),
+            next: () => {
+              console.log(`Post ${report.PostId} deleted successfully`)
+              this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
+          },
             error: (err) => console.error(`Failed to delete post ${report.PostId} err: ${err}`),
           });
           break;
         case 'hidePost':
-          this.http.post(this.baseApi + '/api/post/hide' ,{PostId: report.PostId}).subscribe({
-            next: () => console.log(`Post ${report.PostId} hidden successfully`),
+          this.http.post(this.baseApi + '/api/post/hide', { PostId: report.PostId }).subscribe({
+            next: () => {
+              console.log(`Post ${report.PostId} hidden successfully`)
+              this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
+            },
             error: (err) => console.error(`Failed to hide post ${report.PostId} err: ${err}`),
           });
+          this.deleteReport(report.ReportId);
           break;
         case 'deleteReport':
-          this.http.delete(this.baseApi+"/api/report/delete/"+report.ReportId).subscribe({
-            next: () => console.log(`Report ${report.ReportId} dismissed successfully`),
-            error: (err) => console.error(`Failed to dismiss report ${report.ReportId} err: ${err}`),
-          });
+          this.deleteReport(report.ReportId);
           break;
         case 'banUser':
-          this.http.post(this.baseApi + '/api/users/ban' ,{username: report.ReportedUsername}).subscribe({
-            next: () => console.log(`user ${report.ReportedUsername} banned successfully`),
+          this.http.post(this.baseApi + '/api/users/ban', { username: report.ReportedUsername }).subscribe({
+            next: () => {
+              this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
+              console.log(`user ${report.ReportedUsername} banned successfully`);
+          },
             error: (err) => console.error(`Failed to ban the user ${report.ReportedUsername} err: ${err}`),
           });
+          this.deleteReport(report.ReportId);
           break;
         case 'deleteUser':
           this.http.delete(this.baseApi + '/api/users/delete/' + report.ReportedUsername).subscribe({
@@ -110,6 +118,15 @@ export class ReportsTable implements OnInit {
           break;
       }
     }
+  }
+  deleteReport(id :number){
+    this.http.delete(this.baseApi + "/api/report/delete/" + id).subscribe({
+            next: () => {
+              this.reports = this.reports.filter(r => r.ReportId !== id);
+              console.log(`Report ${id} dismissed successfully`);
+            },
+            error: (err) => console.error(`Failed to dismiss report ${id} err: ${err}`),
+          });
   }
 
   // loadComments() {

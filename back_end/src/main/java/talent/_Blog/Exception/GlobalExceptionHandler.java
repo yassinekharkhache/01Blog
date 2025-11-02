@@ -38,12 +38,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<String> handlePostNotFound(UsernameAlreadyExistsException ex) {
+    public ResponseEntity<String> handlePostNotFound(PostNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFound(UsernameAlreadyExistsException ex) {
+    public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
@@ -57,11 +57,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    @ExceptionHandler(UnAuthorizedException.class)
+    public ResponseEntity<String> UnAuthorizedException(UnAuthorizedException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
     @ExceptionHandler(MediaLimitExceededException.class)
     public ResponseEntity<Map<String, String>> handleImageLimitExceededException(MediaLimitExceededException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", ex.getMessage()));
+                .body(Map.of("error", "you are only allowrd to upload 10 images and 1 video"));
     }
 
 }

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { environment } from '../../environment/environment';
 import { AuthService } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
+import { SnackbarService } from '../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-comment',
@@ -24,6 +25,8 @@ export class CommentsComponent implements OnInit {
   lastId?: number;
   public newCommentContent = '';
   public sending = false;
+  public snackbarr = inject(SnackbarService);
+
 
   constructor(private commentService: CommentService) { }
 
@@ -41,7 +44,18 @@ export class CommentsComponent implements OnInit {
       this.authService.openLogin();
       return;
     }
-    if (!this.newCommentContent.trim()) return;
+    if (!this.newCommentContent.trim()){
+      this.snackbarr.show('comment is empty', 'error');
+      return;
+    }
+    if (this.newCommentContent.length > 1000){
+      this.snackbarr.show('comment is too long', 'error');
+      return;
+    }
+    if (this.newCommentContent.length < 2) {
+      this.snackbarr.show('comment is too short', 'error');
+      return;
+    }
 
     this.sending = true;
     const comment: Partial<Comment> = {

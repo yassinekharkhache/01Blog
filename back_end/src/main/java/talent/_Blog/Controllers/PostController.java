@@ -161,14 +161,13 @@ public class PostController {
     }
 
     @DeleteMapping("/delete/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deletePost(@PathVariable Long id, @AuthenticationPrincipal User user) {
         var post = postService.getPostById(id);
         if (post == null) {
             return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
         }
-        if (!post.getUser().getUsername().equals(user.getUsername())) {
-            return ResponseEntity.status(403).body(Map.of("message", "Not allowed"));
+        if (!post.getUser().getUsername().equals(user.getUsername()) && user.getRole() != Role.ADMIN){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Not allowed"));
         }
 
         String content = post.getContent();
@@ -180,17 +179,13 @@ public class PostController {
             postService.deleteFile(type, fileName); // implement in service
         }
 
-        postService.deletePost(id, user);
+        postService.deletePost(id);
         return ResponseEntity.ok(Map.of("message", "Post and all media deleted successfully"));
     }
 
     @PostMapping("/hide")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> postMethodName(@RequestBody HideRequest request, @AuthenticationPrincipal User user) {
-        if (user == null) {
-            return ResponseEntity.status(403).body(Map.of("not authrized", 403));
-
-        }
         postService.hidePost(request.PostId());
         return ResponseEntity.ok(Map.of("valid", "posthided"));
     }

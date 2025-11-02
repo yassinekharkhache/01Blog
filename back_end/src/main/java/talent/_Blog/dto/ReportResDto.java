@@ -7,6 +7,7 @@ public record ReportResDto(
         String PostTitle,
         String ReporterUsername,
         String ReportedUsername,
+        String ReportedRole,
         String ReporterPicPath,
         String ReportedPicPath,
         String createdAt) {

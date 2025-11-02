@@ -59,10 +59,12 @@
       <mat-select (selectionChange)="onAction(r, $event.value)">
         <mat-option value="deletePost">🗑 Delete Post</mat-option>
         <mat-option value="hidePost">🙈 Hide Post</mat-option>
-        <mat-option value="dismissReport">❌ Dismiss Report</mat-option>
-        <mat-option value="banUser">🚫 Ban User</mat-option>
-        <mat-option value="deleteUser">⚠️ Delete User</mat-option>
-      </mat-select>
+        <mat-option value="deleteReport">❌ Dismiss Report</mat-option>
+        @if(r.ReportedRole == 'USER'){
+          <mat-option value="banUser">🚫 Ban User</mat-option>
+          <mat-option value="deleteUser">⚠️ Delete User</mat-option>
+        }
+        </mat-select>
     </mat-form-field>
 
     <div class="footer">

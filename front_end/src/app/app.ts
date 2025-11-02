@@ -1,15 +1,16 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, effect, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { SideBar } from './side-bar/side-bar';
 import { NavBarComponent } from './nav-bar/nav-bar';
-import { MatToolbar } from '@angular/material/toolbar';
 import { SnackbarComponent } from './snackbar/snackbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { filter } from 'rxjs';
+import { NotificationService } from './services/notification/notification.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SideBar, NavBarComponent, MatIconModule, MatDialogModule,SnackbarComponent],
+  imports: [RouterOutlet, SideBar, NavBarComponent, MatIconModule, MatDialogModule, SnackbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -21,7 +22,25 @@ export class App {
     this.isExpanded = !this.isExpanded;
   }
 
-  
+  private router = inject(Router);
+
+
+  private notificationService = inject(NotificationService);
+
+  constructor() {
+    effect(() => {
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: NavigationEnd) => {
+          // Example: reload notifications on every path change
+          const user = this.notificationService.userService.user();
+          if (user) this.notificationService.loadNotifications(user.username);
+          this.notificationService.loadUnseenCount();
+        });
+    });
+  }
+
+
 
 }
 

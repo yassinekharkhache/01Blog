@@ -10,6 +10,7 @@ export interface ReportResDto {
   PostTitle: string;
   ReporterUsername: string;
   ReportedUsername: string;
+  ReportedRole: string;
   ReporterPicPath: string;
   ReportedPicPath: string;
   CreatedAt: string;

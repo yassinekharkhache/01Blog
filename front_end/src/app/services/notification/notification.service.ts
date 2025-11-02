@@ -18,7 +18,7 @@ export interface Notification {
 
 export class NotificationService {
   private http = inject(HttpClient);
-  private userService = inject(UserService);
+  public userService = inject(UserService);
 
   private notificationsSignal = signal<Notification[]>([]);
   readonly notifications = this.notificationsSignal.asReadonly();
@@ -35,7 +35,7 @@ export class NotificationService {
       const user = this.userService.user();
       if (user) {
         this.loadNotifications(user.username);
-        this.loadUnseenCount(user.username);
+        this.loadUnseenCount();
       } else {
         this.notificationsSignal.set([]);
         this.unseenCount.set(0);
@@ -43,7 +43,9 @@ export class NotificationService {
     });
   }
 
-  private loadUnseenCount(username: string) {
+  public loadUnseenCount() {
+    const user = this.userService.user();
+    if (!user) return;
     this.http
       .get<{ count: number }>(`${environment.apiUrl}/api/notifications/count`)
       .subscribe(res => {this.unseenCount.set(res.count)});

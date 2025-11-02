@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.*;
 import org.springframework.stereotype.Service;
 
 import talent._Blog.Exception.EmailAlreadyExistsException;
+import talent._Blog.Exception.UnAuthorizedException;
 import talent._Blog.Exception.UserNotFoundException;
 import talent._Blog.Exception.UsernameAlreadyExistsException;
 import talent._Blog.Model.Role;
@@ -66,6 +67,9 @@ public class UserService {
     public void banUser(String username) {
         User user = userRepository.findByUserName(username)
                 .orElseThrow(() -> new UserNotFoundException("user not found"));
+        if (user.getRole() == Role.ADMIN) {
+            throw new UnAuthorizedException("Admin cannot be banned");
+        }
         user.setBannedUntil(java.time.LocalDateTime.now().plusDays(7));
         user.setStatus(Status.Banned);
         userRepository.save(user);
@@ -73,6 +77,9 @@ public class UserService {
 
     @Transactional
     public void deleteUser(String username) {
+        if(userRepository.findByUserName(username).get().getRole() == Role.ADMIN){
+            throw new UnAuthorizedException("Admin cannot be deleted");
+        }
         userRepository.deleteByUserName(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 

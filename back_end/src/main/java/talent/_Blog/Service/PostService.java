@@ -23,6 +23,7 @@ import talent._Blog.dto.PostCardDto;
 import talent._Blog.dto.PostDto;
 import talent._Blog.Exception.MediaLimitExceededException;
 import talent._Blog.Exception.PostNotFoundException;
+import talent._Blog.Exception.UnAuthorizedException;
 import talent._Blog.Model.*;
 
 import org.jsoup.Jsoup;
@@ -85,11 +86,8 @@ public class PostService {
 
     }
 
-    public void deletePost(Long id, User user) {
-        Post existingPost = postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
-        if (!existingPost.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You are not authorized to delete this post");
-        }
+    public void deletePost(Long id) {
+        postRepo.findById(id).orElseThrow(() -> new PostNotFoundException("Post not found"));
         postRepo.deleteById(id);
     }
 

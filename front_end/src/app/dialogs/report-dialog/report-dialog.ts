@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-report-dialog',
@@ -41,6 +42,8 @@ export class ReportDialogComponent {
     this.dialogRef.close();
   }
 
+  snackbarr = inject(SnackbarService);
+
   submit(): void {
     if (this.form.invalid) return;
 
@@ -55,6 +58,7 @@ export class ReportDialogComponent {
       next: () => {
         this.loading = false;
         this.dialogRef.close(true);
+        this.snackbarr.show('report submited', 'success');
         this.cancel();
       },
       error: (err) => {

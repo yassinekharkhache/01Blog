@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -13,9 +13,7 @@ import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatDialog } from '@angular/material/dialog';
 import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 import { Notfound } from '../notfound/notfound';
-import { CommentService } from '../services/Comment/comment.service';
 import { Comment } from '../model/comment/comment.model';
-import { LoginDialog } from '../dialogs/login-dialog/login-dialog';
 import { AuthService } from '../services/auth/auth.service';
 
 interface PostDetailsDto {
@@ -33,7 +31,15 @@ interface PostDetailsDto {
 }
 
 @Component({
-  imports: [MatIconModule, MatButtonModule, DatePipe, CommentsComponent, MatMenu, MatMenuTrigger, Notfound],
+  imports: [
+    MatIconModule,
+    MatButtonModule,
+    DatePipe,
+    CommentsComponent,
+    MatMenu,
+    MatMenuTrigger,
+    Notfound,
+  ],
   selector: 'app-post-details',
   templateUrl: './post-details.html',
   styleUrls: ['./post-details.css'],
@@ -55,7 +61,7 @@ export class PostDetails implements OnInit {
   private http = inject(HttpClient);
   public likeService = inject(LikeService);
   public userService = inject(UserService);
-  public authService = inject(AuthService)
+  public authService = inject(AuthService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
   public nbrId: number = 0;
@@ -64,22 +70,20 @@ export class PostDetails implements OnInit {
     this.postId = this.route.snapshot.paramMap.get('id');
     this.nbrId = Number(this.postId);
     if (this.postId) {
-      this.http
-        .get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`)
-        .subscribe({
-          next: (post) => {
-            this.post = post;
-            this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
-            this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
+      this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`).subscribe({
+        next: (post) => {
+          this.post = post;
+          this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
+          this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
 
-            // Normalize to match toggleLike input
-            if (this.post.isliked === undefined) this.post.isliked = false;
-            if (this.post.likecount === undefined) this.post.likecount = 0;
-            this.is_followd = this.post.isfollow ?? false;
-            this.is_mine = this.post.authorUsername === this.userService.user()?.username;
-          },
-          error: () => this.postNotFound = true,
-        });
+          // Normalize to match toggleLike input
+          if (this.post.isliked === undefined) this.post.isliked = false;
+          if (this.post.likecount === undefined) this.post.likecount = 0;
+          this.is_followd = this.post.isfollow ?? false;
+          this.is_mine = this.post.authorUsername === this.userService.user()?.username;
+        },
+        error: () => (this.postNotFound = true),
+      });
     }
   }
 
@@ -89,7 +93,7 @@ export class PostDetails implements OnInit {
   }
 
   onFollowClick(): void {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
       return;
     }
@@ -104,7 +108,7 @@ export class PostDetails implements OnInit {
   }
 
   openReportDialog() {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
       return;
     }
@@ -122,9 +126,9 @@ export class PostDetails implements OnInit {
   }
 
   onLikeClick(): void {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
-      return
+      return;
     }
     if (!this.post) return;
 
@@ -136,7 +140,7 @@ export class PostDetails implements OnInit {
       error: (err) => console.error('Error toggling like:', err),
     });
   }
-  
+
   onDeleteClick() {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.nbrId}`).subscribe({
       next: () => {

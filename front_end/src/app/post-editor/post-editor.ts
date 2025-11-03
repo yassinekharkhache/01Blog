@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -9,7 +9,6 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../services/snackBar/stack-bar.service';
 
 @Component({
@@ -31,13 +30,12 @@ export class BlogEditorComponent {
 
   imagePreview: File | string | null = null;
   imagePreviewUrl: string | null = null;
-  content = '';
-  title = '';
+  content = signal('');
+  title = signal('');
   loading = false;
   router = inject(Router);
-  snackbarr = inject(SnackbarService);
+  snackbar = inject(SnackbarService);
   http = inject(HttpClient);
-  snackBar = inject(MatSnackBar);
 
   editorConfig: any = {
     height: 500,
@@ -46,13 +44,13 @@ export class BlogEditorComponent {
     toolbar:
       'undo redo | formatselect bold italic underline | image media | code | bullist numlist outdent indent',
 
-    // ✅ Corrected upload handler
     images_upload_handler: async (blobInfo: any) => {
       const file = blobInfo.blob();
       return await this.uploadMedia(file, 'image');
     },
 
     file_picker_types: 'image media',
+
     file_picker_callback: (callback: any, _value: any, meta: any) => {
       const type = meta.filetype === 'image' ? 'image' : 'video';
       this.customMediaHandler(type, callback);
@@ -127,9 +125,7 @@ export class BlogEditorComponent {
       const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
       if (file.size > maxSizeInBytes) {
-        this.snackBar.open('media is too big', 'Close', {
-          duration: 3000,
-        });
+        this.snackbar.show('media is too big', 'error');
         return;
       }
 
@@ -140,41 +136,41 @@ export class BlogEditorComponent {
 
 
   async submitPost() {
-    if (!this.title.trim() || !this.content.trim()) {
-        this.snackbarr.show('empty field', 'error');
+    if (!this.title().trim() || !this.content().trim()) {
+        this.snackbar.show('empty field', 'error');
       return
 
     };
 
     if (this.title.length >= 100) {
-      this.snackbarr.show('title is to long', 'error');
+      this.snackbar.show('title is to long', 'error');
       return;
     }
     
     if (this.title.length <= 5) {
-      this.snackbarr.show('title is to short', 'error');
+      this.snackbar.show('title is to short', 'error');
       return;
     }
 
     if (this.content.length >= 4000) {
-      this.snackbarr.show('content is to long', 'error');
+      this.snackbar.show('content is to long', 'error');
       return;
     }
 
     if (this.content.length <= 50) {
-      this.snackbarr.show('content is to short', 'error');
+      this.snackbar.show('content is to short', 'error');
       return;
     }
 
     if (!this.imagePreview) {
-      this.snackbarr.show('preview image is required', 'error');
+      this.snackbar.show('preview image is required', 'error');
       return;
     }
 
     this.loading = true;
     const formData = new FormData();
-    formData.append('title', this.title);
-    formData.append('content', this.content);
+    formData.append('title', this.title());
+    formData.append('content', this.content());
     if (this.imagePreview instanceof File) {
       formData.append('image', this.imagePreview);
     }
@@ -187,7 +183,7 @@ export class BlogEditorComponent {
       console.log('Post created: ', res);
       if (res?.postId) {
         this.router.navigate(['/post', res.postId]);
-        this.snackbarr.show('Post created!', 'success');
+        this.snackbar.show('Post created!', 'success');
       }
     } catch (err: any) {
     } finally {
@@ -198,13 +194,11 @@ export class BlogEditorComponent {
   onImageSelected(event: any) {
     const file = event.target.files[0];
     const maxSizeInMB = 1;
-    const maxSizeInBytes = maxSizeInMB * 10240 * 1024;
+    const maxSizeInBytes = maxSizeInMB * 1024 * 1024;
 
     if (file) {
       if (file.size > maxSizeInBytes) {
-        this.snackBar.open('image is too big', 'Close', {
-          duration: 3000,
-        });
+        this.snackbar.show('image is too big','error');
         return;
       }
 

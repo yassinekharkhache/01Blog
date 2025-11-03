@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -26,15 +26,15 @@ export class Edit implements OnInit {
   title: string = '';
   router = inject(Router);
   is_my_post = false;
-  
-  
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+  private dialog = inject(MatDialog);
 
 
-  constructor(private route: ActivatedRoute,userService: UserService,private dialog :MatDialog) {
-    userService.fetchUser();
-  }
+  
   
   ngOnInit() {
+    this.userService.fetchUser();
     // userAge = computed(() => this.userService.user()?.age);
     const postid = this.route.snapshot.paramMap.get('id');
     this.http

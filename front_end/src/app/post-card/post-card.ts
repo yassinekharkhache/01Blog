@@ -1,6 +1,5 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
-// date pip
-import { DatePipe, NgIf } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { UserService } from '../services/user/user.service';
 import { MatIcon } from '@angular/material/icon';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { LikeService } from '../services/like/likes.service';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
-// Interface matching your postcarddto structure
+
 export interface PostCardDto {
   id: number;
   title: string;
@@ -23,7 +22,7 @@ export interface PostCardDto {
 }
 
 @Component({
-  imports: [DatePipe, MatIcon,RouterModule],
+  imports: [DatePipe, MatIcon, RouterModule],
   selector: 'app-post-card',
   templateUrl: './post-card.html',
   styleUrls: ['./post-card.css'],
@@ -32,12 +31,10 @@ export class PostCard {
   @Input() post!: PostCardDto;
   public is_mine: boolean = true;
   public authService = inject(AuthService);
+  public likeService = inject(LikeService);
+  public userService = inject(UserService);
+  private http = inject(HttpClient);
 
-  constructor(
-    public likeService: LikeService,
-    public userService: UserService,
-    private http: HttpClient
-  ) {}
 
   deletePost(): void {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.post.id}`).subscribe({
@@ -48,13 +45,11 @@ export class PostCard {
   }
 
   onLikeClick(): void {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
       return;
     }
-    if (this.userService.user() === null){
-      return;
-    }
+
     this.likeService.toggleLike(this.post.id, this.post.isLiked, this.post.likecount).subscribe({
       next: (res) => {
         this.post.isLiked = res.isLiked;

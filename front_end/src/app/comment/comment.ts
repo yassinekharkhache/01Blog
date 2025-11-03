@@ -34,7 +34,7 @@ export class CommentsComponent implements OnInit {
     this.loadComments();
   }
 
-  trackById(index: number, item: Comment) {
+  trackById(item: Comment) {
     return item.id;
   }
 

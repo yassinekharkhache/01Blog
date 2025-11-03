@@ -1,30 +1,42 @@
 <nav class="responsive-sidebar" [class.expanded]="expanded">
   <mat-nav-list class="side-bar-list">
+    
     <a mat-list-item routerLink="/" routerLinkActive="active-link" (click)="handleclick()">
       <mat-icon>group</mat-icon>
-      @if(expanded){
+      @if (expanded) {
         <span class="item-text">Followed</span>
       }
     </a>
 
     <a mat-list-item routerLink="/explore" routerLinkActive="active-link" (click)="handleclick()">
       <mat-icon>explore</mat-icon>
-      <span class="item-text" *ngIf="expanded">Explore</span>
+      @if (expanded) {
+        <span class="item-text">Explore</span>
+      }
     </a>
 
     <a mat-list-item [routerLink]="['/profile', user()?.username]" routerLinkActive="active-link" (click)="handleclick()">
       <mat-icon>person</mat-icon>
-      <span class="item-text" *ngIf="expanded">Profile</span>
+      @if (expanded) {
+        <span class="item-text">Profile</span>
+      }
     </a>
 
     <a mat-list-item routerLink="/new-post" routerLinkActive="active-link" (click)="handleclick()">
       <mat-icon>add_circle</mat-icon>
-      <span class="item-text" *ngIf="expanded">New Post</span>
+      @if (expanded) {
+        <span class="item-text">New Post</span>
+      }
     </a>
 
-    <a *ngIf="user()?.role === 'ADMIN'" mat-list-item routerLink="/admins" routerLinkActive="active-link" (click)="handleclick()">
-      <mat-icon>admin_panel_settings</mat-icon>
-      <span class="item-text" *ngIf="expanded">Admin Panel</span>
-    </a>
+    @if (user()?.role === 'ADMIN') {
+      <a mat-list-item routerLink="/admins" routerLinkActive="active-link" (click)="handleclick()">
+        <mat-icon>admin_panel_settings</mat-icon>
+        @if (expanded) {
+          <span class="item-text">Admin Panel</span>
+        }
+      </a>
+    }
+
   </mat-nav-list>
 </nav>

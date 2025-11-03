@@ -6,12 +6,20 @@
     <input matInput [(ngModel)]="title" name="title" required />
   </mat-form-field>
 
-  <div class="image-preview" *ngIf="imagePreview">
+  @if(imagePreview){
+  <div class="image-preview">
     <img [src]="imagePreviewUrl" alt="Preview" />
   </div>
+  }
   <div class="image-upload">
-      <input id="preview-pic-upload" class="input" type="file" (change)="onImageSelected($event)" accept="image/*" />
-      <label for="preview-pic-upload" class="custom-file-upload"> + upload less than 1MB pic </label>
+    <input
+      id="preview-pic-upload"
+      class="input"
+      type="file"
+      (change)="onImageSelected($event)"
+      accept="image/*"
+    />
+    <label for="preview-pic-upload" class="custom-file-upload"> + upload less than 1MB pic </label>
   </div>
 
   <editor [(ngModel)]="content" [init]="editorConfig"></editor>

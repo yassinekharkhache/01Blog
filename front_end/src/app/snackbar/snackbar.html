@@ -1,11 +1,12 @@
-<div
-  *ngIf="service.message() as msg"
-  class="snackbar"
-  [ngClass]="{
-    'snackbar-success': msg.type === 'success',
-    'snackbar-error': msg.type === 'error',
-    'snackbar-info': msg.type === 'info'
-  }"
->
-  <span class="snackbar-text">{{ msg.text }}</span>
-</div>
+@if (msg) {
+  <div
+    class="snackbar"
+    [ngClass]="{
+      'snackbar-success': msg.type === 'success',
+      'snackbar-error': msg.type === 'error',
+      'snackbar-info': msg.type === 'info'
+    }"
+  >
+    <span class="snackbar-text">{{ msg.text }}</span>
+  </div>
+}

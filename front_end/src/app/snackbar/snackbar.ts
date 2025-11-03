@@ -1,5 +1,5 @@
 // snackbar.component.ts
-import { Component, effect } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SnackbarService } from '../services/snackBar/stack-bar.service';
 
@@ -11,6 +11,8 @@ import { SnackbarService } from '../services/snackBar/stack-bar.service';
   styleUrls: ['./snackbar.css'],
 })
 export class SnackbarComponent {
-  constructor(public service: SnackbarService) {}
+  public service = inject(SnackbarService);
+  get msg() {
+    return this.service.message();
+  }
 }
-

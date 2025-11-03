@@ -12,6 +12,10 @@ export class CommentService {
 
   constructor(private http: HttpClient) {}
 
+  deleteComment(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/delete/${id}`);
+  }
+
   // getComments(postId: number, lastId?: number): Observable<Comment[]> {
   //   let url = `${this.baseUrl}/${postId}`;
   //   if (lastId) url += `?lastId=${lastId}`;

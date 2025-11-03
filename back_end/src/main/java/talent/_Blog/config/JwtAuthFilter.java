@@ -22,9 +22,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @NonNull HttpServletRequest request,
-        @NonNull jakarta.servlet.http.HttpServletResponse response,
-        @NonNull jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull jakarta.servlet.http.HttpServletResponse response,
+            @NonNull jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
@@ -32,9 +32,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        try{
+        try {
             final String userName = jwtService.extractUsername(jwt);
-            
             User user = userRepository.findByUserName(userName).get();
             if (user == null || user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
                 filterChain.doFilter(request, response);
@@ -45,14 +44,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
                     var authToken = new org.springframework.security.authentication.UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
+                            userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-        }catch (Exception e){
-            System.out.println("jwt in not valid : "+e.getMessage());
+            }
+        } catch (Exception e) {
+            System.out.println("jwt in not valid : " + e.getMessage());
         }
         filterChain.doFilter(request, response);
     }
-    
+
 }

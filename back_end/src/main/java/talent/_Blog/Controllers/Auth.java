@@ -2,7 +2,6 @@ package talent._Blog.Controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +50,10 @@ public class Auth {
 
         if (user == null || !encoder.matches(data.password(), user.getPassword())) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid password or User"));
+        }
+
+        if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())){
+            return ResponseEntity.status(403).body(Map.of("error", "User is banned until " + user.getBannedUntil()));
         }
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(Map.of("token", token));

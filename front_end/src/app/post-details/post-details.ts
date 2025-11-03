@@ -75,8 +75,6 @@ export class PostDetails implements OnInit {
           this.post = post;
           this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
           this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
-
-          // Normalize to match toggleLike input
           if (this.post.isliked === undefined) this.post.isliked = false;
           if (this.post.likecount === undefined) this.post.likecount = 0;
           this.is_followd = this.post.isfollow ?? false;

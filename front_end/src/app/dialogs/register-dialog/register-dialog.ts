@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,12 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { LoginDialog } from '../login-dialog/login-dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-register-dialog',
   templateUrl: './register-dialog.html',
   styleUrls: ['./register-dialog.css'],
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatDialogModule,
@@ -31,12 +31,12 @@ export class RegisterDialog {
   loading = false;
   errorMsg = '';
 
+  private snackbar = inject(SnackbarService);
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<RegisterDialog>,
     private http: HttpClient,
     private dialog: MatDialog,
-    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -63,16 +63,10 @@ export class RegisterDialog {
       error: (error) => {
         this.loading = false;
 
-        // check if email is already taken
-        if (error.status === 400) {
-          this.snackBar.open('This email or username is already registered.', 'Close', {
-            duration: 3000,
-          });
+        if (error.status === 409) {
+          this.snackbar.show('Email is already taken', 'error');
         } else {
-          console.log(error),
-          this.snackBar.open(error, 'Close', {
-            duration: 3000,
-          });
+          this.snackbar.show(error, 'error');
         }
       },
     });

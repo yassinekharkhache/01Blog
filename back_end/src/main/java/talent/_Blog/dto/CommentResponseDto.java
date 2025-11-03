@@ -20,7 +20,7 @@ public record CommentResponseDto(
             comment.getContent(),
             Map.of(
                 "id", user.getId(),
-                "userName", user.getUsername(),
+                "username", user.getUsername(),
                 "pic", user.getPic()
             ),
             comment.getCreatedAt().toString(),

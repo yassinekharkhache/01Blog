@@ -9,6 +9,7 @@ import { RegisterDialog } from '../register-dialog/register-dialog';
 import { UserService } from '../../services/user/user.service';
 import { Router } from '@angular/router';
 import { environment } from '../../../environment/environment';
+import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-login-dialog',
@@ -21,6 +22,7 @@ export class LoginDialog {
   username = '';
   password = '';
   api = environment.apiUrl + '/login';
+  private snackbar = inject(SnackbarService);
   private userService = inject(UserService);
   private router = inject(Router);
   constructor(
@@ -41,7 +43,6 @@ export class LoginDialog {
 
   submit() {
     const payload = { username: this.username, password: this.password };
-
     this.http.post(this.api, payload).subscribe({
       next: (response) => {
         document.cookie = `authToken=${encodeURIComponent(
@@ -49,12 +50,19 @@ export class LoginDialog {
         )}; path=/; Secure; SameSite=Strict`;
         this.userService.fetchUser();
         this.dialogRef.close(true);
+        this.snackbar.show('Login successful', 'success');
         setTimeout(() => {
           this.router.navigate(['/']);
         }, 120);
       },
       error: (error) => {
-        console.error('Login failed', error);
+        if(error.error.error == undefined){
+          this.snackbar.show("wrong credentials", 'error');
+          return
+        }
+        if(error.error.error.includes("User is banned until")){
+          this.snackbar.show(error.error.error, 'error');
+        }
       },
     });
   }

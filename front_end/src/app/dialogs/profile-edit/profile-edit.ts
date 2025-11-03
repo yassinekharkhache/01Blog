@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 @Component({
   selector: 'app-profile-edit',
@@ -29,6 +30,7 @@ export class ProfileEditComponent {
   picPreview: string | null = null;
   age: number | null = null;
   password = '';
+  private snackbar = inject(SnackbarService);
 
   constructor(
     private http: HttpClient,
@@ -52,7 +54,7 @@ export class ProfileEditComponent {
 
   submit(form: NgForm) {
     if (form.invalid) {
-      alert('Please fill in required fields.');
+      this.snackbar.show('Please fill out all fields correctly.', 'error');
       return;
     }
 
@@ -75,12 +77,11 @@ export class ProfileEditComponent {
 
     this.http.post('http://localhost:8081/api/users/update', formData).subscribe({
       next: (res) => {
-        alert('Profile updated successfully');
+        this.snackbar.show('Profile updated successfully', 'success');
         this.dialogRef.close(res);
       },
       error: (err) => {
-        console.error('Error updating profile:', err);
-        alert('Update failed. Check fields and try again.');
+        this.snackbar.show(err.error.message, 'error');
       },
     });
   }

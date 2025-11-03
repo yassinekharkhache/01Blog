@@ -8,10 +8,12 @@ import { environment } from '../../environment/environment';
 import { AuthService } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
 import { SnackbarService } from '../services/snackBar/stack-bar.service';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-comment',
-  imports: [DatePipe, FormsModule],
+  imports: [MatMenuTrigger, DatePipe, FormsModule, MatMenu, MatIconModule],
   templateUrl: './comment.html',
   styleUrl: './comment.css',
 })
@@ -26,9 +28,10 @@ export class CommentsComponent implements OnInit {
   public newCommentContent = '';
   public sending = false;
   public snackbarr = inject(SnackbarService);
+  private commentService = inject(CommentService)
 
 
-  constructor(private commentService: CommentService) { }
+  constructor() { }
 
   ngOnInit() {
     this.loadComments();
@@ -40,15 +43,15 @@ export class CommentsComponent implements OnInit {
 
 
   submitComment() {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
       return;
     }
-    if (!this.newCommentContent.trim()){
+    if (!this.newCommentContent.trim()) {
       this.snackbarr.show('comment is empty', 'error');
       return;
     }
-    if (this.newCommentContent.length > 1000){
+    if (this.newCommentContent.length > 1000) {
       this.snackbarr.show('comment is too long', 'error');
       return;
     }
@@ -86,6 +89,19 @@ export class CommentsComponent implements OnInit {
       this.loading = false;
     });
   }
+
+  public deleteComment(id: number,c :any){
+    this.commentService.deleteComment(id).subscribe({
+      next: () => {
+        this.comments = this.comments.filter((comment) => comment.id !== id);
+        this.snackbarr.show('comment deleted', 'success');
+      },
+      error: () => {
+        this.snackbarr.show('error deleting comment', 'error');
+      },
+    });
+  }
+
   @HostListener('window:scroll', [])
   handleScroll(): void {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;

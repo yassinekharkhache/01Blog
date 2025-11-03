@@ -142,22 +142,23 @@ export class BlogEditorComponent {
 
     };
 
-    if (this.title.length >= 100) {
+    if (this.title().length >= 100) {
       this.snackbar.show('title is to long', 'error');
       return;
     }
     
-    if (this.title.length <= 5) {
+    if (this.title().length <= 5) {
+      alert(this.title)
       this.snackbar.show('title is to short', 'error');
       return;
     }
 
-    if (this.content.length >= 4000) {
+    if (this.content().length >= 4000) {
       this.snackbar.show('content is to long', 'error');
       return;
     }
 
-    if (this.content.length <= 50) {
+    if (this.content().length <= 50) {
       this.snackbar.show('content is to short', 'error');
       return;
     }

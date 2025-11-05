@@ -11,7 +11,6 @@ import { ConfirmDialogComponent } from '../../dialogs/confirmation-dialog/confir
 
 @Component({
   selector: 'app-user-search',
-  standalone: true,
   imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './user-search.html',
   styleUrls: ['./user-search.css'],

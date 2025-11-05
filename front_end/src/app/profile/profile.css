@@ -6,6 +6,25 @@
   color: #222;
 }
 
+.menu{
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  border: none;
+  display: flex;
+  padding: 10px;
+  align-items: center;
+  background: none;
+  scale: 1.2;
+}
+.menu:hover{
+  scale: 1.5;
+  cursor: pointer;
+  color: #008CBA;
+}
+
+
+
 mat-toolbar {
   position: fixed;
   top: 0;

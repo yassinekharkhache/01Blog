@@ -129,17 +129,6 @@ export class ReportsTable implements OnInit {
           });
   }
 
-  // loadComments() {
-  //   if (this.loading) return;
-  //   this.loading = true;
-
-  //   this.commentService.getComments(this.postId, this.lastId).subscribe((res) => {
-  //     this.comments.push(...res);
-  //     if (res.length > 0) this.lastId = res[res.length - 1].id;
-  //     this.loading = false;
-  //   });
-  // }
-
   onScroll(event: Event) {
     const target = event.target as HTMLElement;
     const atBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;

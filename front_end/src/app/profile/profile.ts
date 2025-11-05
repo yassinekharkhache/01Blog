@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, Input, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { PostService } from '../services/post/post.service';
@@ -10,11 +10,12 @@ import { HttpClient } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../services/user/user.service';
 import { AuthService } from '../services/auth/auth.service';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule, CommonModule, PostCard, Notfound],
+  imports: [MatIconModule, CommonModule, PostCard, Notfound, MatMenuTrigger, MatMenu, MatIconModule],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })

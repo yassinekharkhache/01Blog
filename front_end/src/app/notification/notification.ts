@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -28,6 +28,14 @@ export class NotificationsComponent {
     const user = this.userService.user();
     if (!user) return;
     this.notificationService.markAllAsSeen(user.username);
+  }
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.profile-menu-wrapper') && !target.closest('.notification-container')) {
+      this.showNotifications = false;
+    }
+    
   }
   
   onScroll(event: Event) {

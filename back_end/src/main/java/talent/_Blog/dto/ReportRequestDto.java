@@ -7,8 +7,11 @@ import jakarta.validation.constraints.Size;
 
 public record ReportRequestDto(
 
+    @NotBlank(message = "report type is required")
+    String ReportType,
+
     @Min(value = 0, message = "should be positive")
-    Long postId,
+    Long Id,
 
     @NotBlank(message = "reason is required")
     @Size(min = 12, message = "reason must be at least 12 characters long")

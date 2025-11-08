@@ -1,19 +1,29 @@
 <button mat-icon-button class="notification-btn" (click)="toggleNotifications()">
   @if(unseenCount() != 0){
-  <mat-icon aria-hidden="false" [matBadge]="unseenCount()" matBadgeColor="warn">notifications</mat-icon>
+  <mat-icon aria-hidden="false" [matBadge]="unseenCount()" matBadgeColor="warn"
+    >notifications</mat-icon
+  >
   }@else {
   <mat-icon aria-hidden="false" matBadgeColor="warn">notifications</mat-icon>
   }
 </button>
 @if(showNotifications){
+
 <div class="notifications-dropdown">
   <h1>Notifications</h1>
-  <div (scroll)="onScroll($event)" class="list">
-    <div class="item" *ngFor="let n of notifications()">
-      <img src="http://localhost:8081{{n.sender.pic}}" width="50px" height="50px" alt="">
-      <p [class.seen]="n.seen">{{ n.message }}</p>
-    </div>
+  @for (n of notifications(); track n.id) {
+  <div class="item">
+    <img
+      src="http://localhost:8081{{ n.sender.pic }}"
+      width="50px"
+      height="50px"
+      alt="sender pic"
+    />
+    <p [class.seen]="n.seen">{{ n.message }}</p>
   </div>
+  }@empty {
+    <p class="empty">No notifications yet</p>
+  }
 
   <div class="actions">
     <button (click)="markAllAsSeen()">Mark all as seen</button>

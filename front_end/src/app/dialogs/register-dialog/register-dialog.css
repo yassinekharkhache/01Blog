@@ -26,6 +26,7 @@ button{
     justify-content: center;
     align-items: center;
     gap: 20px;
+    
 }
 
 p {
@@ -38,12 +39,17 @@ p {
 }
 
 span{
-    color: #aa03aa;
     cursor: pointer;
+    color: #2196f3;;
 }
 
 .center{
   display: block;
   width: 100%;
   text-align: center;
+}
+
+.btns button{
+    border: none;
+    color: #006eff;
 }

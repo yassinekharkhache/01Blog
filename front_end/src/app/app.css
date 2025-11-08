@@ -21,7 +21,6 @@
 }
 
 @media (max-width: 767px) {
-  /* Mobile: No margin for content (sidebar overlays) */
   .content {
     margin-left: 0;
     padding: 16px 12px;
@@ -45,7 +44,6 @@
     overflow: hidden;
   }
 
-  /* Mobile: Adjust content for navbar */
   .content {
     padding-top: 72px; /* Space for fixed navbar */
   }
@@ -63,18 +61,15 @@
     width: calc(100% - 72px);
   }
 
-  /* Tablet: Expanded sidebar */
   .layout.expanded .content {
     margin-left: 220px;
     width: calc(100% - 220px);
   }
 
-  /* Tablet: Adjust content for navbar */
   .content {
-    padding-top: 80px; /* Space for fixed navbar */
+    padding-top: 80px
   }
 
-  /* Tablet: Responsive container */
   .content > * {
     max-width: 960px;
     margin: 0 auto;
@@ -82,29 +77,21 @@
   }
 }
 
-/* ===========================
-   DESKTOP STYLES (> 1024px)
-   =========================== */
 @media (min-width: 1025px) {
-  /* Desktop: Account for collapsed sidebar */
   .content {
     margin-left: 72px;
     padding: 24px 20px;
     width: calc(100% - 72px);
   }
 
-  /* Desktop: Expanded sidebar */
   .layout.expanded .content {
     margin-left: 260px;
     width: calc(100% - 260px);
   }
 
-  /* Desktop: Adjust content for navbar */
   .content {
     padding-top: 88px; /* Space for fixed navbar */
   }
-
-  /* Desktop: Centered container with max-width */
   .content > * {
     max-width: 1200px;
     margin: 0 auto;
@@ -112,47 +99,31 @@
   }
 }
 
-/* ===========================
-   LARGE DESKTOP (> 1440px)
-   =========================== */
 @media (min-width: 1441px) {
-  /* Large Desktop: Wider content area */
   .layout.expanded .content {
     margin-left: 280px;
     width: calc(100% - 280px);
   }
 
-  /* Large Desktop: Larger max-width */
   .content > * {
     max-width: 1400px;
     padding: 0 32px;
   }
 
-  /* Large Desktop: More padding */
   .content {
     padding: 32px 24px;
   }
 }
 
-/* ===========================
-   EXTRA LARGE DESKTOP (> 1920px)
-   =========================== */
 @media (min-width: 1921px) {
-  /* Extra Large: Even wider container */
   .content > * {
     max-width: 1600px;
     padding: 0 40px;
   }
-
-  /* Extra Large: More breathing room */
   .content {
     padding: 40px 32px;
   }
 }
-
-/* ===========================
-   SIDEBAR COMPONENT STYLES
-   =========================== */
 
 .side-bar {
   position: fixed;
@@ -161,10 +132,6 @@
   height: 100vh;
   z-index: 1000;
 }
-
-/* ===========================
-   NAVBAR COMPONENT STYLES
-   =========================== */
 
 app-nav-bar {
   position: fixed;
@@ -177,32 +144,24 @@ app-nav-bar {
   transition: all 0.3s ease;
 }
 
-/* Mobile navbar adjustments */
 @media (max-width: 767px) {
   app-nav-bar {
     height: 56px;
   }
 }
 
-/* Tablet navbar */
 @media (min-width: 768px) and (max-width: 1024px) {
   app-nav-bar {
     height: 64px;
   }
 }
 
-/* Desktop navbar */
 @media (min-width: 1025px) {
   app-nav-bar {
     height: 72px;
   }
 }
 
-/* ===========================
-   CONTENT RESPONSIVE UTILITIES
-   =========================== */
-
-/* Responsive grid for content inside main */
 .content-grid {
   display: grid;
   gap: 20px;
@@ -229,11 +188,6 @@ app-nav-bar {
   }
 }
 
-/* ===========================
-   LOADING & TRANSITION STATES
-   =========================== */
-
-/* Smooth fade in for router outlet */
 .content router-outlet + * {
   animation: fadeInUp 0.4s ease;
 }
@@ -258,39 +212,11 @@ app-nav-bar {
   }
 }
 
-/* ===========================
-   SCROLLBAR STYLING
-   =========================== */
-
-.content::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.content::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-.content::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* ===========================
-   ACCESSIBILITY
-   =========================== */
-
-/* Focus visible for keyboard navigation */
 .content:focus-visible {
   outline: 2px solid #1976d2;
   outline-offset: 4px;
 }
 
-/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .layout,
   .content,
@@ -300,10 +226,6 @@ app-nav-bar {
     animation: none;
   }
 }
-
-/* ===========================
-   DARK MODE SUPPORT
-   =========================== */
 
 @media (prefers-color-scheme: dark) {
   .content {
@@ -316,27 +238,7 @@ app-nav-bar {
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
-
-  .layout.expanded .content::before {
-    background: rgba(0, 0, 0, 0.7);
-  }
-
-  .content::-webkit-scrollbar-track {
-    background: #2a2a2a;
-  }
-
-  .content::-webkit-scrollbar-thumb {
-    background: #555555;
-  }
-
-  .content::-webkit-scrollbar-thumb:hover {
-    background: #777777;
-  }
 }
-
-/* ===========================
-   PRINT STYLES
-   =========================== */
 
 @media print {
   .layout {
@@ -355,11 +257,6 @@ app-nav-bar {
   }
 }
 
-/* ===========================
-   UTILITIES
-   =========================== */
-
-/* Container for cards and content blocks */
 .content-container {
   background: #ffffff;
   border-radius: 8px;

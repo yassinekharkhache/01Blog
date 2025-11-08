@@ -23,6 +23,7 @@ import { SnackbarService } from '../../services/snackBar/stack-bar.service';
   styleUrls: ['./report-dialog.css'],
 })
 export class ReportDialogComponent {
+  snackbarr = inject(SnackbarService);
   form: FormGroup;
   loading = false;
   api = 'http://localhost:8081/api/report/add';
@@ -31,7 +32,7 @@ export class ReportDialogComponent {
     private fb: FormBuilder,
     private http: HttpClient,
     private dialogRef: MatDialogRef<ReportDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { postId: number }
+    @Inject(MAT_DIALOG_DATA) public data: { id: number; type: string }
   ) {
     this.form = this.fb.group({
       reason: ['', [Validators.required, Validators.minLength(12)]],
@@ -42,17 +43,18 @@ export class ReportDialogComponent {
     this.dialogRef.close();
   }
 
-  snackbarr = inject(SnackbarService);
-
   submit(): void {
     if (this.form.invalid) return;
 
     this.loading = true;
 
+
     const payload = {
       reason: this.form.value.reason,
-      postId: this.data.postId,
+      ReportType: this.data.type,
+      Id: this.data.id,
     };
+    console.log(payload);
 
     this.http.post(this.api, payload).subscribe({
       next: () => {
@@ -61,8 +63,7 @@ export class ReportDialogComponent {
         this.snackbarr.show('report submited', 'success');
         this.cancel();
       },
-      error: (err) => {
-        console.error('Error submitting report', err);
+      error: () => {
         this.loading = false;
       },
     });

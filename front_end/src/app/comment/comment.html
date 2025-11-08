@@ -14,9 +14,11 @@
       <p class="comment-content">{{ c.content }}</p>
       <small>{{ c.createdAt | date : 'short' }}</small>
     </div>
-    <button class="menu" mat-icon-button [matMenuTriggerFor]="menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
+    @if(c.user.username == userService.user()?.username){
+      <button class="menu" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    }
     <mat-menu #menu="matMenu">
       <button (click)="deleteComment(c.id,c.user)"  class="delete-comment" mat-menu-item>
         <mat-icon>delete</mat-icon>

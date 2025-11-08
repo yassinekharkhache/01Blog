@@ -12,13 +12,16 @@ import talent._Blog.Model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     boolean existsByEmail(String email);
     boolean existsByUserName(String UserName);
     Optional<User> findByUserName(String name);
     Optional<User> findByEmail(String email);
     Optional<User> deleteByUserName(String userName);
+    Optional<User> findById(Long id);
     List<User> findByUserNameContainingIgnoreCaseAndIdLessThan(String username,long lastId,Pageable pageable);
     List<User> findByUserNameContainingIgnoreCase(String username,Pageable pageable);
     List<User> findByIdLessThan(long lastId,Pageable pageable);
+
 
 }

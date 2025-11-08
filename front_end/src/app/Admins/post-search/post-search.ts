@@ -48,7 +48,6 @@ export class PostSearch {
               this.posts.set([]);
             }
           },
-          error: (err) => console.error('Search error:', err),
         });
     });
   }
@@ -67,7 +66,6 @@ export class PostSearch {
           this.allLoaded = true;
         }
       },
-      error: (err) => console.error('Search error:', err),
     });
   }
 
@@ -101,7 +99,6 @@ export class PostSearch {
             }
           },
           error: (err) => {
-            console.error(`Failed to ${action} the user ${post.title}:`, err);
             select.value = '';
           }
         });

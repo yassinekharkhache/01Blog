@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 
 	public static void main(String[] args) {
-		var app = new SpringApplication(Application.class);
+		SpringApplication app = new SpringApplication(Application.class);
 		app.setBanner((environment, sourceClass, out) -> {
 			out.println("""
 				

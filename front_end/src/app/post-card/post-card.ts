@@ -39,7 +39,6 @@ export class PostCard {
   deletePost(): void {
     this.http.delete(`http://localhost:8081/api/post/delete/${this.post.id}`).subscribe({
       next: (response) => console.log('Post deleted successfully:', response),
-      error: (error) => console.error('Error deleting post:', error),
     });
     console.log(`Deleting post ID: ${this.post.id}`);
   }
@@ -55,7 +54,6 @@ export class PostCard {
         this.post.isLiked = res.isLiked;
         this.post.likecount = res.likecount;
       },
-      error: (err) => console.error('Error toggling like:', err),
     });
   }
 

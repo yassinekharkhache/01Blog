@@ -4,9 +4,9 @@
     <h1 class="post-title">{{ post?.title }}</h1>
     <div class="post-meta">
       <div class="meta-data">
-        <img class="author-img" [src]="post?.authorProfileImageUrl" alt="Author image" />
+        <img [routerLink]="['/profile', post?.authorUsername]" class="author-img" [src]="post?.authorProfileImageUrl" alt="Author image"  />
         <div class="author-details">
-          <span class="author-name">{{ post?.authorUsername }}</span>
+          <span [routerLink]="['/profile', post?.authorUsername]" class="author-name">{{ post?.authorUsername }}</span>
           <span class="post-date">{{ post?.createdAt | date : 'short' }}</span>
         </div>
       </div>
@@ -35,12 +35,6 @@
       </div>
     </div>
   </div>
-  <!-- <button class="mine" (click)="$event.stopPropagation();onLikeClick()" class="like-button">
-    <mat-icon svgIcon="thumbs-up" aria-hidden="false" aria-label="Example thumbs up SVG icon"></mat-icon>
-    <span>
-      {{post?.likecount}} likes
-    </span> 
-      </button> -->
 
   <div class="btns">
     @if(!is_mine){
@@ -56,7 +50,13 @@
     </button>
   </div>
   <hr class="divider" />
+
+
+  
   <div class="post-body" [innerHTML]="safeContent"></div>
+
+
+
   <hr class="divider" />
   <app-comment [postId]="nbrId"></app-comment>
 </div>

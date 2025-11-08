@@ -10,9 +10,7 @@
   z-index: 1;
   overflow-x: hidden;
   overflow-y: auto;
-}
-
-.responsive-sidebar {
+  color: #2196f3;
   width: 60px;
 }
 
@@ -41,6 +39,7 @@ span{
   position: relative;
   overflow: hidden;
   min-height: 48px;
+  color: #2196f3;
 }
 
 .side-bar-list a[mat-list-item]:hover {
@@ -77,23 +76,6 @@ span{
   font-weight: 400;
   letter-spacing: 0.25px;
   transition: opacity 0.2s ease;
-}
-
-.responsive-sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.responsive-sidebar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.responsive-sidebar::-webkit-scrollbar-thumb {
-  background: #cccccc;
-  border-radius: 3px;
-}
-
-.responsive-sidebar::-webkit-scrollbar-thumb:hover {
-  background: #999999;
 }
 
 @media (max-width: 767px) {
@@ -221,11 +203,6 @@ span{
   
   .side-bar-list a[mat-list-item]:hover {
     background-color: #2a2a2a;
-  }
-  
-  .side-bar-list a[mat-list-item].active-link {
-    background-color: #1a237e;
-    color: #90caf9;
   }
   
   .side-bar-list mat-icon {

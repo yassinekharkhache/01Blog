@@ -111,7 +111,6 @@ export class Edit implements OnInit {
     const url = `http://localhost:8081/api/upload/${type}/${fileName}`;
     return this.http.delete(url).subscribe({
       next: () => console.log(`${type} deleted successfully`),
-      error: (err) => console.error(`Failed to delete ${type}: ${err.message}`),
     });
   }
 

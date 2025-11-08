@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -84,7 +84,6 @@ export class ReportsTable implements OnInit {
               console.log(`Post ${report.PostId} deleted successfully`)
               this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
           },
-            error: (err) => console.error(`Failed to delete post ${report.PostId} err: ${err}`),
           });
           break;
         case 'hidePost':
@@ -93,7 +92,6 @@ export class ReportsTable implements OnInit {
               console.log(`Post ${report.PostId} hidden successfully`)
               this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
             },
-            error: (err) => console.error(`Failed to hide post ${report.PostId} err: ${err}`),
           });
           this.deleteReport(report.ReportId);
           break;
@@ -106,14 +104,12 @@ export class ReportsTable implements OnInit {
               this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
               console.log(`user ${report.ReportedUsername} banned successfully`);
           },
-            error: (err) => console.error(`Failed to ban the user ${report.ReportedUsername} err: ${err}`),
           });
           this.deleteReport(report.ReportId);
           break;
         case 'deleteUser':
           this.http.delete(this.baseApi + '/api/users/delete/' + report.ReportedUsername).subscribe({
             next: () => console.log(`user ${report.ReportedUsername} deleted successfully`),
-            error: (err) => console.error(`Failed to delete the user ${report.ReportedUsername} err: ${err}`),
           });
           break;
       }
@@ -125,17 +121,28 @@ export class ReportsTable implements OnInit {
               this.reports = this.reports.filter(r => r.ReportId !== id);
               console.log(`Report ${id} dismissed successfully`);
             },
-            error: (err) => console.error(`Failed to dismiss report ${id} err: ${err}`),
           });
   }
 
-  onScroll(event: Event) {
-    const target = event.target as HTMLElement;
-    const atBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
-    if (atBottom && !this.loading) {
-      this.loadReports();
+  // onScroll(event: Event) {
+  //   const target = event.target as HTMLElement;
+  //   const atBottom = target.scrollHeight - target.scrollTop <= target.clientHeight + 50;
+  //   if (atBottom && !this.loading) {
+  //     this.loadReports();
+  //   }
+  // }
+    @HostListener('window:scroll', [])
+    handleScroll(): void {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = document.documentElement.clientHeight;
+  
+      const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
+  
+      if (atBottom && !this.loading) {
+        this.loadReports();
+      }
     }
-  }
 
   trackById(index: number, item: ReportResDto) {
     return item.ReportId;

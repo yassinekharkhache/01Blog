@@ -13,10 +13,15 @@ import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
 import talent._Blog.Service.PostService;
 import talent._Blog.dto.PostDto;
+import talent._Blog.dto.AddPostRequestDto;
 import talent._Blog.dto.PostCardDto;
 import talent._Blog.mapper.Postcard;
 import talent._Blog.mapper.postpage;
 import org.springframework.web.multipart.MultipartFile;
+
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -36,47 +41,20 @@ public class PostController {
 
     @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPost(
-            @RequestPart("title") String title,
-            @RequestPart("content") String content,
-            @RequestPart(value = "image", required = true) MultipartFile image,
+            @Valid @ModelAttribute AddPostRequestDto request,
             @AuthenticationPrincipal User user) throws IOException {
 
-        System.out.println(content + " " + title);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("error", "User not authenticated. Please log in to create a post."));
-        }
-
-        if (title == null || title.trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Title cannot be empty."));
-        }
-        if (title.length() < 4 || title.length() > 100) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Title must be between 4 and 100 characters."));
-        }
-
-        // Validate content
-        if (content == null || content.trim().isEmpty()) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Content cannot be empty."));
-        }
-        if (content.length() < 4 || content.length() > 4000) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("error", "Content must be between 4 and 4000 characters."));
-        }
-
         byte[] imageBytes = null;
-        if (image != null && !image.isEmpty()) {
-            if (image.getSize() > 1 * 1024 * 1024) { // 2 MB
+        if (request.image() != null && !request.image().isEmpty()) {
+            if (request.image().getSize() > 1 * 1024 * 1024) { // 2 MB
                 return ResponseEntity.badRequest()
                         .body(Map.of("error", "Image size exceeds the maximum limit of 5 MB."));
             }
-            imageBytes = image.getBytes();
+            imageBytes = request.image().getBytes();
         }
 
         // Build DTO and save post
-        PostDto data = new PostDto(content.trim(), title.trim(), imageBytes);
+        PostDto data = new PostDto(request.content().trim(), request.title().trim(), imageBytes);
         var submittedPost = postService.savePost(data, user);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -165,7 +143,7 @@ public class PostController {
         if (post == null) {
             return ResponseEntity.status(404).body(Map.of("message", "Post not found"));
         }
-        if (!post.getUser().getUsername().equals(user.getUsername()) && user.getRole() != Role.ADMIN){
+        if (!post.getUser().getUsername().equals(user.getUsername()) && user.getRole() != Role.ADMIN) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Not allowed"));
         }
 

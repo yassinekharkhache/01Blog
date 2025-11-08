@@ -33,10 +33,10 @@ public class ReportController {
     @PostMapping("/add")
     public ResponseEntity<?> addReport(@Valid @RequestBody ReportRequestDto request,
             @AuthenticationPrincipal User reporter) {
-        if( reporter == null){
-            return ResponseEntity.status(401).body(Map.of("not authrized", 401));
+        if(!request.ReportType().equals("POST") && !request.ReportType().equals("USER")){
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid report type"));
         }
-        reportService.saveReport(request.reason(), request.postId(), reporter);
+        reportService.saveReport(request, reporter);
         return ResponseEntity.ok(Map.of("valid", "Report submitted"));
     }
 

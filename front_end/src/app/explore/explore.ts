@@ -33,7 +33,6 @@ export class Explore implements OnInit {
         else { this.posts.push(...newPosts); this.lastId = newPosts[newPosts.length - 1].id; }
         this.loading = false;
       },
-      error: (err) => { console.error(err); this.loading = false; }
     });
   }
   @HostListener('window:scroll', [])

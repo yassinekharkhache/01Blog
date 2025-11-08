@@ -38,8 +38,7 @@ export class AdminPannel implements OnInit {
         this.filteredReports = data;
         this.loading = false;
       },
-      error: err => {
-        console.error(err);
+      error: () => {
         this.loading = false;
       }
     });

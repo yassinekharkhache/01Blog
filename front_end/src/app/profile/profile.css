@@ -23,6 +23,19 @@
   color: #008CBA;
 }
 
+.report-user{
+  margin: 0;
+  width:100%;
+  height: 40px;
+  border:none;
+  text-align: center;
+}
+
+.report-user:hover{
+  cursor: pointer;
+  color: #008CBA;
+}
+
 
 
 mat-toolbar {

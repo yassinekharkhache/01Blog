@@ -43,6 +43,13 @@ public class UsersController {
         return ResponseEntity.ok(Map.of("valid", 200));
     }
 
+    @PostMapping("/unban")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> UnBaneUser(@RequestBody BanRequest request, @AuthenticationPrincipal User user) {
+        userService.UnbanUser(request.username());
+        return ResponseEntity.ok(Map.of("valid", 200));
+    }
+
     private record BanRequest(String username) {
     }
 
@@ -89,7 +96,7 @@ public class UsersController {
 
         return ResponseEntity.ok(currentUser);
     }
-///api/post/get
+    
     @GetMapping("/get/{username}")
     public ResponseEntity<?> getUserData(
             @PathVariable String username,

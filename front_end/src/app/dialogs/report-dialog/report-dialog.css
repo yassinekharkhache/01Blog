@@ -9,6 +9,10 @@ h2 {
   margin-top: 16px;
 }
 
+.blue button{
+  color: #2196f3;
+}
+
 .w-full {
   width: 100%;
 }

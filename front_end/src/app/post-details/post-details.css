@@ -68,6 +68,12 @@
   overflow-wrap: break-word ;
 }
 
+.post-body{
+  text-wrap: wrap;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
 .post-body h2,
 .post-body h3 {
   margin-top: 24px;
@@ -98,7 +104,7 @@
 }
 
 .follow {
-  color: #008cba; /* Blue */
+  color: #008cba;
   border: none;
   cursor: pointer;
 }

@@ -1,5 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, inject, OnInit, Type } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { LikeService } from '../services/like/likes.service';
@@ -39,11 +39,13 @@ interface PostDetailsDto {
     MatMenu,
     MatMenuTrigger,
     Notfound,
+    RouterModule
   ],
   selector: 'app-post-details',
   templateUrl: './post-details.html',
   styleUrls: ['./post-details.css'],
 })
+
 export class PostDetails implements OnInit {
   postId: string | null = null;
   post: PostDetailsDto | null = null;
@@ -101,7 +103,6 @@ export class PostDetails implements OnInit {
       next: (res) => {
         this.is_followd = res.isFollowed;
       },
-      error: (err) => console.error('Error toggling follow:', err),
     });
   }
 
@@ -113,7 +114,7 @@ export class PostDetails implements OnInit {
     const postId = this.postId;
     const dialogRef = this.dialog.open(ReportDialogComponent, {
       width: '400px',
-      data: { postId },
+      data: { id : postId,type:"POST" },
     });
 
     dialogRef.afterClosed().subscribe((submitted) => {
@@ -135,7 +136,6 @@ export class PostDetails implements OnInit {
         this.post!.isliked = res.isLiked;
         this.post!.likecount = res.likecount;
       },
-      error: (err) => console.error('Error toggling like:', err),
     });
   }
 
@@ -145,7 +145,6 @@ export class PostDetails implements OnInit {
         console.log(`Post ${this.nbrId} deleted successfully`);
         this.router.navigate(['/']);
       },
-      error: (err) => console.error(`Failed to delete post ${this.nbrId} err: ${err}`),
     });
   }
 }

@@ -20,12 +20,14 @@
     <mat-label>Age</mat-label>
     <input matInput formControlName="age" type="number" />
   </mat-form-field>
-  <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+  @if(errorMsg){
+    <div class="error">{{ errorMsg }}</div>
+  }
   <p class="center">already have account <span (click)="openlogin()">Login</span></p>
-  <div class="actions">
-    <button mat-raised-button color="primary" type="submit" [disabled]="loading || form.invalid">
+  <div class="btns" class="actions">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-raised-button  [disabled]="loading || form.invalid">
       {{ loading ? 'Registering...' : 'Register' }}
     </button>
-    <button mat-button type="button" (click)="cancel()">Cancel</button>
   </div>
 </form>

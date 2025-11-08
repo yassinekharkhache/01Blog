@@ -93,7 +93,6 @@ export class BlogEditorComponent {
       console.log(`${type} uploaded:`, response.url);
       return response.url || '';
     } catch (err) {
-      console.error(`Failed to upload ${type}:`, err);
       return '';
     }
   }
@@ -102,7 +101,6 @@ export class BlogEditorComponent {
     const url = `${this.apiBase}/upload/${type}/${fileName}`;
     this.http.delete(url).subscribe({
       next: () => console.log(`${type} deleted successfully`),
-      error: (err) => console.error(`Failed to delete ${type}: ${err.message}`),
     });
   }
 

@@ -44,7 +44,6 @@ export class UserSearch {
               this.users.set([]);
             }
           },
-          error: (err) => console.error('Search error:', err),
         });
     });
   }
@@ -59,7 +58,6 @@ export class UserSearch {
           this.allLoaded = true;
         }
       },
-      error: (err) => console.error('Search error:', err),
     });
   }
 

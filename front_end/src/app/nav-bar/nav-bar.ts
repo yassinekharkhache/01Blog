@@ -59,17 +59,12 @@ export class NavBarComponent {
     this.menuOpen = !this.menuOpen;
   }
 
-  toggleNotifications(event: MouseEvent) {
-    event.stopPropagation();
-    this.showNotifications = !this.showNotifications;
-  }
-
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
     const target = event.target as HTMLElement;
     if (!target.closest('.profile-menu-wrapper') && !target.closest('.notification-container')) {
       this.menuOpen = false;
-      this.showNotifications = false;
     }
+    
   }
 }

@@ -11,15 +11,24 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserService } from '../services/user/user.service';
 import { AuthService } from '../services/auth/auth.service';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule, CommonModule, PostCard, Notfound, MatMenuTrigger, MatMenu, MatIconModule],
+  imports: [
+    MatIconModule,
+    CommonModule,
+    PostCard,
+    Notfound,
+    MatMenuTrigger,
+    MatMenu,
+    MatIconModule,
+  ],
   templateUrl: './profile.html',
   styleUrls: ['./profile.css'],
 })
-
 export class Profile implements OnInit {
   public followService = inject(FollowService);
   public profileService = inject(ProfileService);
@@ -29,6 +38,7 @@ export class Profile implements OnInit {
   private postService = inject(PostService);
   private userService = inject(UserService);
   private authService = inject(AuthService);
+  private dialog = inject(MatDialog);
   userPosts: PostCardDto[] = [];
   loading = false;
   allLoaded = false;
@@ -36,11 +46,12 @@ export class Profile implements OnInit {
   lastId: number | null = null;
   username: string | null = '';
   isMyProfile = false;
+  UserId: number = 0;
 
   onFollowClick(): void {
-    if (this.userService.user() == null){
+    if (this.userService.user() == null) {
       this.authService.openLogin();
-      return
+      return;
     }
 
     this.followService.toggleFollow(this.is_followd as boolean, this.username as string).subscribe({
@@ -48,15 +59,33 @@ export class Profile implements OnInit {
         this.is_followd = res.isFollowed;
         this.profileService.fetchUser(this.username as string);
       },
-      error: (err) => console.error('Error toggling follow:', err),
+    });
+  }
+
+  openReportDialog() {
+    if (this.userService.user() == null) {
+      this.authService.openLogin();
+      return;
+    }
+    this.UserId = this.profileService.user()?.id ?? 0;
+
+    const dialogRef = this.dialog.open(ReportDialogComponent, {
+      width: '400px',
+      data: { id : this.UserId, type:"USER" },
+    });
+
+    dialogRef.afterClosed().subscribe((submitted) => {
+      if (submitted) {
+        console.log('Report submitted for user ID:', this.UserId);
+      }
     });
   }
 
   ngOnInit(): void {
     this.allLoaded = false;
+
     this.route.paramMap.subscribe((params) => {
       this.username = params.get('username');
-      console.log(this.username);
       if (!this.username || this.username === 'null') {
         this.router.navigate(['/explore']);
         return;
@@ -64,26 +93,24 @@ export class Profile implements OnInit {
       this.userPosts = [];
       this.lastId = null;
       this.allLoaded = false;
-      
+
       this.profileService.fetchUser(this.username);
       const user = this.userService.user();
       this.isMyProfile = !!user && user.username === this.username;
 
-      if (this.userService.user() != null){
-
+      if (this.userService.user() != null) {
         this.http
-        .get<{ is_subsciberd: boolean }>(
-          `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
-          { withCredentials: true }
-        )
-        .subscribe({
-          next: (data) => (this.is_followd = data.is_subsciberd),
-          error: () => (this.is_followd = false),
-        });
+          .get<{ is_subsciberd: boolean }>(
+            `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
+            { withCredentials: true }
+          )
+          .subscribe({
+            next: (data) => (this.is_followd = data.is_subsciberd),
+            error: () => (this.is_followd = false),
+          });
       }
-      
-      this.loadPosts();
 
+      this.loadPosts();
     });
   }
 
@@ -99,7 +126,6 @@ export class Profile implements OnInit {
           this.lastId = newPosts.at(-1)?.id ?? null;
         }
       },
-      error: (err) => console.error('Error loading posts:', err),
       complete: () => (this.loading = false),
     });
   }

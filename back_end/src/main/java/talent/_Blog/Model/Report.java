@@ -15,9 +15,15 @@ public class Report {
 
     private String reason;
 
+    private String type;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "reporter_id")
+    private User reporter;
+
+    @ManyToOne
+    @JoinColumn(name = "reported_id")
+    private User reported;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

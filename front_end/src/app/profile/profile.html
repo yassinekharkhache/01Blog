@@ -41,7 +41,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <button class="report-user" mat-menu-item>
+      <button (click)="openReportDialog()" class="report-user" mat-menu-item>
         <mat-icon>report</mat-icon>
         <span>report</span>
       </button>

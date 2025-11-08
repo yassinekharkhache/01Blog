@@ -9,13 +9,11 @@ import java.util.List;
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    // First page
     List<Report> findByOrderByIdDesc(Pageable pageable);
 
-    // Next pages (lazy load)
     List<Report> findByIdLessThanOrderByIdDesc(Long lastId, Pageable pageable);
 
-    List<Report> findByUserId(Long userId);
+    List<Report> findByReporter_Id(Long userId);  // <-- fixed
 
     Report findReportById(Long id);
 }

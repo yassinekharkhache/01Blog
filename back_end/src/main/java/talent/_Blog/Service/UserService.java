@@ -33,6 +33,10 @@ public class UserService {
         this.encoder = encoder;
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+    }
+
     @Transactional
     public Map<String, Object> getUserData(String username) {
         User user = getUserByName(username);
@@ -72,6 +76,18 @@ public class UserService {
         }
         user.setBannedUntil(java.time.LocalDateTime.now().plusDays(7));
         user.setStatus(Status.Banned);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void UnbanUser(String username) {
+        User user = userRepository.findByUserName(username)
+                .orElseThrow(() -> new UserNotFoundException("user not found"));
+        if (user.getRole() == Role.ADMIN) {
+            throw new UnAuthorizedException("Admin cannot be banned");
+        }
+        user.setBannedUntil(null);
+        user.setStatus(Status.Active);
         userRepository.save(user);
     }
 

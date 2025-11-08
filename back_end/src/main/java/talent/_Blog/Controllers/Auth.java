@@ -29,20 +29,16 @@ public class Auth {
         this.jwtService = jwtService;
     }
 
-
     @PostMapping("/register")
     public ResponseEntity<Map<String, String>> registerUser(@Valid @RequestBody RegisterDto data) {
         if (!data.name().matches("[A-Za-z]+")) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Username should contain only letters"));    
+            return ResponseEntity.badRequest().body(Map.of("error", "Username should contain only letters"));
         }
-
         userService.saveUser(data);
         return ResponseEntity
                 .status(201)
-                .body(Map.of("message", "User " + data.name() + " registered successfully!"));
+                .body(Map.of("created", data.name() + " registered successfully!"));
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@Valid @RequestBody LoginDto data) {
@@ -52,32 +48,20 @@ public class Auth {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid password or User"));
         }
 
-        if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())){
+        if (user.getBannedUntil() != null && user.getBannedUntil().isAfter(java.time.LocalDateTime.now())) {
             return ResponseEntity.status(403).body(Map.of("error", "User is banned until " + user.getBannedUntil()));
         }
         String token = jwtService.generateToken(user);
         return ResponseEntity.ok(Map.of("token", token));
     }
 
-
     @GetMapping("/userdata")
     public ResponseEntity<?> getUserData(String token, @AuthenticationPrincipal User user) {
-
-        try {
-            if (user == null) {
-                return ResponseEntity.status(200).body(null);
-            }
-            var userData = userService.getUserData(user.getUsername());
-            return ResponseEntity.ok(userData);
-
-        } catch (Exception e) {
+        if (user == null) {
             return ResponseEntity.status(200).body(null);
         }
-    }
 
-    @GetMapping("/isLoggedIn")
-    public ResponseEntity<?> isLoggedIn() {
-        return ResponseEntity.status(200).body(Map.of("auth", "true"));
+        var userData = userService.getUserData(user.getUsername());
+        return ResponseEntity.ok(userData);
     }
-
 }

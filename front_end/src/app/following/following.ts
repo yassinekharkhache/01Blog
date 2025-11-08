@@ -63,7 +63,7 @@ export class Following implements OnInit {
         else { this.posts.push(...newPosts); this.lastId = newPosts[newPosts.length - 1].id; }
         this.loading = false;
       },
-      error: (err) => { console.error(err); this.loading = false; }
+      error: () => {this.loading = false; }
     });
   }
 

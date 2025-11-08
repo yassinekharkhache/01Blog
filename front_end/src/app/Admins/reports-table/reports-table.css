@@ -9,8 +9,15 @@
   flex-direction: column;
   gap: 1.5rem;
   padding: 1.5rem;
-  overflow-y: auto;
-  height: calc(100vh - 64px);
+  /* overflow-y: auto; */
+  /* height: calc(100vh - 64px); */
+}
+
+.reason{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  overflow-wrap: anywhere;
 }
 
 .report-card {
@@ -81,6 +88,10 @@
   color: #666;
 }
 
+.post{
+  background-color: #EEE;
+}
+
 .spinner {
   display: flex;
   justify-content: center;
@@ -90,6 +101,7 @@
 .reason{
   display: flex;
   flex-wrap: wrap;
+  color: #555;
 }
 
 @media (max-width: 520px) {

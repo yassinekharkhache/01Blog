@@ -82,7 +82,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<Like> likes;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Report> reports;
 

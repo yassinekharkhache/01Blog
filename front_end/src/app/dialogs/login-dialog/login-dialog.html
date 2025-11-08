@@ -13,10 +13,10 @@
              [(ngModel)]="password" required />
     </mat-form-field>
 
-  <p>don't have account <span (click)="openRegister()">Register</span></p>
-    <mat-dialog-actions align="end">
+  <p>don't have account <span class="blue" (click)="openRegister()">Register</span></p>
+    <mat-dialog-actions class="blue" align="end">
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button color="primary" type="submit">Login</button>
+      <button mat-raised-button type="submit">Login</button>
     </mat-dialog-actions>
   </form>
 </mat-dialog-content>

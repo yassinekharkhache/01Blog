@@ -27,7 +27,6 @@
       </div>
     </div>
 
-    <!-- Actions for regular users -->
     <div *ngIf="user.role === 'USER'; else statusBlock" class="actions">
       <select (change)="handleAction($event, user)">
         <option value="">Actions</option>
@@ -36,9 +35,11 @@
       </select>
     </div>
 
-    <!-- Status for non-USER roles -->
+    @if(user.banned){
+
+      <p class="status">Banned</p>
+    }
     <ng-template #statusBlock>
-      <p class="status">Status: {{ user.status }}</p>
     </ng-template>
   </div>
 </div>

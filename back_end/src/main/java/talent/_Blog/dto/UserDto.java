@@ -4,6 +4,7 @@ import talent._Blog.Model.Role;
 import talent._Blog.Model.User;
 
 public record UserDto(
+    Long id,
     String username,
     String email,
     Integer age,
@@ -14,6 +15,7 @@ public record UserDto(
 ) {
     public static UserDto toDto(User user) {
         return new UserDto(
+            user.getId(),
             user.getUsername(),
             user.getEmail(),
             user.getAge(),

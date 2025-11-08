@@ -7,7 +7,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { LoginDialog } from '../login-dialog/login-dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 @Component({

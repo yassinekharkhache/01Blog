@@ -146,7 +146,6 @@ export class BlogEditorComponent {
     }
     
     if (this.title().length <= 5) {
-      alert(this.title)
       this.snackbar.show('title is to short', 'error');
       return;
     }

@@ -35,6 +35,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #555;
 }
 
 .post-info h3 {
@@ -45,6 +46,10 @@
 .reason {
   margin: 1rem 0;
   font-size: 0.95rem;
+}
+
+.username{
+  color: #555;
 }
 
 .users {
@@ -89,7 +94,7 @@
 }
 
 .post{
-  background-color: #EEE;
+  background-color: #b1dcff;
 }
 
 .spinner {

@@ -1,5 +1,4 @@
 .notification-btn {
-  position: relative;
   color: #555;
   background: none;
   border: none;
@@ -19,11 +18,13 @@
 
 .notifications-dropdown {
   display: flex;
+  position: relative;
   flex-direction: column;
   position: absolute;
   top: 60px;
   right: 5%;
   width: 30vw;
+  min-width: 300px;
   max-height: 75vh;
   text-wrap: wrap;
   background-color: #fff;
@@ -32,7 +33,9 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   animation: dropdownFade 0.2s ease-out;
-  overflow: hidden; /* prevent button overlap with scroll */
+  /* overflow-x: scroll; */
+  overflow-y: scroll;
+  word-break: break-all;
 }
 
 .notifications-dropdown h1 {
@@ -75,6 +78,13 @@
 
 /* Bottom button area */
 .notifications-dropdown .actions {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-top: 1px solid #ddd;
   padding: 10px 20px;
   background: #fff;
@@ -108,13 +118,15 @@
 .item{
     display: flex;
     align-items: center;
+    margin: 10px;
+    padding: 10px;
 }
 
 img{
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    margin: 0;
+    margin: 10px;
     object-fit: cover;
     color: #2196f3;
     border: 2px solid #2196f3;

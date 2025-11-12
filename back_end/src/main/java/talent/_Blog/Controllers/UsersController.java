@@ -78,7 +78,7 @@ public class UsersController {
         if (pic != null && !pic.isEmpty()) {
             String fileName = currentUser.getUsername()
                     + pic.getOriginalFilename().substring(pic.getOriginalFilename().lastIndexOf('.'));
-            Path path = Paths.get("/home/yassine/project/01Blog/back_end/uploads/profiles/" + fileName);
+            Path path = Paths.get("/home/ykharkha/01Blog/back_end/uploads/profiles/" + fileName);
             Files.createDirectories(path.getParent());
             pic.transferTo(path.toFile());
             picPath = "/profiles/" + fileName;

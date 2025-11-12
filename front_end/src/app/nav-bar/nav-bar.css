@@ -17,23 +17,14 @@
   z-index: 1001;
   background: #ffffff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #e0e0e0;
 }
 
-.burger-button {
-  color: #333333;
-  margin-right: 12px;
-}
-
-.burger-button:hover {
-  background-color: #eeeeee;
-}
-
 .burger-button mat-icon {
+  color: #11547b;
   font-size: 24px;
   width: 24px;
   height: 24px;
@@ -45,7 +36,7 @@
   font-weight: 700;
   color: #1a1a1a;
   letter-spacing: 0.5px;
-  background: #777;
+  background: #11547b;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -165,7 +156,7 @@
 @media (max-width: 767px) {
   .nav-toolbar {
     height: 56px;
-    padding: 0 12px;
+    padding: 0px 12px;
   }
   
   .burger-button {
@@ -207,7 +198,7 @@
 @media (min-width: 768px) and (max-width: 1024px) {
   .nav-toolbar {
     height: 64px;
-    padding: 0 20px;
+    padding: 0 18px;
   }
   
   .title {
@@ -229,7 +220,7 @@
 @media (min-width: 1025px) {
   .nav-toolbar {
     height: 72px;
-    padding: 0 24px;
+    padding: 0 18px;
   }
   
   .burger-button {
@@ -259,7 +250,7 @@
 @media (min-width: 1441px) {
   .nav-toolbar {
     height: 76px;
-    padding: 0 32px;
+    padding: 0 18px;
   }
   
   .title {

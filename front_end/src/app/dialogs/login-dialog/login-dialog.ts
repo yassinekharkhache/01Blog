@@ -56,7 +56,7 @@ export class LoginDialog {
         }, 120);
       },
       error: (error) => {
-        if(error.error.error == undefined){
+        if(error.error.error == undefined || error.error.error == "Invalid password or User"){
           this.snackbar.show("wrong credentials", 'error');
           return
         }

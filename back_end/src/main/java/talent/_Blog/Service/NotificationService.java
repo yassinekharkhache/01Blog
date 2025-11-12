@@ -20,8 +20,6 @@ public class NotificationService {
         return notificationRepo.countByReceiverAndSeenFalse(user);
     }
 
-
-
     @Transactional
     public void notifyFollowers(User UserAuthor, Post post) {
         var author = UserRepository.findByUserName(UserAuthor.getUsername()).get();
@@ -30,6 +28,7 @@ public class NotificationService {
                     .receiver(follower)
                     .sender(author)
                     .message(author.getUsername() + " just posted a new blog: " + post.getTitle())
+                    .postId(post.getId())
                     .seen(false)
                     .build();
             notificationRepo.save(notif);
@@ -50,5 +49,12 @@ public class NotificationService {
         List<Notification> notifs = notificationRepo.findBySeenIsFalseAndReceiverUserNameOrderByCreatedAtDesc(username);
         notifs.forEach(n -> n.setSeen(true));
         notificationRepo.saveAll(notifs);
+    }
+
+    @Transactional
+    public void markAsSeen(Long id) {
+        Notification notif = notificationRepo.findById(id).orElseThrow(() -> new RuntimeException("Notification not found"));
+        notif.setSeen(true);
+        notificationRepo.save(notif);
     }
 }

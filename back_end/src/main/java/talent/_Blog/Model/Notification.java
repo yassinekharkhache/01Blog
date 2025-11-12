@@ -19,11 +19,13 @@ public class Notification {
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver; // the user who gets notified
+    private User receiver;
+
+    private Long postId;
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
-    private User sender; // the one who triggered it (e.g., posted)
+    private User sender;
 
     @Column(nullable = false)
     private String message;

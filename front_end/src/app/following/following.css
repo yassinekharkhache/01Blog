@@ -52,7 +52,7 @@
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 320px) {
   .explore-container {
     grid-template-columns: 1fr;
     gap: 0.4rem;

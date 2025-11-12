@@ -4,6 +4,7 @@
 .spinner {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  background-color: #e1f4ff;
+  margin: 25px;
 }
 

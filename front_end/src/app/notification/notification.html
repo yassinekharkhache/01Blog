@@ -9,10 +9,10 @@
 </button>
 @if(showNotifications){
 
-<div class="notifications-dropdown">
-  <h1>Notifications</h1>
+<div (scroll)="onScroll($event)" class="notifications-dropdown">
+  <h1 >Notifications</h1>
   @for (n of notifications(); track n.id) {
-  <div class="item">
+  <div (click)="markAsSeen(n.id)" [routerLink]="['/post',n.postId ]"  class="item">
     <img
       src="http://localhost:8081{{ n.sender.pic }}"
       width="50px"

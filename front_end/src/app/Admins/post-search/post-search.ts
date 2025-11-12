@@ -39,10 +39,8 @@ export class PostSearch {
         .pipe(switchMap(() => this.http.get<any[]>(`${this.baseApi}/api/post/search/0?q=${query}`)))
         .subscribe({
           next: (data) => {
-            console.log(data)
             if (data.length) {
               this.lastid = data[data.length - 1].id;
-              console.log(this.lastid)
               this.posts.update(u => [...data]);
             } else {
               this.posts.set([]);

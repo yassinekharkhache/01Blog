@@ -110,8 +110,12 @@ public class UserService {
 
     @Transactional
     public User getUserByName(String username) {
-        var user = userRepository.findByUserName(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        var user = userRepository.findByUserName(username).orElse(null);
+        
+        if (user == null) {
+            return null;
+        }
+
         user.getFollowers();
         user.getFollowing();
         return user;

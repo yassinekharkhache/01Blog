@@ -6,7 +6,7 @@ import talent._Blog.dto.ReportResDto;
 public class ReportMapper {
     public static ReportResDto toReportRes(Report report) {
         ReportResDto reportResDto;
-        if (report.getType().equals("POST")) {
+        if (report.getType() != null && report.getType().equals("POST")) {
             reportResDto = new ReportResDto(
                     report.getId(),
                     report.getPost().getId(),

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -44,11 +44,9 @@ export class ReportsTable implements OnInit {
 
   displayedColumns = ['reportId', 'postTitle', 'reason', 'reporter', 'reported', 'createdAt'];
 
-  constructor(
-    private http: HttpClient,
-    private reportService: ReportService,
-    private dialog: MatDialog
-  ) { }
+  private http = inject(HttpClient);
+  private reportService = inject(ReportService);
+  private dialog = inject(MatDialog);
 
   ngOnInit() {
     this.loadReports();
@@ -83,7 +81,7 @@ export class ReportsTable implements OnInit {
             next: () => {
               console.log(`Post ${report.PostId} deleted successfully`)
               this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
-          },
+            },
           });
           break;
         case 'hidePost':
@@ -103,7 +101,7 @@ export class ReportsTable implements OnInit {
             next: () => {
               this.reports = this.reports.filter(r => r.ReportId !== report.ReportId);
               console.log(`user ${report.ReportedUsername} banned successfully`);
-          },
+            },
           });
           this.deleteReport(report.ReportId);
           break;
@@ -115,13 +113,13 @@ export class ReportsTable implements OnInit {
       }
     }
   }
-  deleteReport(id :number){
+  deleteReport(id: number) {
     this.http.delete(this.baseApi + "/api/report/delete/" + id).subscribe({
-            next: () => {
-              this.reports = this.reports.filter(r => r.ReportId !== id);
-              console.log(`Report ${id} dismissed successfully`);
-            },
-          });
+      next: () => {
+        this.reports = this.reports.filter(r => r.ReportId !== id);
+        console.log(`Report ${id} dismissed successfully`);
+      },
+    });
   }
 
   // onScroll(event: Event) {
@@ -131,18 +129,18 @@ export class ReportsTable implements OnInit {
   //     this.loadReports();
   //   }
   // }
-    @HostListener('window:scroll', [])
-    handleScroll(): void {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const scrollHeight = document.documentElement.scrollHeight;
-      const clientHeight = document.documentElement.clientHeight;
-  
-      const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
-  
-      if (atBottom && !this.loading) {
-        this.loadReports();
-      }
+  @HostListener('window:scroll', [])
+  handleScroll(): void {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight;
+    const clientHeight = document.documentElement.clientHeight;
+
+    const atBottom = scrollHeight - (scrollTop + clientHeight) <= 50;
+
+    if (atBottom && !this.loading) {
+      this.loadReports();
     }
+  }
 
   trackById(index: number, item: ReportResDto) {
     return item.ReportId;

@@ -4,11 +4,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationService } from '../services/notification/notification.service';
 import { UserService } from '../services/user/user.service';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-notification',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatBadgeModule],
+  imports: [CommonModule, MatIconModule, MatBadgeModule, RouterLink],
   templateUrl: './notification.html',
   styleUrls: ['./notification.css'],
 })
@@ -29,20 +30,26 @@ export class NotificationsComponent {
     if (!user) return;
     this.notificationService.markAllAsSeen(user.username);
   }
+
+  markAsSeen(id: number) {
+    this.notificationService.markAsSeen(id);
+  }
+
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
     const target = event.target as HTMLElement;
     if (!target.closest('.profile-menu-wrapper') && !target.closest('.notification-container')) {
       this.showNotifications = false;
     }
-    
+
   }
-  
+
   onScroll(event: Event) {
-  const target = event.target as HTMLElement;
-  if (target.scrollTop + target.clientHeight >= target.scrollHeight - 10) {
-    const user = this.userService.user();
-    if (user) this.notificationService.loadMore(user.username);
+    const target = event.target as HTMLElement;
+    if (target.scrollTop + target.clientHeight >= target.scrollHeight - 50) {
+      const user = this.userService.user();
+      if (user) this.notificationService.loadMore(user.username);
+    }
   }
-}
 }

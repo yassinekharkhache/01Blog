@@ -44,10 +44,6 @@
     overflow: hidden;
   }
 
-  .content {
-    padding-top: 72px; /* Space for fixed navbar */
-  }
-
   /* Mobile: Full width container */
   .content > * {
     padding: 0;
@@ -64,10 +60,6 @@
   .layout.expanded .content {
     margin-left: 220px;
     width: calc(100% - 220px);
-  }
-
-  .content {
-    padding-top: 80px
   }
 
   .content > * {
@@ -89,9 +81,6 @@
     width: calc(100% - 260px);
   }
 
-  .content {
-    padding-top: 88px; /* Space for fixed navbar */
-  }
   .content > * {
     max-width: 1200px;
     margin: 0 auto;
@@ -107,7 +96,7 @@
 
   .content > * {
     max-width: 1400px;
-    padding: 0 32px;
+    padding: 10px 32px;
   }
 
   .content {

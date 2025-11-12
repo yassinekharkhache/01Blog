@@ -45,6 +45,7 @@ public class ReportController {
     public ResponseEntity<?> getReports(
             @RequestParam(required = false) Long lastId,
             @AuthenticationPrincipal User user) {
+                System.out.println("123321");
         if (user == null) {
             return ResponseEntity.status(403).body(Map.of("not authrized", 403));
         }

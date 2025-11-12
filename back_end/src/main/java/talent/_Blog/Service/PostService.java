@@ -50,22 +50,6 @@ public class PostService {
                 : postRepo.findByTitleContainingIgnoreCaseAndIdLessThan(query, lastId, pageable).stream().map(PostCardDto::toDto).toList();
     }
 
-    // @Transactional
-    // public List<User> searchUsers(String query, Integer lastId) {
-
-    //     Pageable pageable = PageRequest.of(0, 6, Sort.by(Sort.Direction.DESC, "id"));
-    //     boolean noQuery = query == null || query.isEmpty();
-    //     if (lastId == 0) {
-    //         return noQuery
-    //                 ? userRepository.findAll(pageable).getContent()
-    //                 : userRepository.findByUserNameContainingIgnoreCase(query, pageable);
-    //     }
-
-    //     return noQuery
-    //             ? userRepository.findByIdLessThan(lastId, pageable)
-    //             : userRepository.findByUserNameContainingIgnoreCaseAndIdLessThan(query, lastId, pageable);
-    // }
-
     public PostService(NotificationService notificationService, PostRepository postRepo,
             FollowRepository subscribeRepository) {
         this.notificationService = notificationService;
@@ -108,8 +92,8 @@ public class PostService {
     // Delete a file from filesystem
     public void deleteFile(String type, String fileName) {// my image is here abs path :
                                                           // file:/home/yassine/project/01Blog/back_end/uploads/images/
-        String folder = type.equals("image") ? "/home/ykharkha/Desktop/01Blog/back_end/uploads/images/"
-                : "/home/ykharkha/Desktop/01Blog/back_end/uploads/videos/";
+        String folder = type.equals("image") ? "/home/ykharkha/01Blog/back_end/uploads/images/"
+                : "/home/ykharkha/01Blog/back_end/uploads/videos/";
         File file = new File(folder + fileName);
         if (file.exists())
             file.delete();
@@ -194,8 +178,8 @@ public class PostService {
         while (matcher.find()) {
             count++;
             String imagename = matcher.group(1) + "@.png";
-            Path source = Paths.get("/home/ykharkha/Desktop/01Blog/back_end/uploads/images/tmp/" + imagename);
-            Path destination = Paths.get("/home/ykharkha/Desktop/01Blog/back_end/uploads/images/" + imagename);
+            Path source = Paths.get("/home/ykharkha/01Blog/back_end/uploads/images/tmp/" + imagename);
+            Path destination = Paths.get("/home/ykharkha/01Blog/back_end/uploads/images/" + imagename);
             try {
                 // Move the file (will overwrite if file already exists)
                 Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
@@ -206,13 +190,13 @@ public class PostService {
         String videoRegex = "<source src=\"http://localhost:8081/videos/tmp/(.*?)@";
         Pattern videoPattern = Pattern.compile(videoRegex);
         Matcher videoMatcher = videoPattern.matcher(content);
-
+        //#11547b
         int videoCount = 0;
         while (videoMatcher.find()) {
             videoCount++;
             String videoname = videoMatcher.group(1) + "@.mp4";
-            Path source = Paths.get("/home/ykharkha/Desktop/01Blog/back_end/uploads/videos/tmp/" + videoname);
-            Path destination = Paths.get("/home/ykharkha/Desktop/01Blog/back_end/uploads/videos/" + videoname);
+            Path source = Paths.get("/home/ykharkha/01Blog/back_end/uploads/videos/tmp/" + videoname);
+            Path destination = Paths.get("/home/ykharkha/01Blog/back_end/uploads/videos/" + videoname);
             try {
                 Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
             } catch (Exception e) {

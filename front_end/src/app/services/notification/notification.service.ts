@@ -7,6 +7,7 @@ import { Observable, switchMap, of } from 'rxjs';
 export interface Notification {
   id: number;
   message: string;
+  postId: number;
   seen: boolean;
   sender: any;
   createdAt: string;
@@ -48,7 +49,7 @@ export class NotificationService {
     if (!user) return;
     this.http
       .get<{ count: number }>(`${environment.apiUrl}/api/notifications/count`)
-      .subscribe(res => {this.unseenCount.set(res.count)});
+      .subscribe(res => { this.unseenCount.set(res.count) });
   }
 
   loadNotifications(username: string, lastId?: number) {
@@ -61,6 +62,9 @@ export class NotificationService {
 
     this.http.get<Notification[]>(url).subscribe({
       next: (data) => {
+        console.log(data)
+
+
         if (lastId) {
           this.notificationsSignal.update(prev => [...prev, ...data]);
         } else {
@@ -82,7 +86,18 @@ export class NotificationService {
 
   markAllAsSeen(username: string) {
     this.unseenCount.set(0)
-    this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/${username}`, {})
+    this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/all/${username}`, {})
+      .subscribe((data) => {
+        const updated = this.notificationsSignal().map(n => ({ ...n, seen: true }));
+        this.notificationsSignal.set(updated);
+      });
+  }
+  markAsSeen(id: number) {
+    const user = this.userService.user();
+    if (!user) return;
+
+    this.unseenCount.update(prev => prev - 1);
+    this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/single/${id}`, {})
       .subscribe((data) => {
         const updated = this.notificationsSignal().map(n => ({ ...n, seen: true }));
         this.notificationsSignal.set(updated);

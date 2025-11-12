@@ -17,10 +17,8 @@ import talent._Blog.dto.AddPostRequestDto;
 import talent._Blog.dto.PostCardDto;
 import talent._Blog.mapper.Postcard;
 import talent._Blog.mapper.postpage;
-import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Size;
 
 import java.io.IOException;
 import java.util.List;

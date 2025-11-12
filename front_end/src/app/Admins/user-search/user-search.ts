@@ -47,13 +47,14 @@ export class UserSearch {
         });
     });
   }
-  public loadusers(){
-    
+
+  public loadusers() {
+
     this.http.get<any[]>(`${this.baseApi}/api/users/search/${this.lastid}?q=${this.lastquery}`).subscribe({
       next: (data) => {
         if (data.length) {
           this.lastid = data[data.length - 1].Id;
-          this.users.update(u => [...u,...data]);
+          this.users.update(u => [...u, ...data]);
         } else {
           this.allLoaded = true;
         }
@@ -61,7 +62,7 @@ export class UserSearch {
     });
   }
 
-  async handleAction(event: Event, user: any) {
+  handleAction(event: Event, user: any) {
     const select = event.target as HTMLSelectElement;
     const action = select.value;
     if (!action) return;
@@ -70,22 +71,36 @@ export class UserSearch {
       data: { message: `Are you sure you want to ${action}?` },
     });
 
-    const confirmed = await dialogRef.afterClosed().toPromise();
-    if (!confirmed) return;
+    const confirmed = dialogRef.afterClosed().subscribe(confirmed => {
 
-    try {
-      if (action === 'ban') {
-        await this.http
-          .post(`${this.baseApi}/api/users/ban`, { username: user.username })
-          .toPromise();
-      } else if (action === 'delete') {
-        await this.http.delete(`${this.baseApi}/api/users/delete/${user.username}`).toPromise();
+      if (!confirmed) return;
+      try {
+        if (action === 'ban') {
+          this.http
+            .post(`${this.baseApi}/api/users/ban`, { username: user.username }).subscribe({
+              next: (data) => {
+                this.users.update(users =>
+                  users.map(u =>
+                    u.username === user.username ? { ...u, banned: true } : u
+                  )
+                );
+  
+              },
+            });
+        } else if (action === 'delete') {
+          this.http.delete(`${this.baseApi}/api/users/delete/${user.username}`).subscribe({
+            next: (data) => {
+              this.users.update(u => u.filter(u => u.username !== user.username));
+            },
+          });
+        }
+      } catch (err) {
+        console.error(`Failed to ${action} the user ${user.username}:`, err);
+      } finally {
+        select.value = '';
       }
-    } catch (err) {
-      console.error(`Failed to ${action} the user ${user.username}:`, err);
-    } finally {
-      select.value = '';
-    }
+    })
+
   }
 
   trackById(index: number, user: any) {

@@ -12,7 +12,6 @@ import talent._Blog.Model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
     boolean existsByEmail(String email);
     boolean existsByUserName(String UserName);
     Optional<User> findByUserName(String name);
@@ -22,6 +21,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByUserNameContainingIgnoreCaseAndIdLessThan(String username,long lastId,Pageable pageable);
     List<User> findByUserNameContainingIgnoreCase(String username,Pageable pageable);
     List<User> findByIdLessThan(long lastId,Pageable pageable);
-
-
 }

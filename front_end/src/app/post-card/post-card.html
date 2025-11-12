@@ -24,7 +24,7 @@
     </div>
 
     <div class="post-actions">
-      <button class="love" (click)="onLikeClick()">
+      <button class="{{post.isLiked ? 'favorite' : 'favorite_border'}}" class="love" (click)="onLikeClick()">
         <mat-icon>{{ post.isLiked ? 'favorite' : 'favorite_border' }}</mat-icon>
         {{ post.likecount }} like
       </button>

@@ -1,15 +1,16 @@
 package talent._Blog.Controllers;
 
-import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.Valid;
-
 import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import jakarta.validation.Valid;
 import talent._Blog.Model.User;
 import talent._Blog.Service.JwtService;
 import talent._Blog.Service.UserService;
@@ -43,7 +44,6 @@ public class Auth {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> loginUser(@Valid @RequestBody LoginDto data) {
         User user = userService.getUserByName(data.username());
-
         if (user == null || !encoder.matches(data.password(), user.getPassword())) {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid password or User"));
         }

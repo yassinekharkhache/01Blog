@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 400px;
+  max-width: 320px;
 }
 
 .post-card:hover {
@@ -136,10 +136,13 @@
   cursor: pointer;
 }
 
-.love:hover {
-  background: #fff0f0;
+.favorite{
   border-color: #ff4081;
   color: #ff4081;
+}
+
+.love:hover {
+  background: #fff0f0;
 }
 
 .love mat-icon {

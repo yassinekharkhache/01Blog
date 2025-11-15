@@ -1,5 +1,5 @@
 <button mat-icon-button class="notification-btn" (click)="toggleNotifications()">
-  @if(unseenCount() != 0){
+  @if(unseenCount() > 0){
   <mat-icon aria-hidden="false" [matBadge]="unseenCount()" matBadgeColor="warn"
     >notifications</mat-icon
   >
@@ -12,7 +12,7 @@
 <div (scroll)="onScroll($event)" class="notifications-dropdown">
   <h1 >Notifications</h1>
   @for (n of notifications(); track n.id) {
-  <div (click)="markAsSeen(n.id)" [routerLink]="['/post',n.postId ]"  class="item">
+  <div (click)="markAsSeen(n.id,n.seen)" [routerLink]="['/post',n.postId ]"  class="item">
     <img
       src="http://localhost:8081{{ n.sender.pic }}"
       width="50px"

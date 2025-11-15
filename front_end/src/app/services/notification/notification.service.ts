@@ -92,15 +92,36 @@ export class NotificationService {
         this.notificationsSignal.set(updated);
       });
   }
+  // markAsSeen(id: number) {
+  //   const user = this.userService.user();
+  //   if (!user) return;
+
+  //   this.unseenCount.update(prev => prev - 1);
+  //   this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/single/${id}`, {})
+  //     .subscribe((data) => {
+  //       const updated = this.notificationsSignal().map(n => n.id === id ? { ...n, seen: true } : n);
+  //       this.notificationsSignal.set(updated);
+  //     });
+  // }
+
   markAsSeen(id: number) {
     const user = this.userService.user();
     if (!user) return;
 
-    this.unseenCount.update(prev => prev - 1);
+    // Optimistic update for UI
+    this.unseenCount.update(v => v - 1);
+
     this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/single/${id}`, {})
-      .subscribe((data) => {
-        const updated = this.notificationsSignal().map(n => ({ ...n, seen: true }));
-        this.notificationsSignal.set(updated);
+      .subscribe(() => {
+        this.notificationsSignal.update(list => {
+          return list.map(n =>
+            n.id === id
+              ? { ...n, seen: true }
+              : n
+          );
+        });
       });
   }
+
+
 }

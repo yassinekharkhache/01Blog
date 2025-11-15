@@ -15,6 +15,8 @@ import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 import { Notfound } from '../notfound/notfound';
 import { Comment } from '../model/comment/comment.model';
 import { AuthService } from '../services/auth/auth.service';
+import { switchMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface PostDetailsDto {
   id: number;
@@ -68,12 +70,44 @@ export class PostDetails implements OnInit {
   private dialog = inject(MatDialog);
   public nbrId: number = 0;
 
+  // ngOnInit(): void {
+  //   this.postId = this.route.snapshot.paramMap.get('id');
+  //   this.nbrId = Number(this.postId);
+  //   if (this.postId) {
+  //     this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`).subscribe({
+  //       next: (post) => {
+  //         this.post = post;
+  //         this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
+  //         this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
+  //         if (this.post.isliked === undefined) this.post.isliked = false;
+  //         if (this.post.likecount === undefined) this.post.likecount = 0;
+  //         this.is_followd = this.post.isfollow ?? false;
+  //         this.is_mine = this.post.authorUsername === this.userService.user()?.username;
+  //       },
+  //       error: () => (this.postNotFound = true),
+  //     });
+  //   }
+  // }
+
+  // Inside PostDetails class
+
   ngOnInit(): void {
-    this.postId = this.route.snapshot.paramMap.get('id');
-    this.nbrId = Number(this.postId);
-    if (this.postId) {
-      this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`).subscribe({
-        next: (post) => {
+    this.route.paramMap.pipe(
+      switchMap(params => {
+        this.postId = params.get('id');
+        this.nbrId = Number(this.postId);
+
+        if (this.postId) {
+          this.postNotFound = false;
+          return this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`);
+        } else {
+          this.postNotFound = true;
+          return of(null);
+        }
+      })
+    ).subscribe({
+      next: (post) => {
+        if (post) {
           this.post = post;
           this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
           this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
@@ -81,10 +115,15 @@ export class PostDetails implements OnInit {
           if (this.post.likecount === undefined) this.post.likecount = 0;
           this.is_followd = this.post.isfollow ?? false;
           this.is_mine = this.post.authorUsername === this.userService.user()?.username;
-        },
-        error: () => (this.postNotFound = true),
-      });
-    }
+          this.comments = [];
+          this.lastId = 0;
+        }
+      },
+      error: () => {
+        this.postNotFound = true;
+        this.post = null;
+      },
+    });
   }
 
   onEditClick() {
@@ -114,7 +153,7 @@ export class PostDetails implements OnInit {
     const postId = this.postId;
     const dialogRef = this.dialog.open(ReportDialogComponent, {
       width: '400px',
-      data: { id : postId,type:"POST" },
+      data: { id: postId, type: "POST" },
     });
 
     dialogRef.afterClosed().subscribe((submitted) => {

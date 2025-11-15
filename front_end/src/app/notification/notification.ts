@@ -1,4 +1,4 @@
-import { Component, HostListener, inject } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -21,8 +21,13 @@ export class NotificationsComponent {
   showNotifications = false;
   unseenCount = this.notificationService.unseenCount;
 
+  
+
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;
+  }
+  trackByNotificationId(index: number, notification: any): number {
+    return notification.id;
   }
 
   markAllAsSeen() {
@@ -31,7 +36,9 @@ export class NotificationsComponent {
     this.notificationService.markAllAsSeen(user.username);
   }
 
-  markAsSeen(id: number) {
+  markAsSeen(id: number, seen: boolean) {
+    if (seen) return;
+    this.showNotifications = false;
     this.notificationService.markAsSeen(id);
   }
 
@@ -44,6 +51,7 @@ export class NotificationsComponent {
     }
 
   }
+
 
   onScroll(event: Event) {
     const target = event.target as HTMLElement;

@@ -33,7 +33,7 @@ public class NotificationController {
         return ResponseEntity.ok(Map.of("Valid","Notifications are hided"));
     }
 
-        @PostMapping("/seen/single/{id}")
+    @PostMapping("/seen/single/{id}")
     public ResponseEntity<?> markAsSeen(@PathVariable long id,@AuthenticationPrincipal User user) {
         notificationService.markAsSeen(id);
         return ResponseEntity.ok(Map.of("Valid","Notifications are hided"));

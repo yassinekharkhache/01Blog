@@ -4,8 +4,6 @@ import talent._Blog.Model.User;
 import talent._Blog.Repository.UserRepository;
 import talent._Blog.Service.JwtService;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

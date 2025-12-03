@@ -1,6 +1,5 @@
 package talent._Blog.mapper;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import talent._Blog.Model.Post;
 import talent._Blog.Model.User;

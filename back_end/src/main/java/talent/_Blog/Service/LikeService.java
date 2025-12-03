@@ -1,10 +1,8 @@
 // LikeService.java
 package talent._Blog.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import talent._Blog.Model.Like;
 import talent._Blog.Model.Post;
 import talent._Blog.Model.User;

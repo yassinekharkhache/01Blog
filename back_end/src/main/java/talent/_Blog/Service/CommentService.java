@@ -2,13 +2,11 @@ package talent._Blog.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import talent._Blog.Exception.UnAuthorizedException;
 import talent._Blog.Model.Comment;
 import talent._Blog.Model.Post;

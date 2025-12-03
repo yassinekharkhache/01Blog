@@ -8,6 +8,7 @@ import { UserService } from '../services/user/user.service';
 import { ProfileEditComponent } from '../dialogs/profile-edit/profile-edit';
 import { LoginDialog } from '../dialogs/login-dialog/login-dialog';
 import { NotificationsComponent } from '../notification/notification';
+import { environment } from '../../environment/environment';
 
 @Component({
   selector: 'app-nav-bar',
@@ -22,6 +23,7 @@ export class NavBarComponent {
   public pop = false;
   @Input() expanded = false;
   @Output() menuToggle = new EventEmitter<void>();
+  public BaseApi = environment.apiUrl;
 
   menuOpen = false;
   showNotifications = false;

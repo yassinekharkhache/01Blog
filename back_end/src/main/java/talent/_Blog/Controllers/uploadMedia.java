@@ -48,7 +48,7 @@ public class uploadMedia {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
 
-            String publicUrl = "http://localhost:8081/images/tmp/" + uniqueFileName;
+            String publicUrl = "http://localhost:8082/images/tmp/" + uniqueFileName;
             return ResponseEntity.ok().body("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {
@@ -102,7 +102,7 @@ public class uploadMedia {
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
             // Return public URL
-            String publicUrl = "http://localhost:8081/videos/tmp/" + uniqueFileName;
+            String publicUrl = "http://localhost:8082/videos/tmp/" + uniqueFileName;
             return ResponseEntity.ok("{\"url\": \"" + publicUrl + "\"}");
 
         } catch (IOException e) {

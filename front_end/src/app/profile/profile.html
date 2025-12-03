@@ -3,7 +3,7 @@
   <div class="profile-header-card">
     <div class="avatar-section">
       <img
-        [src]="'http://localhost:8081' + profileService.user()?.pic"
+        [src]="api + profileService.user()?.pic"
         alt="User Avatar"
         class="profile-avatar"
       />

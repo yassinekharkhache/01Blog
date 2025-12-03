@@ -6,17 +6,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user/user.service';
 import { Info } from '../dialogs/info/info';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../environment/environment';
 
 @Component({
   selector: 'app-blog-editor',
   standalone: true,
   imports: [CommonModule, FormsModule, EditorModule, MatFormFieldModule, MatInputModule, MatButtonModule],
-  providers: [{ provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }],
   templateUrl: './edit.html',
   styleUrls: ['./edit.css'],
 })
@@ -35,10 +35,10 @@ export class Edit implements OnInit {
   
   ngOnInit() {
     this.userService.fetchUser();
-    // userAge = computed(() => this.userService.user()?.age);
+
     const postid = this.route.snapshot.paramMap.get('id');
     this.http
-      .get<{ title: string; content: string }>(`http://localhost:8081/api/post/get/${postid}`)
+      .get<{ title: string; content: string }>(environment.apiUrl+`/api/post/get/${postid}`)
       .subscribe((res) => {
         this.title = res.title;
         this.content = res.content;
@@ -101,14 +101,14 @@ export class Edit implements OnInit {
     formData.append(type, file);
 
     const response = await this.http
-      .post<{ url: string }>(`http://localhost:8081/api/upload/${type}`, formData)
+      .post<{ url: string }>(environment.apiUrl+`/api/upload/${type}`, formData)
       .toPromise();
     console.log(response?.url);
     return response?.url || '';
   }
 
   deleteMedia(type: 'image' | 'video', fileName: string) {
-    const url = `http://localhost:8081/api/upload/${type}/${fileName}`;
+    const url = environment.apiUrl+`/api/upload/${type}/${fileName}`;
     return this.http.delete(url).subscribe({
       next: () => console.log(`${type} deleted successfully`),
     });
@@ -123,12 +123,11 @@ export class Edit implements OnInit {
     input.onchange = async () => {
       const file = input.files?.[0];
       if (!file) return;
-
-      // upload and get real URL
       const url = await this.uploadMedia(file, type);
-      if (url) callback(url); // insert only server URL, not base64
+      if (url) callback(url);
     };
   }
+
   submitPost(title: string) {
     if (!this.content || !title) {
       this.dialog.open(Info, { "data": "Please fill in content and title." });
@@ -142,7 +141,7 @@ export class Edit implements OnInit {
     };
 
     this.http
-      .put<{ id: number }>('http://localhost:8081/api/post/edit', postData)
+      .put<{ id: number }>(environment.apiUrl + '/api/post/edit', postData)
       .subscribe((res) => {
         console.log(res);
         if (res?.id) this.router.navigate(['/post', res.id]);

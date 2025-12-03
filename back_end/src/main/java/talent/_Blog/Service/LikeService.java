@@ -14,11 +14,8 @@ import talent._Blog.Repository.PostRepository;
 @Service
 public class LikeService {
 
-    @Autowired
-    private LikeRepository likeRepository;
-
-    @Autowired
-    private PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final PostRepository postRepository;
 
     public LikeService(LikeRepository likeRepository, PostRepository postRepository) {
         this.likeRepository = likeRepository;

@@ -28,14 +28,15 @@ import java.util.Map;
 @RequestMapping("/api/post")
 public class PostController {
 
-    @Autowired
-    private PostService postService;
+    private final PostService postService;
+    private final Postcard postcard;
+    private final postpage postPageMapper;
 
-    @Autowired
-    private Postcard postcard;
-
-    @Autowired
-    private postpage postPageMapper;
+    public PostController(PostService postService,Postcard postcard,postpage postPageMapper){
+        this.postService = postService;
+        this.postPageMapper = postPageMapper;
+        this.postcard = postcard;
+    }
 
     @PostMapping(path = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPost(

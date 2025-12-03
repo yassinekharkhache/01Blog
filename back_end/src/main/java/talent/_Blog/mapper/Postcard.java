@@ -9,8 +9,12 @@ import talent._Blog.Service.LikeService;
 
 @Component
 public class Postcard {
-    @Autowired
-    private LikeService likeService;
+ 
+    private final LikeService likeService;
+
+    Postcard(LikeService likeService){
+        this.likeService = likeService;
+    }
 
     public PostCardDto toCard(Post post, User user) {
         boolean isLiked = false;

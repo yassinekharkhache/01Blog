@@ -23,11 +23,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequestMapping("/api/follow")
 public class FollowController {
 
-    @Autowired
-    FollowService followService;
+    
+    private final FollowService followService;
 
-    @Autowired
-    UserService userService;
+    
+    private final UserService userService;
+
+    public FollowController(FollowService followService,UserService userService){
+        this.followService = followService;
+        this.userService = userService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> subscribeUser(@RequestBody Map<String, String> body,

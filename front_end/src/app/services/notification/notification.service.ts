@@ -1,9 +1,7 @@
-import { Injectable, signal, effect, computed, inject } from '@angular/core';
+import { Injectable, signal, effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { UserService } from '../user/user.service';
 import { environment } from '../../../environment/environment';
-import { Observable, switchMap, of } from 'rxjs';
-
 export interface Notification {
   id: number;
   message: string;
@@ -20,7 +18,6 @@ export interface Notification {
 export class NotificationService {
   private http = inject(HttpClient);
   public userService = inject(UserService);
-
   private notificationsSignal = signal<Notification[]>([]);
   readonly notifications = this.notificationsSignal.asReadonly();
 
@@ -92,17 +89,6 @@ export class NotificationService {
         this.notificationsSignal.set(updated);
       });
   }
-  // markAsSeen(id: number) {
-  //   const user = this.userService.user();
-  //   if (!user) return;
-
-  //   this.unseenCount.update(prev => prev - 1);
-  //   this.http.post<void>(`${environment.apiUrl}/api/notifications/seen/single/${id}`, {})
-  //     .subscribe((data) => {
-  //       const updated = this.notificationsSignal().map(n => n.id === id ? { ...n, seen: true } : n);
-  //       this.notificationsSignal.set(updated);
-  //     });
-  // }
 
   markAsSeen(id: number) {
     const user = this.userService.user();

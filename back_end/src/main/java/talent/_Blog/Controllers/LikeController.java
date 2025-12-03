@@ -6,14 +6,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import talent._Blog.Model.Like;
 import talent._Blog.Model.User;
 import talent._Blog.Service.LikeService;
 
 @RestController
 @RequestMapping("/api/like")
 public class LikeController {
-    @Autowired
-    private LikeService likeService;
+    
+    private final LikeService likeService;
+
+    public LikeController(LikeService likeService){
+        this.likeService = likeService;
+    }
 
     @PostMapping("/{postId}")
     public ResponseEntity<String> addLike(@AuthenticationPrincipal User user, @PathVariable Long postId) {

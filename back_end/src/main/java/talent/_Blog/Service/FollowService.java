@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import talent._Blog.Model.User;
 import talent._Blog.Repository.FollowRepository;
 import talent._Blog.Model.Follow;
@@ -12,9 +11,12 @@ import talent._Blog.Model.Follow;
 @Service
 @Transactional
 public class FollowService {
+    
+    private final FollowRepository followRepository;
 
-    @Autowired
-    private FollowRepository followRepository;
+    FollowService(FollowRepository followRepository){
+        this.followRepository = followRepository;
+    }
 
     public boolean subscribe(User follower, User followed) {
 

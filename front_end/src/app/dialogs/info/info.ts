@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -20,8 +20,8 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './info.css'
 })
 export class Info {
-  constructor(private dialogRef: MatDialogRef<Info>,@Inject(MAT_DIALOG_DATA) public message: string) {}
-
+  constructor(@Inject(MAT_DIALOG_DATA) public message: string) {}
+  private dialogRef = inject(MatDialogRef<Info>)
   cancel(): void {
     this.dialogRef.close();
   }

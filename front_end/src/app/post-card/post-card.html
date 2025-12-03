@@ -14,7 +14,7 @@
     <div class="post-meta">
       <img
         [routerLink]="['/profile', post.authorUsername]"
-        [src]="'http://localhost:8081' + post.authorProfileImageUrl"
+        [src]="BaseApi + post.authorProfileImageUrl"
         alt="Author Profile"
         class="author-avatar"
       />

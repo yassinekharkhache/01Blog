@@ -14,9 +14,9 @@ import { UserService } from '../services/user/user.service';
   styleUrl: './side-bar.css',
 })
 export class SideBar {
-  @Input() expanded = false;
   private dialog = inject(MatDialog);
   private userService = inject(UserService);
+  @Input() expanded = false;
   user = this.userService.user;
 
   handleclick() {

@@ -170,7 +170,7 @@ public class PostService {
     }
 
     public ContentMediaCount handle_image_paths(String content) {
-        String regex = "<img src=\"http://localhost:8081/images/tmp/(.*?)@";
+        String regex = "<img src=\"http://localhost:8082/images/tmp/(.*?)@";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(content);
 
@@ -187,7 +187,7 @@ public class PostService {
                 System.out.println("Error moving file: " + e.getMessage());
             }
         }
-        String videoRegex = "<source src=\"http://localhost:8081/videos/tmp/(.*?)@";
+        String videoRegex = "<source src=\"http://localhost:8082/videos/tmp/(.*?)@";
         Pattern videoPattern = Pattern.compile(videoRegex);
         Matcher videoMatcher = videoPattern.matcher(content);
         //#11547b
@@ -203,10 +203,10 @@ public class PostService {
                 System.out.println("Error moving video file: " + e.getMessage());
             }
         }
-        content = content.replace("<img src=\"http://localhost:8081/images/tmp/",
-                "<img src=\"http://localhost:8081/images/");
-        content = content.replace("<source src=\"http://localhost:8081/videos/tmp/",
-                "<source src=\"http://localhost:8081/videos/");
+        content = content.replace("<img src=\"http://localhost:8082/images/tmp/",
+                "<img src=\"http://localhost:8082/images/");
+        content = content.replace("<source src=\"http://localhost:8082/videos/tmp/",
+                "<source src=\"http://localhost:8082/videos/");
 
         return new ContentMediaCount(count, videoCount, content);
     }

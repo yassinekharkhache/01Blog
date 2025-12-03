@@ -27,8 +27,11 @@ import talent._Blog.mapper.ReportMapper;
 @RequestMapping("/api/report")
 public class ReportController {
 
-    @Autowired
-    ReportService reportService;
+    private final ReportService reportService;
+    
+    ReportController(ReportService reportService){
+        this.reportService = reportService;
+    }
 
     @PostMapping("/add")
     public ResponseEntity<?> addReport(@Valid @RequestBody ReportRequestDto request,

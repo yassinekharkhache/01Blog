@@ -1,10 +1,11 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { NotificationService } from '../services/notification/notification.service';
 import { UserService } from '../services/user/user.service';
 import { RouterLink } from "@angular/router";
+import { environment } from '../../environment/environment';
 
 @Component({
   selector: 'app-notification',
@@ -21,11 +22,12 @@ export class NotificationsComponent {
   showNotifications = false;
   unseenCount = this.notificationService.unseenCount;
 
-  
+  public BaseApi = environment.apiUrl;
 
   toggleNotifications() {
     this.showNotifications = !this.showNotifications;
   }
+
   trackByNotificationId(index: number, notification: any): number {
     return notification.id;
   }
@@ -49,9 +51,7 @@ export class NotificationsComponent {
     if (!target.closest('.profile-menu-wrapper') && !target.closest('.notification-container')) {
       this.showNotifications = false;
     }
-
   }
-
 
   onScroll(event: Event) {
     const target = event.target as HTMLElement;

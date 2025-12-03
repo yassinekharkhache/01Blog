@@ -23,7 +23,6 @@ import talent._Blog.Model.User;
 @RequestMapping("/api/users")
 public class UsersController {
 
-    @Autowired
     private final UserService userService;
 
     public UsersController(UserService userService) {

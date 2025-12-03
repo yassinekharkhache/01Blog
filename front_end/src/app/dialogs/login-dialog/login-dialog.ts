@@ -19,17 +19,15 @@ import { SnackbarService } from '../../services/snackBar/stack-bar.service';
   imports: [FormsModule, MatDialogModule, MatFormFieldModule, MatInputModule, MatButtonModule],
 })
 export class LoginDialog {
-  username = '';
-  password = '';
-  api = environment.apiUrl + '/login';
   private snackbar = inject(SnackbarService);
   private userService = inject(UserService);
   private router = inject(Router);
-  constructor(
-    private dialogRef: MatDialogRef<LoginDialog>,
-    private http: HttpClient,
-    private dialog: MatDialog
-  ) {}
+  private dialogRef = inject(MatDialogRef<LoginDialog>)
+  private http = inject(HttpClient)
+  private dialog = inject(MatDialog)
+  username = '';
+  password = '';
+  api = environment.apiUrl + '/login';
 
   openRegister() {
     this.dialogRef.close();

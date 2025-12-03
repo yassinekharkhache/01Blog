@@ -12,10 +12,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/notifications")
-@RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService notificationService;
+
+    NotificationController(NotificationService notificationService){
+        this.notificationService = notificationService;
+    }
 
     @GetMapping("/{username}/{LastId}")
     public ResponseEntity<?> getUserNotifications(@PathVariable String username,@PathVariable Integer LastId,@AuthenticationPrincipal User user) {

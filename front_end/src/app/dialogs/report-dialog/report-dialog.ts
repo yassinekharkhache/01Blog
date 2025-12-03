@@ -7,6 +7,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { SnackbarService } from '../../services/snackBar/stack-bar.service';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-report-dialog',
@@ -26,12 +27,12 @@ export class ReportDialogComponent {
   snackbarr = inject(SnackbarService);
   form: FormGroup;
   loading = false;
-  api = 'http://localhost:8081/api/report/add';
+  api = environment.apiUrl + '/api/report/add';
+  private fb = inject( FormBuilder)
+  private http = inject( HttpClient)
+  private dialogRef = inject( MatDialogRef<ReportDialogComponent>)
 
   constructor(
-    private fb: FormBuilder,
-    private http: HttpClient,
-    private dialogRef: MatDialogRef<ReportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { id: number; type: string }
   ) {
     this.form = this.fb.group({

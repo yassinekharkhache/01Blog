@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { PostService } from '../services/post/post.service';
 import { PostCardDto } from '../post-card/post-card';
 import { PostCard } from '../post-card/post-card';
@@ -18,7 +18,7 @@ export class Explore implements OnInit {
   allLoaded = false;
 
 
-  constructor(private postService: PostService) {}
+  private postService = inject(PostService);
 
   ngOnInit(): void {
     this.loadPosts();

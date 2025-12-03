@@ -22,7 +22,6 @@ import jakarta.servlet.ServletException;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UserDetailsService userDetailService;
     private final UserRepository userRepository;
 
     @Override
@@ -45,11 +44,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 return;
             }
 
-            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailService.loadUserByUsername(userName);
-                if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (jwtService.isTokenValid(jwt, user)) {
                     var authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
+                            user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }

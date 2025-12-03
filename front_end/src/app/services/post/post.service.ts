@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PostCardDto } from '../../post-card/post-card';
+import { environment } from '../../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,9 @@ import { PostCardDto } from '../../post-card/post-card';
 
 export class PostService {
 
-  constructor(private http: HttpClient) {}
-  private baseUrl = 'http://localhost:8081/api/post';
+  private http = inject(HttpClient);
+
+  private baseUrl = environment.apiUrl+'/api/post';
 
   getAllPosts(lastId: number | null) {
     let params = lastId !== null ? new HttpParams().set('lastId', lastId) : undefined;

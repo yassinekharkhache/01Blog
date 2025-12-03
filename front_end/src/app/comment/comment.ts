@@ -3,7 +3,6 @@ import { CommentService } from '../services/Comment/comment.service';
 import { Comment } from '../model/comment/comment.model';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { environment } from '../../environment/environment';
 import { AuthService } from '../services/auth/auth.service';
 import { UserService } from '../services/user/user.service';
@@ -21,17 +20,14 @@ export class CommentsComponent implements OnInit {
   public BaseUrl = environment.apiUrl;
   public userService = inject(UserService);
   public authService = inject(AuthService);
+  public snackbarr = inject(SnackbarService);
+  private commentService = inject(CommentService);
   @Input() postId!: number;
   comments: Comment[] = [];
   loading = false;
   lastId?: number;
   public newCommentContent = '';
   public sending = false;
-  public snackbarr = inject(SnackbarService);
-  private commentService = inject(CommentService)
-
-
-  constructor() { }
 
   ngOnInit() {
     this.loadComments();

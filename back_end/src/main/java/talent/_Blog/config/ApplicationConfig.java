@@ -15,21 +15,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not founded: " + username));
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(5);
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 }

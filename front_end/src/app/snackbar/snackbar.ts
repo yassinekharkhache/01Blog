@@ -11,7 +11,9 @@ import { SnackbarService } from '../services/snackBar/stack-bar.service';
   styleUrls: ['./snackbar.css'],
 })
 export class SnackbarComponent {
+
   public service = inject(SnackbarService);
+  
   get msg() {
     return this.service.message();
   }

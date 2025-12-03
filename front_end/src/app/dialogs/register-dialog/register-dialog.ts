@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { LoginDialog } from '../login-dialog/login-dialog';
 import { SnackbarService } from '../../services/snackBar/stack-bar.service';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-register-dialog',
@@ -26,16 +27,16 @@ import { SnackbarService } from '../../services/snackBar/stack-bar.service';
 
 export class RegisterDialog {
   form: FormGroup;
-  api = 'http://localhost:8081/register';
+  api = environment.apiUrl + '/register';
   loading = false;
   errorMsg = '';
-
+  private fb=inject( FormBuilder)
+  private dialogRef=inject( MatDialogRef<RegisterDialog>)
+  private http=inject( HttpClient)
+  private dialog=inject( MatDialog)
   private snackbar = inject(SnackbarService);
+
   constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<RegisterDialog>,
-    private http: HttpClient,
-    private dialog: MatDialog,
   ) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],

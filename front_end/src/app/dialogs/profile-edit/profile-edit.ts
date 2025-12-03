@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { SnackbarService } from '../../services/snackBar/stack-bar.service';
+import { environment } from '../../../environment/environment';
 
 @Component({
   selector: 'app-profile-edit',
@@ -32,10 +33,10 @@ export class ProfileEditComponent {
   password = '';
   private snackbar = inject(SnackbarService);
 
-  constructor(
-    private http: HttpClient,
-    private dialogRef: MatDialogRef<ProfileEditComponent>
-  ) {}
+  
+    private http = inject(HttpClient)
+    private dialogRef = inject(MatDialogRef<ProfileEditComponent>)
+ 
 
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -75,7 +76,7 @@ export class ProfileEditComponent {
       formData.append('age', this.age.toString());
     }
 
-    this.http.post('http://localhost:8081/api/users/update', formData).subscribe({
+    this.http.post(environment.apiUrl +'/api/users/update', formData).subscribe({
       next: (res) => {
         this.snackbar.show('Profile updated successfully', 'success');
         this.dialogRef.close(res);

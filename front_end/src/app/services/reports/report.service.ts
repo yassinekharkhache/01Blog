@@ -24,9 +24,7 @@ export class ReportService {
   private baseUrl = environment.apiUrl + '/api/report';
 
   getReports(lastId?: number): Observable<ReportResDto[]> {
-
     const url = lastId ? `${this.baseUrl}/get?lastId=${lastId}` : `${this.baseUrl}/get`;
-    
     return this.http.get<ReportResDto[]>(url);
   }
 }

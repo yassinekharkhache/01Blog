@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { PostService } from '../services/post/post.service';
 import { PostCard, PostCardDto } from '../post-card/post-card';
 import { CommonModule } from '@angular/common';
@@ -11,48 +11,16 @@ import { RouterLink } from "@angular/router";
   styleUrl: './following.css'
 })
 export class Following implements OnInit {
-
+  private postService = inject(PostService)
 
   posts: PostCardDto[] = [];
   loading = false;
   lastId: number | null = null;
   allLoaded = false;
-
-  private observer?: IntersectionObserver;
-  
-  constructor(private postService: PostService) {}
   
   ngOnInit(): void {
     this.loadPosts();
-    // this.initObserver();
   }
-  
-  // ngOnDestroy(): void {
-  //   this.observer?.disconnect();
-  // }
-  
-  // private initObserver() {
-  //   this.observer = new IntersectionObserver(
-  //     (entries) => {
-  //       entries.forEach(entry => {
-  //         if (entry.isIntersecting && !this.loading && !this.allLoaded) {
-  //           this.loadPosts();
-  //         }
-  //       });
-  //     },
-  //     {
-  //       root: null,
-  //       rootMargin: '0px 0px 300px 0px',
-  //       threshold: 0.1
-  //     }
-  //   );
-  
-  //   if (this.sentinel?.nativeElement) {
-  //     this.observer.observe(this.sentinel.nativeElement);
-  //   } else {
-  //     console.warn('Sentinel not available to observe');
-  //   }
-  // }
 
   loadPosts(): void {
     if (this.loading || this.allLoaded) return;

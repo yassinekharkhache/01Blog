@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SnackbarService } from '../services/snackBar/stack-bar.service';
+import { environment } from '../../environment/environment';
 
 @Component({
   selector: 'app-blog-editor',
@@ -26,16 +27,15 @@ import { SnackbarService } from '../services/snackBar/stack-bar.service';
   styleUrls: ['./post-editor.css'],
 })
 export class BlogEditorComponent {
-  private apiBase = 'http://localhost:8081/api';
-
-  imagePreview: File | string | null = null;
-  imagePreviewUrl: string | null = null;
   content = signal('');
   title = signal('');
-  loading = false;
   router = inject(Router);
   snackbar = inject(SnackbarService);
   http = inject(HttpClient);
+  private apiBase = environment.apiUrl + '/api';
+  imagePreview: File | string | null = null;
+  imagePreviewUrl: string | null = null;
+  loading = false;
 
   editorConfig: any = {
     height: 500,

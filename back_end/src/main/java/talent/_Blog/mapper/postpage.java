@@ -12,14 +12,15 @@ import talent._Blog.dto.postpagedto;
 @Component
 public class postpage {
 
-    @Autowired
-    private LikeService likeService;
+    private final LikeService likeService;
+    private final FollowService followService;
+    private final UserService userService;
 
-    @Autowired
-    private FollowService followService;
-
-    @Autowired
-    private UserService userService;
+    postpage(LikeService likeService,FollowService followService,UserService userService){
+        this.likeService = likeService;
+        this.followService = followService;
+        this.userService = userService;
+    }
 
     public postpagedto toPage(Post post, User user) {
         boolean isLiked = false;

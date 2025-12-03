@@ -13,6 +13,7 @@ import { AuthService } from '../services/auth/auth.service';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { ReportDialogComponent } from '../dialogs/report-dialog/report-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { environment } from '../../environment/environment';
 
 @Component({
   selector: 'app-profile',
@@ -39,6 +40,7 @@ export class Profile implements OnInit {
   private userService = inject(UserService);
   private authService = inject(AuthService);
   private dialog = inject(MatDialog);
+
   userPosts: PostCardDto[] = [];
   loading = false;
   allLoaded = false;
@@ -47,6 +49,7 @@ export class Profile implements OnInit {
   username: string | null = '';
   isMyProfile = false;
   UserId: number = 0;
+  api = environment.apiUrl;
 
   onFollowClick(): void {
     if (this.userService.user() == null) {
@@ -101,7 +104,7 @@ export class Profile implements OnInit {
       if (this.userService.user() != null) {
         this.http
           .get<{ is_subsciberd: boolean }>(
-            `http://localhost:8081/api/follow/is_subsciberd/${this.username}`,
+            environment.apiUrl +`/api/follow/is_subsciberd/${this.username}`,
             { withCredentials: true }
           )
           .subscribe({

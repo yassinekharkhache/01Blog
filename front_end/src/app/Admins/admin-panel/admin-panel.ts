@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
@@ -29,7 +29,7 @@ export class AdminPannel implements OnInit {
   reports: ReportResDto[] = [];
   filteredReports: ReportResDto[] = [];
   loading = true;
-  constructor(private reportService: ReportService) {}
+  private reportService = inject(ReportService)
 
   ngOnInit() {
     this.reportService.getReports().subscribe({

@@ -17,6 +17,7 @@ import { Comment } from '../model/comment/comment.model';
 import { AuthService } from '../services/auth/auth.service';
 import { switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { environment } from '../../environment/environment';
 
 interface PostDetailsDto {
   id: number;
@@ -49,16 +50,6 @@ interface PostDetailsDto {
 })
 
 export class PostDetails implements OnInit {
-  postId: string | null = null;
-  post: PostDetailsDto | null = null;
-  safeContent: SafeHtml | null = null;
-  is_followd: boolean | null = false;
-  is_mine: boolean | null = false;
-  postNotFound = false;
-  loading = false;
-  comments: Comment[] = [];
-  lastId?: number = 0;
-
   public followService = inject(FollowService);
   private sanitizer = inject(DomSanitizer);
   private route = inject(ActivatedRoute);
@@ -68,28 +59,17 @@ export class PostDetails implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+
+  post: PostDetailsDto | null = null;
+  safeContent: SafeHtml | null = null;
+  is_followd: boolean | null = false;
+  is_mine: boolean | null = false;
+  postNotFound = false;
+  loading = false;
+  comments: Comment[] = [];
+  lastId?: number = 0;
+  postId: string | null = null;
   public nbrId: number = 0;
-
-  // ngOnInit(): void {
-  //   this.postId = this.route.snapshot.paramMap.get('id');
-  //   this.nbrId = Number(this.postId);
-  //   if (this.postId) {
-  //     this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`).subscribe({
-  //       next: (post) => {
-  //         this.post = post;
-  //         this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
-  //         this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
-  //         if (this.post.isliked === undefined) this.post.isliked = false;
-  //         if (this.post.likecount === undefined) this.post.likecount = 0;
-  //         this.is_followd = this.post.isfollow ?? false;
-  //         this.is_mine = this.post.authorUsername === this.userService.user()?.username;
-  //       },
-  //       error: () => (this.postNotFound = true),
-  //     });
-  //   }
-  // }
-
-  // Inside PostDetails class
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -99,7 +79,7 @@ export class PostDetails implements OnInit {
 
         if (this.postId) {
           this.postNotFound = false;
-          return this.http.get<PostDetailsDto>(`http://localhost:8081/api/post/get/${this.postId}`);
+          return this.http.get<PostDetailsDto>(environment.apiUrl + `/api/post/get/${this.postId}`);
         } else {
           this.postNotFound = true;
           return of(null);
@@ -109,7 +89,7 @@ export class PostDetails implements OnInit {
       next: (post) => {
         if (post) {
           this.post = post;
-          this.post.authorProfileImageUrl = `http://localhost:8081${post.authorProfileImageUrl}`;
+          this.post.authorProfileImageUrl = environment.apiUrl+ post.authorProfileImageUrl;
           this.safeContent = this.sanitizer.bypassSecurityTrustHtml(post.content);
           if (this.post.isliked === undefined) this.post.isliked = false;
           if (this.post.likecount === undefined) this.post.likecount = 0;
@@ -179,7 +159,7 @@ export class PostDetails implements OnInit {
   }
 
   onDeleteClick() {
-    this.http.delete(`http://localhost:8081/api/post/delete/${this.nbrId}`).subscribe({
+    this.http.delete(environment.apiUrl + `/api/post/delete/${this.nbrId}`).subscribe({
       next: () => {
         console.log(`Post ${this.nbrId} deleted successfully`);
         this.router.navigate(['/']);

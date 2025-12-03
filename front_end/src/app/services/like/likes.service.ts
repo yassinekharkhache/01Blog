@@ -1,7 +1,8 @@
 // like.service.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../../environment/environment';
 
 export interface LikeResponse {
   isLiked: boolean;
@@ -12,9 +13,9 @@ export interface LikeResponse {
   providedIn: 'root'
 })
 export class LikeService {
-  private apiUrl = 'http://localhost:8081/api/like';
+  private apiUrl = environment.apiUrl + '/api/like';
 
-  constructor(private http: HttpClient) {}
+  private http =  inject(HttpClient)
 
   toggleLike(postId: number, currentlyLiked: boolean, currentCount: number): Observable<LikeResponse> {
     if (currentlyLiked) {

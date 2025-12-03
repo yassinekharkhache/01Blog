@@ -1,10 +1,6 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 
@@ -28,8 +24,9 @@ import { MatSelectModule } from '@angular/material/select';
 export class ConfirmDialogComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { message: string },
-    private dialogRef: MatDialogRef<ConfirmDialogComponent>
   ) {}
+  
+  private dialogRef = inject(MatDialogRef<ConfirmDialogComponent>)
 
   confirm() {
     this.dialogRef.close(true);

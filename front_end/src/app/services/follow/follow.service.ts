@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../../environment/environment';
 
 export interface FollowResponse {
   isFollowed: boolean;
@@ -10,9 +11,9 @@ export interface FollowResponse {
   providedIn: 'root'
 })
 export class FollowService {
-  private apiUrl = 'http://localhost:8081/api/follow';
+  private apiUrl = environment.apiUrl + '/api/follow';
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient)
 
   toggleFollow(currentlyFollowed: boolean, username: string): Observable<FollowResponse> {
     if (currentlyFollowed) {

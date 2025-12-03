@@ -12,6 +12,7 @@ export class RoleGuard implements CanActivate {
     const user = this.userService.user();
     const requiredRole = route.data?.['role'];
 
+    // if not log in you are only allowed to visit
     if (!user) {
       this.router.navigate(['/explore']);
       return false;

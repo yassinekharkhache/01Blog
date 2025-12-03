@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, signal, inject, effect, OnInit } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { environment } from '../../../environment/environment';
 import { switchMap, timer } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { consumerMarkDirty } from '@angular/core/primitives/signals';
 import { ConfirmDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog';
 import { MatDialog } from '@angular/material/dialog';
-// import { ConfirmDialogComponent } from '../../dialogs/confirmation-dialog/confirmation-dialog';
 
 @Component({
   selector: 'app-post-search',
@@ -29,7 +27,6 @@ export class PostSearch {
 
 
   constructor() {
-    // this.lastid = 0;
     effect(() => {
       const query = this.searchQuery().trim();
       this.lastquery = query;

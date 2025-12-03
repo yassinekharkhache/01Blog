@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { LikeService } from '../services/like/likes.service';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
+import { environment } from '../../environment/environment';
 
 export interface PostCardDto {
   id: number;
@@ -34,10 +35,11 @@ export class PostCard {
   public likeService = inject(LikeService);
   public userService = inject(UserService);
   private http = inject(HttpClient);
+  public BaseApi = environment.apiUrl;
 
 
   deletePost(): void {
-    this.http.delete(`http://localhost:8081/api/post/delete/${this.post.id}`).subscribe({
+    this.http.delete(this.BaseApi + `/api/post/delete/${this.post.id}`).subscribe({
       next: (response) => console.log('Post deleted successfully:', response),
     });
     console.log(`Deleting post ID: ${this.post.id}`);

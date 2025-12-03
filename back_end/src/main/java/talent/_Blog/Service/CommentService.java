@@ -18,16 +18,16 @@ import talent._Blog.Repository.CommentRepository;
 @Service
 public class CommentService {
 
-    @Autowired
-    private CommentRepository commentRepository;
+    
+    private final CommentRepository commentRepository;
+    
+    private final PostService postService;
 
-    @Autowired
-    private PostService postService;
-
-    // @DeleteMapping("/delete/{commentId}")
-    // public ResponseEntity<?> deleteComment(@PathVariable Long commentId,@AuthenticationPrincipal User user) {
-        // return commentService.deleteComment(commentId, user);
-    // }
+    CommentService(CommentRepository commentRepository,PostService postService){
+        this.commentRepository = commentRepository;
+        this.postService = postService;
+    }
+    
     @Transactional
     public void deleteComment(Long commentId, User user){
         Comment comment = commentRepository.getCommentById(commentId);

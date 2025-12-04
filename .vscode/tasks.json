@@ -1,0 +1,34 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "start-project",
+            "dependsOn": [
+                "docker-up",
+                "frontend",
+                "backend"
+            ],
+            "runOptions": {
+                "runOn": "terminal"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "docker-up",
+            "command": "docker-compose down && docker-compose up -d",
+            "type": "shell"
+        },
+        {
+            "label": "frontend",
+            "type": "shell",
+            "command": "cd front_end && ng dev",
+            "problemMatcher": []
+        },
+        {
+            "label": "backend",
+            "type": "shell",
+            "command": "cd back_end && ./mvnw spring-boot:run",
+            "problemMatcher": []
+        }
+    ]
+}
